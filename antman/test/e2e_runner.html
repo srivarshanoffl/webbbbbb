@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ant-Man Nano-Repair - E2E Automated Test Runner</title>
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --bg-card: #121824;
+      --border: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-red: #ff2a42;
+      --accent-cyan: #00e5ff;
+      --accent-green: #00e676;
+      --accent-amber: #ffb300;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-quantum {
+      background: linear-gradient(135deg, #ff2a42, #b026ff);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button.btn {
+      background: var(--border);
+      color: var(--text-main);
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button.btn:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    button.btn-primary {
+      background: var(--accent-cyan);
+      color: #041019;
+      border-color: var(--accent-cyan);
+    }
+
+    button.btn-primary:hover {
+      background: #62efff;
+    }
+
+    /* Summary Metrics Bar */
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      padding: 16px 24px;
+      background: #0d121c;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .value {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    .value.passed { color: var(--accent-green); }
+    .value.failed { color: var(--accent-red); }
+    .value.running { color: var(--accent-cyan); }
+
+    /* Progress bar */
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: #1e293b;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-cyan);
+      transition: width 0.2s ease;
+    }
+
+    /* Layout Split */
+    .main-workspace {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 170px);
+      overflow: hidden;
+    }
+
+    .test-results-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+
+    .tier-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      border-color: #334155;
+      color: var(--text-main);
+    }
+
+    /* Test Cards */
+    .test-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      transition: border-color 0.15s ease;
+    }
+
+    .test-item.passed { border-left: 4px solid var(--accent-green); }
+    .test-item.failed { border-left: 4px solid var(--accent-red); }
+    .test-item.running { border-left: 4px solid var(--accent-cyan); }
+    .test-item.pending { border-left: 4px solid #475569; opacity: 0.7; }
+
+    .test-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .test-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tier-badge {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #1e293b;
+      color: #94a3b8;
+    }
+
+    .test-id {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent-cyan);
+    }
+
+    .test-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .test-status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .status-passed { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
+    .status-failed { background: rgba(255, 42, 66, 0.15); color: var(--accent-red); }
+    .status-running { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); }
+    .status-pending { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+
+    .test-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .test-error {
+      margin-top: 8px;
+      background: rgba(255, 42, 66, 0.08);
+      border: 1px solid rgba(255, 42, 66, 0.3);
+      padding: 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #ff8594;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Iframe Live Preview */
+    .preview-panel {
+      width: 480px;
+      border-left: 1px solid var(--border);
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.2s ease;
+    }
+
+    .preview-panel.collapsed {
+      width: 0px;
+      overflow: hidden;
+      border-left: none;
+    }
+
+    .preview-header {
+      padding: 8px 16px;
+      background: #121824;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #game-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span class="badge-quantum">PYM LABS E2E</span>
+      <h1>Ant-Man Nano-Repair Test Harness</h1>
+    </div>
+    <div class="controls">
+      <button id="btn-run-all" class="btn btn-primary">Run Full Suite</button>
+      <button id="btn-toggle-preview" class="btn">Toggle Preview</button>
+    </div>
+  </header>
+
+  <div class="progress-track">
+    <div id="progress-fill" class="progress-fill"></div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="label">Total Tests</div>
+      <div id="stat-total" class="value">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Passed</div>
+      <div id="stat-passed" class="value passed">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Failed</div>
+      <div id="stat-failed" class="value failed">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Duration</div>
+      <div id="stat-duration" class="value">0s</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Status</div>
+      <div id="stat-status" class="value running">IDLE</div>
+    </div>
+  </div>
+
+  <div class="main-workspace">
+    <div class="test-results-panel">
+      <div class="tier-tabs">
+        <button class="tab-btn active" data-filter="all">All Tiers (<span id="count-all">0</span>)</button>
+        <button class="tab-btn" data-filter="tier1">Tier 1: Feature Coverage (<span id="count-t1">0</span>)</button>
+        <button class="tab-btn" data-filter="tier2">Tier 2: Boundary (<span id="count-t2">0</span>)</button>
+        <button class="tab-btn" data-filter="tier3">Tier 3: Interactions (<span id="count-t3">0</span>)</button>
+        <button class="tab-btn" data-filter="tier4">Tier 4: Scenarios (<span id="count-t4">0</span>)</button>
+      </div>
+
+      <div id="tests-list"></div>
+    </div>
+
+    <div id="preview-panel" class="preview-panel">
+      <div class="preview-header">
+        <span>LIVE AUTOTEST VIEWPORT</span>
+        <span id="game-phase-badge" style="color: var(--accent-cyan);">Phase 1</span>
+      </div>
+      <iframe id="game-frame" src="../index.html"></iframe>
+    </div>
+  </div>
+
+  <!-- Load E2E Test Suite Script -->
+  <script src="./e2e_suite.js"></script>
+
+  <script>
+    (function () {
+      const runner = new E2ETestRunner();
+      buildE2ESuite(runner);
+
+      const gameFrame = document.getElementById('game-frame');
+      runner.setIframe(gameFrame);
+
+      const statTotal = document.getElementById('stat-total');
+      const statPassed = document.getElementById('stat-passed');
+      const statFailed = document.getElementById('stat-failed');
+      const statDuration = document.getElementById('stat-duration');
+      const statStatus = document.getElementById('stat-status');
+      const progressFill = document.getElementById('progress-fill');
+      const testsList = document.getElementById('tests-list');
+      const btnRunAll = document.getElementById('btn-run-all');
+      const btnTogglePreview = document.getElementById('btn-toggle-preview');
+      const previewPanel = document.getElementById('preview-panel');
+      const gamePhaseBadge = document.getElementById('game-phase-badge');
+
+      let currentFilter = 'all';
+
+      // Update counters
+      statTotal.textContent = runner.tests.length;
+      document.getElementById('count-all').textContent = runner.tests.length;
+      document.getElementById('count-t1').textContent = runner.results.tiers.tier1.total;
+      document.getElementById('count-t2').textContent = runner.results.tiers.tier2.total;
+      document.getElementById('count-t3').textContent = runner.results.tiers.tier3.total;
+      document.getElementById('count-t4').textContent = runner.results.tiers.tier4.total;
+
+      // Render initial test list
+      function renderTestCards() {
+        testsList.innerHTML = '';
+        runner.tests.forEach((t) => {
+          if (currentFilter !== 'all' && t.tier !== currentFilter) return;
+
+          const card = document.createElement('div');
+          card.id = `card-${t.id}`;
+          card.className = `test-item ${t.status}`;
+
+          let errorHtml = '';
+          if (t.error) {
+            errorHtml = `<div class="test-error">${escapeHtml(t.error)}</div>`;
+          }
+
+          card.innerHTML = `
+            <div class="test-header">
+              <div class="test-meta">
+                <span class="tier-badge">${t.tier.toUpperCase()}</span>
+                <span class="test-id">${t.id}</span>
+                <span class="test-title">${escapeHtml(t.name)}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="test-duration" style="font-size:12px; color:#94a3b8; font-family:var(--font-mono);">${t.duration ? t.duration + 'ms' : ''}</span>
+                <span class="test-status-badge status-${t.status}">${t.status}</span>
+              </div>
+            </div>
+            <div class="test-desc">${escapeHtml(t.description)}</div>
+            ${errorHtml}
+          `;
+          testsList.appendChild(card);
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      renderTestCards();
+
+      // Tab filtering
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderTestCards();
+        });
+      });
+
+      // Preview toggle
+      btnTogglePreview.addEventListener('click', () => {
+        previewPanel.classList.toggle('collapsed');
+      });
+
+      // Runner hooks
+      runner.onTestStart = (test, index, total) => {
+        statStatus.textContent = 'RUNNING';
+        statStatus.className = 'value running';
+        const pct = Math.round((index / total) * 100);
+        progressFill.style.width = pct + '%';
+
+        const card = document.getElementById(`card-${test.id}`);
+        if (card) {
+          card.className = `test-item running`;
+          const badge = card.querySelector('.test-status-badge');
+          if (badge) {
+            badge.className = 'test-status-badge status-running';
+            badge.textContent = 'RUNNING';
+          }
+        }
+
+        // Update phase badge
+        try {
+          const p = runner.gameState?.currentPhase ?? runner.gameState?.phase;
+          if (p) gamePhaseBadge.textContent = `Phase ${p}`;
+        } catch (e) {}
+      };
+
+      runner.onTestComplete = (test, index, total) => {
+        statPassed.textContent = runner.results.passed;
+        statFailed.textContent = runner.results.failed;
+        const pct = Math.round(((index + 1) / total) * 100);
+        progressFill.style.width = pct + '%';
+
+        const card = document.getElementById(`card-${test.id}`);
+        if (card) {
+          card.className = `test-item ${test.status}`;
+          card.querySelector('.test-duration').textContent = test.duration + 'ms';
+          const badge = card.querySelector('.test-status-badge');
+          if (badge) {
+            badge.className = `test-status-badge status-${test.status}`;
+            badge.textContent = test.status.toUpperCase();
+          }
+          if (test.error) {
+            let errElem = card.querySelector('.test-error');
+            if (!errElem) {
+              errElem = document.createElement('div');
+              errElem.className = 'test-error';
+              card.appendChild(errElem);
+            }
+            errElem.textContent = test.error;
+          }
+        }
+      };
+
+      runner.onSuiteComplete = (results) => {
+        progressFill.style.width = '100%';
+        statDuration.textContent = (results.durationMs / 1000).toFixed(1) + 's';
+        if (results.failed === 0) {
+          statStatus.textContent = 'PASSED';
+          statStatus.className = 'value passed';
+          progressFill.style.background = 'var(--accent-green)';
+        } else {
+          statStatus.textContent = 'FAILED';
+          statStatus.className = 'value failed';
+          progressFill.style.background = 'var(--accent-red)';
+        }
+        btnRunAll.disabled = false;
+        btnRunAll.textContent = 'Run Full Suite';
+        console.log('[E2E TEST RUNNER] Execution Complete:', results);
+      };
+
+      async function startExecution() {
+        if (runner.isRunning) return;
+        runner.isRunning = true;
+        btnRunAll.disabled = true;
+        btnRunAll.textContent = 'Running...';
+        statStatus.textContent = 'STARTING';
+        statStatus.className = 'value running';
+        progressFill.style.background = 'var(--accent-cyan)';
+        progressFill.style.width = '0%';
+
+        // Ensure iframe is loaded
+        if (!gameFrame.contentDocument || gameFrame.contentDocument.readyState !== 'complete') {
+          await new Promise((resolve) => {
+            gameFrame.onload = resolve;
+            setTimeout(resolve, 500);
+          });
+        }
+
+        renderTestCards();
+        await runner.runAll();
+      }
+
+      btnRunAll.addEventListener('click', startExecution);
+
+      // Check autorun parameter in query string
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('autorun') === 'true' || urlParams.get('auto') === '1') {
+        if (document.readyState === 'complete') {
+          setTimeout(startExecution, 400);
+        } else {
+          window.addEventListener('load', () => {
+            setTimeout(startExecution, 400);
+          });
+        }
+      }
+
+      // Expose globally
+      window.runner = runner;
+      window.startExecution = startExecution;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IRON MAN – ARC REACTOR: CORE RESTORATION</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-app">
+        <!-- 2.5D Reactor Interior Environment -->
+        <div id="environment-container">
+            <canvas id="stage1-canvas"></canvas>
+        </div>
+
+        <!-- HUD Layer (Stark Tactical Flight Visor) -->
+        <div id="stage1-hud" class="hud-layer hidden">
+            <!-- Top HUD Bar -->
+            <div class="hud-top">
+                <div class="hud-box">
+                    <span class="hud-lbl">DRONE HULL INTEGRITY</span>
+                    <div class="meter-track">
+                        <div id="hull-bar" class="meter-fill green" style="width: 100%;"></div>
+                    </div>
+                    <span id="hull-val" class="hud-metric">100%</span>
+                </div>
+
+                <div class="hud-center-title">
+                    <div class="mission-tag">STARK RESTORATION PROTOCOL</div>
+                    <div class="mission-name">ARC CORE HARVEST</div>
+                </div>
+
+                <div class="hud-box align-right">
+                    <span class="hud-lbl">ENERGY MATRIX HARVEST</span>
+                    <div class="meter-track">
+                        <div id="energy-bar" class="meter-fill cyan" style="width: 0%;"></div>
+                    </div>
+                    <span id="energy-val" class="hud-metric">0 / 10 CELLS (0%)</span>
+                </div>
+            </div>
+
+            <!-- Objective Alert Banner -->
+            <div id="objective-banner" class="hud-banner">
+                COLLECT <span class="cyan">10 ARC ENERGY CELLS</span> · AVOID <span class="red">VOLATILE LIGHTNING ANOMALIES</span>
+            </div>
+
+            <!-- Stark Tactical Flight Visor Overlay -->
+            <div class="flight-telemetry-overlay">
+                <div class="visor-crosshair">
+                    <div class="reticle-circle"></div>
+                    <div class="reticle-lines"></div>
+                    <div id="target-rangefinder" class="target-rangefinder">ACQUIRING ARC CELL...</div>
+                </div>
+                <div class="telemetry-corner top-left">
+                    <span>SYS: NANO-PROBE MK.L</span>
+                    <span id="flight-speed">THRUST: 0%</span>
+                </div>
+                <div class="telemetry-corner top-right">
+                    <span>CORE: 4.8 GW</span>
+                    <span>CONTAINMENT: CRITICAL</span>
+                </div>
+                <div class="telemetry-corner bottom-left">
+                    <span>VECTOR: STABILIZED</span>
+                    <span id="g-force-meter">G-LOAD: 1.0G</span>
+                </div>
+                <div class="telemetry-corner bottom-right">
+                    <span>RADAR: 360° ACTIVE</span>
+                    <span id="hazard-proximity">ANOMALIES: 0 DETECTED</span>
+                </div>
+            </div>
+
+            <!-- Mobile Touch Controls -->
+            <div id="touch-controls" class="touch-layer">
+                <div id="joystick-zone" class="touch-zone joystick-zone">
+                    <div id="joystick-base" class="joystick-base">
+                        <div id="joystick-stick" class="joystick-stick"></div>
+                    </div>
+                </div>
+                <div id="boost-touch-btn" class="touch-btn boost-btn">
+                    <span>BOOST</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Toast / HUD Flash -->
+        <div id="hud-toast" class="hud-toast hidden"></div>
+
+        <!-- Final Activation FX Overlay -->
+        <div id="activation-fx" class="activation-layer hidden">
+            <div class="core-flare"></div>
+            <div class="arc-blast-ring"></div>
+            <img src="assets/images/reactor-core.png" alt="Reactor Core" class="activating-core-img">
+            <div class="activation-text">ARC REACTOR ONLINE</div>
+            <div class="activation-sub">100% OPERATIONAL // LIFE SUPPORT SYSTEMS RESTORED</div>
+        </div>
+
+        <!-- 1. START MISSION SCREEN -->
+        <div id="screen-start" class="modal-card">
+            <div class="modal-inner">
+                <div class="stark-logo">
+                    <svg viewBox="0 0 100 24" class="stark-svg">
+                        <text x="50%" y="18" text-anchor="middle" font-family="'Orbitron', sans-serif" font-weight="900" font-size="16" fill="#00e5ff" letter-spacing="4">STARK</text>
+                    </svg>
+                </div>
+                <h1 class="main-title">IRON MAN<span>ARC REACTOR: CORE RESTORATION</span></h1>
+                <div class="title-rule"></div>
+                
+                <div class="mission-brief">
+                    <p><b>EMERGENCY SIBERIA PROTOCOL:</b> Captain America's shield strike has shattered Tony Stark's primary chest arc reactor. Vital functions are rapidly plummeting.</p>
+                    <p>Deploy the nanotech micro-drone into the reactor chamber to harvest stabilizing energy cells, evade volatile electrical lightning anomalies, and ignite the core to restore Tony Stark's life support systems.</p>
+                </div>
+
+                <div class="controls-guide">
+                    <div class="c-item">
+                        <span class="c-key">W A S D / ARROWS</span>
+                        <span class="c-desc">Free 2.5D Drone Flight</span>
+                    </div>
+                    <div class="c-item">
+                        <span class="c-key">SHIFT / SPACE</span>
+                        <span class="c-desc">Repulsor Thruster Boost</span>
+                    </div>
+                    <div class="c-item">
+                        <span class="c-key">TOUCH CONTROLS</span>
+                        <span class="c-desc">Virtual Stick + Boost</span>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button id="btn-start-mission" class="btn-action primary">▶ INITIATE CORE RESTORATION</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. STAGE 1 FAILURE SCREEN -->
+        <div id="screen-fail-stage1" class="modal-card hidden">
+            <div class="modal-inner fail-border">
+                <div class="badge-alert red">SYSTEM COMPROMISED</div>
+                <h2 class="alert-title">DRONE INTEGRITY DESTROYED</h2>
+                <p class="fail-desc">The micro-drone sustained fatal damage from volatile electrical anomalies. The reactor core remains unstable.</p>
+                <div class="btn-row">
+                    <button id="btn-retry-stage1" class="btn-action warning">↺ RETRY RESTORATION</button>
+                    <button id="btn-restart-all-1" class="btn-action secondary">RESET MISSION</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. VICTORY SCREEN -->
+        <div id="screen-victory" class="modal-card hidden">
+            <div class="modal-inner success-border">
+                <div class="badge-alert cyan">CORE STABILIZATION SUCCESSFUL</div>
+                <h1 class="victory-title">RESTORATION COMPLETE</h1>
+                <div class="victory-sub">TONY STARK ARC REACTOR HARDWARE FULLY RESTORED</div>
+
+                <div class="stats-panel">
+                    <div class="stat-cell">
+                        <span class="s-label">MISSION ELAPSED TIME</span>
+                        <span id="v-stat-time" class="s-val">00.0s</span>
+                    </div>
+                    <div class="stat-cell">
+                        <span class="s-label">ENERGY HARVESTED</span>
+                        <span id="v-stat-energy" class="s-val cyan">10 / 10 (100%)</span>
+                    </div>
+                    <div class="stat-cell">
+                        <span class="s-label">CORE INTEGRITY</span>
+                        <span id="v-stat-sync" class="s-val gold">100% OPERATIONAL</span>
+                    </div>
+                </div>
+
+                <div class="next-step-box">
+                    <p>⚡ <b>NEXT PHASE:</b> Hardware online. Life support attribute in DOM requires diagnostic connection.</p>
+                </div>
+
+                <div class="btn-row">
+                    <button id="btn-continue-diagnostics" class="btn-action primary pulse-glow">▶ PROCEED TO LIFE SUPPORT DIAGNOSTICS</button>
+                    <button id="btn-play-again" class="btn-action secondary">↺ PLAY AGAIN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sound mute button -->
+        <button id="btn-audio-mute" class="audio-btn" title="Toggle Sound">
+            <svg viewBox="0 0 24 24" class="audio-icon">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Audio Elements for file fallback -->
+    <audio id="snd-collection" src="assets/sounds/collection.mp3" preload="auto"></audio>
+    <audio id="snd-warning" src="assets/sounds/warning.mp3" preload="auto"></audio>
+    <audio id="snd-synchronization" src="assets/sounds/synchronization.mp3" preload="auto"></audio>
+    <audio id="snd-activation" src="assets/sounds/activation.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

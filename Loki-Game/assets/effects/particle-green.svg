@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="orb" cx="0" cy="0" r="1" gradientTransform="translate(256 256) rotate(90) scale(190)">
+      <stop stop-color="#f2ffe8" stop-opacity=".95"/>
+      <stop offset=".18" stop-color="#59ffad" stop-opacity=".8"/>
+      <stop offset=".55" stop-color="#00d990" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#00ff77" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <circle cx="256" cy="256" r="190" fill="url(#orb)" filter="url(#blur)"/>
+  <g fill="#b5ffd6">
+    <circle cx="95" cy="298" r="3"/><circle cx="141" cy="111" r="2"/>
+    <circle cx="203" cy="63" r="3"/><circle cx="367" cy="103" r="2"/>
+    <circle cx="420" cy="215" r="3"/><circle cx="380" cy="385" r="2"/>
+    <circle cx="244" cy="442" r="3"/><circle cx="112" cy="402" r="2"/>
+    <circle cx="302" cy="175" r="2"/><circle cx="181" cy="337" r="2"/>
+  </g>
+  <g stroke="#00ff98" stroke-linecap="round" stroke-width="2" opacity=".55">
+    <path d="M86 237c72-61 113-54 151-20s66 34 101-8 59-44 91-20"/>
+    <path d="M107 337c61 30 90 17 127-16s70-40 108-4 56 42 80 25"/>
+  </g>
+</svg>

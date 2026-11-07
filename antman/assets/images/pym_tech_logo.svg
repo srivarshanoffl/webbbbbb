@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 90" width="420" height="90" aria-label="Pym Technologies Logo">
+  <defs>
+    <filter id="pym-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="pym-red-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff334b" />
+      <stop offset="60%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </linearGradient>
+    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Pym Molecular Icon (3 Connected Spheres with Molecular Bonds) -->
+  <g transform="translate(10, 10)">
+    <!-- Connecting Bonds -->
+    <line x1="25" y1="35" x2="45" y2="18" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+    <line x1="45" y1="18" x2="65" y2="45" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+    <line x1="25" y1="35" x2="65" y2="45" stroke="#ff334b" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    
+    <!-- Outer Orbit Ring -->
+    <ellipse cx="45" cy="35" rx="36" ry="18" fill="none" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="6 3" transform="rotate(-20 45 35)" opacity="0.6" />
+
+    <!-- Atoms -->
+    <!-- Atom 1: Top Right (Blue Pym Growth Particle) -->
+    <circle cx="45" cy="18" r="9" fill="#0284c7" stroke="#38bdf8" stroke-width="2" filter="url(#pym-glow)" />
+    <circle cx="43" cy="16" r="3" fill="#ffffff" opacity="0.8" />
+    
+    <!-- Atom 2: Bottom Left (Red Pym Shrink Particle) -->
+    <circle cx="25" cy="35" r="11" fill="url(#pym-red-grad)" stroke="#ff8090" stroke-width="2" filter="url(#pym-glow)" />
+    <circle cx="22" cy="32" r="3.5" fill="#ffffff" opacity="0.9" />
+
+    <!-- Atom 3: Bottom Right (Silver Regulator Hub) -->
+    <circle cx="65" cy="45" r="8" fill="url(#silver-grad)" stroke="#ffffff" stroke-width="2" />
+    <circle cx="63" cy="43" r="2.5" fill="#ffffff" />
+  </g>
+
+  <!-- Typography -->
+  <g transform="translate(100, 20)">
+    <!-- Brand Name -->
+    <text x="0" y="28" font-family="'Courier New', monospace, sans-serif" font-size="28" font-weight="900" letter-spacing="4" fill="#f8fafc">
+      PYM
+    </text>
+    <text x="75" y="28" font-family="'Courier New', monospace, sans-serif" font-size="22" font-weight="700" letter-spacing="3" fill="#38bdf8">
+      TECH
+    </text>
+    <!-- Division Subtitle -->
+    <text x="2" y="46" font-family="'Courier New', monospace, sans-serif" font-size="10.5" font-weight="700" letter-spacing="2.5" fill="#94a3b8">
+      ADVANCED SUBATOMIC RESEARCH DIVISION
+    </text>
+  </g>
+</svg>
+

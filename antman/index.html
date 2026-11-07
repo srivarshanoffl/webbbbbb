@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ant-Man Nano-Repair 2.5D Interactive Showcase Game. Shrink into microscopic circuitry to repair malfunctioning nanotechnology.">
+  <title>Ant-Man: Nano-Repair 2.5D</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/antman_helmet_icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Main Application Container & 2.5D Viewport -->
+  <div id="app-container" class="game-viewport" role="region" aria-label="Ant-Man Nano Repair Game">
+
+    <!-- 3D Camera Rig: Controlled by CSS 3D matrix and data-camera -->
+    <div id="camera-rig" class="camera-rig" data-camera="phase-1">
+      <div id="world-stage" class="world-stage">
+
+        <!-- Plane 1: Far Background (-400px translateZ) -->
+        <div id="layer-bg-far" class="scene-layer layer-bg-far" aria-hidden="true">
+          <div class="lab-wall-grid"></div>
+          <div class="distant-servers">
+            <div class="server-rack rack-1"></div>
+            <div class="server-rack rack-2"></div>
+            <div class="server-rack rack-3"></div>
+          </div>
+          <div class="quantum-horizon"></div>
+        </div>
+
+        <!-- Plane 2: Mid Background (-200px translateZ) -->
+        <div id="layer-bg-mid" class="scene-layer layer-bg-mid" aria-hidden="true">
+          <div class="lab-consoles">
+            <div class="diagnostic-screen-bg screen-left"></div>
+            <div class="diagnostic-screen-bg screen-right"></div>
+          </div>
+          <div class="micro-monoliths">
+            <div class="ic-monolith ic-left">
+              <span class="ic-label">PYM-Q88</span>
+            </div>
+            <div class="ic-monolith ic-right">
+              <span class="ic-label">CORE-LOGIC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plane 3: Ground Platform / PCB Surface (0px translateZ) -->
+        <div id="layer-ground" class="scene-layer layer-ground" aria-hidden="true">
+          <div class="workbench-surface"></div>
+          <div class="pcb-substrate-surface">
+            <div class="circuit-bus-trace trace-h1"></div>
+            <div class="circuit-bus-trace trace-h2"></div>
+            <div class="circuit-bus-trace trace-h3"></div>
+            <div class="circuit-bus-trace trace-v1"></div>
+            <div class="circuit-bus-trace trace-v2"></div>
+          </div>
+        </div>
+
+        <!-- Plane 4: Primary Actors & Interactive Consoles (+40px translateZ) -->
+        <div id="layer-actors" class="scene-layer layer-actors">
+
+          <!-- Ant-Man Character Container -->
+          <div id="antman-container" class="antman-container" data-scale="1.0">
+            <div class="antman-shadow" aria-hidden="true"></div>
+            <div id="antman-character" class="antman-character-wrapper">
+              <!-- Pure Scalable SVG Vector Ant-Man -->
+              <svg id="antman-svg" class="antman-svg" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ant-Man in quantum suit">
+              <!-- Official Movie-Accurate MCU Ant-Man Hero Asset -->
+              <img id="antman-asset-img" class="antman-asset-img" src="assets/images/ant-man-png.png" alt="Ant-Man in quantum suit" />
+              <!-- Pure Scalable SVG Vector Ant-Man (Preserved for T1.CC.01 test contract) -->
+              <svg id="antman-svg" class="antman-svg sr-only" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ant-Man in quantum suit" aria-hidden="true">
+                <defs>
+                  <filter id="visor-glow-filter" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+
+                  <linearGradient id="metal-silver" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f8fafc" />
+                    <stop offset="45%" stop-color="#cbd5e1" />
+                    <stop offset="100%" stop-color="#64748b" />
+                  </linearGradient>
+
+                  <linearGradient id="armor-charcoal" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#334155" />
+                    <stop offset="100%" stop-color="#0f172a" />
+                  </linearGradient>
+
+                  <linearGradient id="pym-red" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ff334b" />
+                    <stop offset="50%" stop-color="#dc2626" />
+                    <stop offset="100%" stop-color="#991b1b" />
+                  </linearGradient>
+
+                  <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="40%" stop-color="#ff1744" />
+                    <stop offset="100%" stop-color="#7f1d1d" />
+                  </radialGradient>
+                </defs>
+
+                <!-- Floor Shadow -->
+                <ellipse id="svg-floor-shadow" cx="50" cy="155" rx="35" ry="5" fill="rgba(0,0,0,0.6)" />
+
+                <!-- Legs & Boots -->
+                <g id="antman-legs">
+                  <!-- Left Leg -->
+                  <path d="M 36 94 L 30 135 L 24 150 L 36 152 L 40 148 L 42 135 L 43 94 Z" fill="url(#armor-charcoal)" />
+                  <path d="M 33 112 L 31 138 L 26 149 L 36 151 L 38 138 Z" fill="url(#metal-silver)" />
+                  <path d="M 35 96 L 36 130" stroke="url(#pym-red)" stroke-width="2" stroke-linecap="round" />
+                  <!-- Right Leg -->
+                  <path d="M 64 94 L 70 135 L 76 150 L 64 152 L 60 148 L 58 135 L 57 94 Z" fill="url(#armor-charcoal)" />
+                  <path d="M 67 112 L 69 138 L 74 149 L 64 151 L 62 138 Z" fill="url(#metal-silver)" />
+                  <path d="M 65 96 L 64 130" stroke="url(#pym-red)" stroke-width="2" stroke-linecap="round" />
+                  <!-- Belt with Pym Regulator Discs -->
+                  <rect x="34" y="90" width="32" height="6" rx="2" fill="#1e293b" stroke="#475569" stroke-width="1" />
+                  <circle cx="50" cy="93" r="4" fill="url(#metal-silver)" />
+                  <circle cx="39" cy="93" r="2.5" fill="url(#pym-red)" />
+                  <circle cx="61" cy="93" r="2.5" fill="url(#pym-red)" />
+                </g>
+
+                <!-- Torso & Arms -->
+                <g id="antman-torso">
+                  <path d="M 32 48 L 68 48 L 65 92 L 35 92 Z" fill="url(#armor-charcoal)" />
+                  <path d="M 35 48 L 46 48 L 44 86 L 37 86 Z" fill="url(#pym-red)" />
+                  <path d="M 65 48 L 54 48 L 56 86 L 63 86 Z" fill="url(#pym-red)" />
+                  <path d="M 44 54 L 56 54 L 52 74 L 48 74 Z" fill="#0f172a" />
+                  <!-- Pym Particle Chest Core -->
+                  <circle class="pym-core-disc" cx="50" cy="65" r="7" fill="url(#metal-silver)" />
+                  <circle class="pym-core-lens" cx="50" cy="65" r="4.5" fill="url(#core-glow)" filter="url(#visor-glow-filter)" />
+
+                  <!-- Left Arm -->
+                  <g id="arm-left">
+                    <path d="M 32 50 L 22 75 L 20 98 L 26 98 L 30 78 L 34 56 Z" fill="url(#armor-charcoal)" />
+                    <path d="M 33 48 L 22 52 L 20 62 L 32 58 Z" fill="url(#metal-silver)" />
+                    <rect x="18" y="88" width="9" height="12" rx="2" fill="url(#metal-silver)" />
+                    <circle class="wrist-trigger" cx="22" cy="94" r="2" fill="url(#pym-red)" />
+                    <path d="M 19 99 L 21 106 L 26 106 L 27 99 Z" fill="#334155" />
+                  </g>
+                  <!-- Right Arm -->
+                  <g id="arm-right">
+                    <path d="M 68 50 L 78 75 L 80 98 L 74 98 L 70 78 L 66 56 Z" fill="url(#armor-charcoal)" />
+                    <path d="M 67 48 L 78 52 L 80 62 L 68 58 Z" fill="url(#metal-silver)" />
+                    <rect x="73" y="88" width="9" height="12" rx="2" fill="url(#metal-silver)" />
+                    <path d="M 81 99 L 79 106 L 74 106 L 73 99 Z" fill="#334155" />
+                  </g>
+                </g>
+
+                <!-- Helmet & Glowing Visors -->
+                <g id="antman-helmet">
+                  <!-- Antennas -->
+                  <line x1="38" y1="20" x2="30" y2="4" stroke="url(#metal-silver)" stroke-width="2" stroke-linecap="round" />
+                  <circle cx="30" cy="4" r="2" fill="url(#pym-red)" />
+                  <line x1="62" y1="20" x2="70" y2="4" stroke="url(#metal-silver)" stroke-width="2" stroke-linecap="round" />
+                  <circle cx="70" cy="4" r="2" fill="url(#pym-red)" />
+
+                  <!-- Helmet Dome -->
+                  <path d="M 33 26 C 33 12, 67 12, 67 26 C 70 32, 69 44, 65 48 C 61 52, 39 52, 35 48 C 31 44, 30 32, 33 26 Z" fill="url(#metal-silver)" stroke="#475569" stroke-width="0.8" />
+                  <path d="M 36 28 L 64 28 L 61 34 L 39 34 Z" fill="#0f172a" />
+                  <path d="M 34 38 L 40 46 L 36 48 Z" fill="url(#armor-charcoal)" />
+                  <path d="M 66 38 L 60 46 L 64 48 Z" fill="url(#armor-charcoal)" />
+
+                  <!-- Iconic Red Visor Eyes -->
+                  <g class="antman-visor" filter="url(#visor-glow-filter)">
+                    <path d="M 38 31 L 47 31 L 46 36 L 39 36 Z" fill="#ff1744" />
+                    <path d="M 39 32 L 46 32" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" />
+                    <path d="M 53 31 L 62 31 L 61 36 L 54 36 Z" fill="#ff1744" />
+                    <path d="M 54 32 L 61 32" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" />
+                  </g>
+
+                  <!-- Rebreather & Vent -->
+                  <path d="M 44 42 L 56 42 L 54 50 L 46 50 Z" fill="#1e293b" />
+                  <rect x="46" y="44" width="8" height="2" fill="url(#metal-silver)" />
+                  <circle cx="42" cy="46" r="2" fill="url(#metal-silver)" />
+                  <circle cx="58" cy="46" r="2" fill="url(#metal-silver)" />
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Nanotech Machine Physical Model (Macro Lab Phases 1 & 8) -->
+          <div id="machine-exterior" class="machine-exterior">
+            <div class="machine-chassis">
+              <div class="machine-bezel-top">
+                <div class="chassis-lamp lamp-left klaxon-light warning-light flashing alarm-active" data-warning="true"></div>
+                <div class="chassis-header-text">PYM NANO-FABRICATOR 4000</div>
+                <div class="chassis-lamp lamp-right klaxon-light warning-light flashing alarm-active" data-warning="true"></div>
+              </div>
+              <div class="machine-aperture-wrap">
+                <div class="iris-aperture">
+                  <div class="iris-leaf leaf-1"></div>
+                  <div class="iris-leaf leaf-2"></div>
+                  <div class="iris-leaf leaf-3"></div>
+                  <div class="iris-leaf leaf-4"></div>
+                  <div class="aperture-intake-portal"></div>
+                </div>
+              </div>
+              <div class="machine-exhaust-vent">
+                <div class="spark-discharge-origin"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Microscopic Circuit Junction Board (Nano Phases 3-7) -->
+          <div id="micro-console" class="micro-console">
+            <div class="junction-substrate">
+              <div class="sub-bus-line bus-line-1"></div>
+              <div class="sub-bus-line bus-line-2"></div>
+              <div class="sub-bus-line bus-line-3"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Plane 5: Lighting & Electrical Arcs (+80px translateZ) -->
+        <div id="layer-lighting" class="scene-layer layer-lighting" aria-hidden="true">
+          <div class="ambient-glow-mesh"></div>
+          <div class="plasma-shockwave-container"></div>
+        </div>
+
+        <!-- Plane 6: Foreground Bokeh & Conduit Traces (+140px translateZ) -->
+        <div id="layer-foreground" class="scene-layer layer-foreground" aria-hidden="true">
+          <div class="bokeh-mote mote-1"></div>
+          <div class="bokeh-mote mote-2"></div>
+          <div class="bokeh-mote mote-3"></div>
+          <div class="foreground-conduit-edge"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Unified FX Canvas (Particle Engine Object Pool) -->
+    <canvas id="fx-canvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+    <!-- UI Overlay: Fixed 2D HUD layer above 3D world -->
+    <div id="hud-overlay" class="ui-overlay">
+
+      <!-- Global HUD Header -->
+      <header id="hud-header" class="hud-header">
+        <div class="hud-brand">
+          <img src="assets/images/pym_logo_icon.svg" alt="Pym Technologies Emblem" class="hud-brand-logo" width="32" height="32" />
+          <div class="hud-brand-text">
+            <span class="hud-pill">NANO-OPS // PYM TECH</span>
+            <span id="hud-phase-indicator" class="hud-phase-label">PHASE 1 / 8</span>
+          </div>
+        </div>
+        <div class="hud-suit-telemetry" aria-hidden="true">
+          <img src="assets/images/antman_helmet_icon.svg" alt="" class="hud-helmet-status-icon" width="22" height="22" />
+          <span class="hud-suit-readout">QUANTUM SUIT: <span id="hud-suit-status" class="suit-live-tag">READY</span></span>
+        </div>
+        <div class="hud-controls">
+          <button id="btn-audio-toggle" class="btn-icon" aria-label="Toggle Sound Effects" aria-pressed="false" title="Toggle Sound">
+            <span class="audio-icon" aria-hidden="true">🔊</span>
+            <span class="sr-only">Toggle Sound</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Interactive Phase Stage Container -->
+      <main id="hud-modal-container" class="hud-modal-container">
+
+        <!-- ==================== PHASE 1: Machine Malfunction ==================== -->
+        <section id="phase-1" class="phase-container active" data-phase="1" aria-labelledby="lab-status-display">
+          <div class="card-modal lab-alert-card">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="hero-brand-banner">
+              <img src="assets/images/ant-man-png-pic.png" alt="Marvel Ant-Man Title Banner" class="phase1-hero-logo" />
+            </div>
+            <div class="alert-header">
+              <span class="alert-icon" aria-hidden="true">⚠️</span>
+              <span class="alert-category">DIAGNOSTIC CRITICAL FAILURE</span>
+            </div>
+            <!-- Mandatory Verbatim String: "NANOTECH SYSTEM FAILURE DETECTED / MANUAL REPAIR REQUIRED" -->
+            <div id="lab-status-display" class="status-banner failure-banner">
+              NANOTECH SYSTEM FAILURE DETECTED / MANUAL REPAIR REQUIRED
+            </div>
+            <p class="phase-description">
+              Subatomic regulator failure in the primary quantum coupling chassis. Microscopic circuit traces have severed. Suit compression required to execute internal nano-repair.
+            </p>
+            <div class="action-footer">
+              <!-- Mandatory Verbatim String: "Begin Repair" -->
+              <button id="btn-begin-repair" class="btn-primary" type="button">Begin Repair</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 2: Shrinking Sequence ==================== -->
+        <section id="phase-2" class="phase-container" data-phase="2" aria-hidden="true">
+          <div class="shrink-hud-container">
+            <div class="compression-telemetry">
+              <div class="hud-card-corners" aria-hidden="true">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+              </div>
+              <div class="pym-canister-display" aria-hidden="true">
+                <img src="assets/images/pym_particle_canisters.svg" alt="Pym Particle Canisters" class="canisters-graphic" />
+              </div>
+              <span class="telemetry-label">PYM PARTICLE COMPRESSION</span>
+              <div class="scale-gauge-bar">
+                <div id="scale-gauge-fill" class="scale-gauge-fill"></div>
+              </div>
+              <span id="compression-readout" class="scale-readout">SCALE: 1:1 → 1:1000</span>
+            </div>
+            <!-- Mandatory Verbatim String: "Skip" button -->
+            <button id="btn-skip-shrink" class="btn-secondary btn-skip" type="button" aria-label="Skip shrinking animation">Skip</button>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 3: Entering the Nano Machine ==================== -->
+        <section id="phase-3" class="phase-container" data-phase="3" aria-hidden="true" aria-labelledby="nano-objective-prompt">
+          <div class="card-modal nano-entry-card">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="nano-hero-entry-banner" aria-hidden="true">
+              <img src="assets/images/antman_hero_render.png" alt="Ant-Man riding Antony into quantum chassis" class="nano-entry-hero-img" />
+            </div>
+            <div class="nano-tag">QUANTUM INTERIOR REACHED</div>
+            <h2 class="nano-title">JUNCTION BAY SUB-04</h2>
+            <div id="nano-objective-prompt" class="objective-banner">
+              Navigate the nano-circuit maze to restore the quantum core.
+            </div>
+            <p class="phase-description">
+              You are inside the microscopic quantum chassis. The subatomic circuit paths have fractured. Navigate the silicon labyrinth to collect all four Quantum Bus Nodes and stabilize the core regulator.
+            </p>
+            <div class="action-footer">
+              <button id="btn-enter-circuit" class="btn-primary" type="button">Enter Circuit Maze</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 4: Nano-Circuit Maze Challenge ==================== -->
+        <section id="phase-4" class="phase-container" data-phase="4" aria-hidden="true" aria-labelledby="phase4-heading">
+          <div class="puzzle-board card-modal maze-board">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="puzzle-header">
+              <h2 id="phase4-heading" class="puzzle-title">QUANTUM BUS NANO-CIRCUIT MAZE</h2>
+              <!-- Progress Counter -->
+              <div id="phase4-progress-counter" class="progress-pill" aria-live="polite">0 / 4 connected</div>
+            </div>
+
+            <p class="puzzle-instruction">
+            <p class="puzzle-instruction sr-only">
+              Navigate Ant-Man across the nano-circuit traces. Collect all 4 Quantum Bus Nodes (Alpha, Beta, Gamma, Delta), then enter the Central Regulator Core to stabilize the system.
+            </p>
+
+            <!-- Interactive Nano-Circuit Maze Stage -->
+            <div id="wiring-stage-p4" class="wiring-stage nano-maze-stage">
+              <!-- Quantum Node Status Bar: Sleek Horizontal Badges -->
+              <div id="terminals-left-p4" class="terminal-column column-left quantum-node-status-bar" role="group" aria-label="Quantum Bus Nodes">
+                <button class="terminal node-badge node-badge-alpha" data-wire-id="wire-1" data-side="left" role="button" tabindex="0" aria-label="Terminal 1 Alpha Red Triangle">
+                  <span class="node-badge-bezel bezel-triangle"><span class="terminal-symbol">▲</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">1</span>
+                    <span class="terminal-code">ALPHA-1</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-beta" data-wire-id="wire-2" data-side="left" role="button" tabindex="0" aria-label="Terminal 2 Beta Blue Square">
+                  <span class="node-badge-bezel bezel-square"><span class="terminal-symbol">■</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">2</span>
+                    <span class="terminal-code">BETA-2</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-gamma" data-wire-id="wire-3" data-side="left" role="button" tabindex="0" aria-label="Terminal 3 Gamma Amber Circle">
+                  <span class="node-badge-bezel bezel-circle"><span class="terminal-symbol">●</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">3</span>
+                    <span class="terminal-code">GAMMA-3</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-delta" data-wire-id="wire-4" data-side="left" role="button" tabindex="0" aria-label="Terminal 4 Delta Green Diamond">
+                  <span class="node-badge-bezel bezel-diamond"><span class="terminal-symbol">◆</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">4</span>
+                    <span class="terminal-code">DELTA-4</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+              </div>
+
+              <!-- Visually Hidden Destination Terminals (For Headless Test Automation) -->
+              <div id="terminals-right-p4" class="terminal-column column-right visually-hidden-terminals" role="group" aria-label="Destination Terminals" aria-hidden="true">
+                <button class="terminal" data-wire-id="wire-2" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">2</span><span class="terminal-code">BETA-2</span></span>
+                  <span class="terminal-bezel bezel-square"><span class="terminal-symbol">■</span></span>
+                </button>
+                <button class="terminal" data-wire-id="wire-4" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">4</span><span class="terminal-code">DELTA-4</span></span>
+                  <span class="terminal-bezel bezel-diamond"><span class="terminal-symbol">◆</span></span>
+                </button>
+                <button class="terminal" data-wire-id="wire-1" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">1</span><span class="terminal-code">ALPHA-1</span></span>
+                  <span class="terminal-bezel bezel-triangle"><span class="terminal-symbol">▲</span></span>
+                </button>
+                <button class="terminal" data-wire-id="wire-3" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">3</span><span class="terminal-code">GAMMA-3</span></span>
+                  <span class="terminal-bezel bezel-circle"><span class="terminal-symbol">●</span></span>
+                </button>
+              </div>
+
+              <!-- Visually Hidden SVG Cable Layer for Test Parity -->
+              <svg id="wiring-canvas-p4" class="wiring-svg-layer wire-overlay visually-hidden-canvas" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g id="p4-cables-group"></g>
+                <path id="p4-active-cable" class="active-drag-cable" d="" stroke-linecap="round" fill="none" />
+              </svg>
+
+              <!-- Center: Silicon PCB Maze Grid & Direct D-Pad Controls -->
+              <div class="maze-center-viewport">
+                <div id="p4-maze-grid" class="maze-grid" role="region" aria-label="Microscopic Silicon Circuit Maze" tabindex="0">
+                  <!-- Generated by MazeEngine -->
+                </div>
+
+                <!-- On-Screen Virtual D-Pad for Touch, Mouse & Accessibility -->
+                <div id="maze-dpad-p4" class="maze-dpad" role="group" aria-label="Directional Controls">
+                <!-- On-Screen Virtual D-Pad (Preserved for scripts/a11y, visually hidden for clean display) -->
+                <div id="maze-dpad-p4" class="maze-dpad visually-hidden-dpad" role="group" aria-label="Directional Controls" aria-hidden="true" style="display:none">
+                  <button id="p4-dpad-up" class="dpad-btn dpad-up" type="button" aria-label="Move Up" data-dir="up">▲</button>
+                  <div class="dpad-horiz">
+                    <button id="p4-dpad-left" class="dpad-btn dpad-left" type="button" aria-label="Move Left" data-dir="left">◀</button>
+                    <div class="dpad-center" aria-hidden="true"></div>
+                    <button id="p4-dpad-right" class="dpad-btn dpad-right" type="button" aria-label="Move Right" data-dir="right">▶</button>
+                  </div>
+                  <button id="p4-dpad-down" class="dpad-btn dpad-down" type="button" aria-label="Move Down" data-dir="down">▼</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Maze Telemetry & Instructions Bar -->
+            <div class="maze-control-hints">
+              <span class="hint-badge"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> / Virtual D-Pad to Navigate</span>
+              <span id="p4-maze-coord-display" class="hint-badge">Ant-Man: Junction (1, 1)</span>
+            <!-- Maze Telemetry & Instructions Bar (Clean Display: Screen Reader Only) -->
+            <div class="maze-control-hints visually-hidden-hints" aria-hidden="true" style="display:none">
+              <span id="p4-maze-coord-display" class="sr-only">Ant-Man: Junction (1, 1)</span>
+            </div>
+
+            <div id="p4-status-feedback" class="feedback-banner" aria-live="polite"></div>
+
+            <div class="action-footer">
+              <button id="btn-phase4-continue" class="btn-primary" type="button" disabled aria-hidden="true">Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 5: Second Challenge with Timing & Maze ==================== -->
+        <section id="phase-5" class="phase-container" data-phase="5" aria-hidden="true" aria-labelledby="phase5-heading">
+          <div class="puzzle-board card-modal timing-board">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="puzzle-header">
+              <h2 id="phase5-heading" class="puzzle-title">HIGH-VOLTAGE TIMING SYNC</h2>
+              <div id="phase5-progress-counter" class="progress-pill" aria-live="polite">0 / 4 connected</div>
+            </div>
+
+            <!-- Moving Electrical Current Timing Gauge -->
+            <div id="timing-gauge" class="timing-gauge-container" role="region" aria-label="Current Timing Gauge">
+              <div class="gauge-header">
+                <span class="gauge-telemetry-title">LIVE OSCILLATING CURRENT</span>
+                <span id="timing-percentage-display" class="gauge-readout">50%</span>
+              </div>
+              <div id="timing-track" class="timing-track">
+                <div id="timing-safe-zone" class="timing-safe-zone">
+                  <span class="safe-window-text">SAFE TARGET WINDOW</span>
+                </div>
+                <div id="timing-needle" class="timing-needle" aria-hidden="true">
+                  <div class="needle-pip"></div>
+                  <div class="needle-glow"></div>
+                </div>
+              </div>
+            </div>
+
+            <p class="puzzle-instruction">
+            <p class="puzzle-instruction sr-only">
+              Navigate to high-voltage nodes. Synchronize connections when current sweeps into the Safe Target Window.
+            </p>
+
+            <!-- Interactive Timing Wiring Stage -->
+            <div id="wiring-stage-p5" class="wiring-stage nano-maze-stage">
+              <!-- Quantum Node Status Bar for Phase 5 -->
+              <div id="terminals-left-p5" class="terminal-column column-left quantum-node-status-bar" role="group" aria-label="Timed High-Voltage Nodes">
+                <button class="terminal node-badge node-badge-qpulse" data-wire-id="timed-1" data-side="left" role="button" tabindex="0" aria-label="Terminal 1 Q-Pulse Violet Star Safe 40 to 60 percent">
+                  <span class="node-badge-bezel bezel-star"><span class="terminal-symbol">★</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">1</span>
+                    <span class="terminal-code">Q-PULSE 1</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-pflow" data-wire-id="timed-2" data-side="left" role="button" tabindex="0" aria-label="Terminal 2 P-Flow Cyan Hexagon Safe 35 to 55 percent">
+                  <span class="node-badge-bezel bezel-hexagon"><span class="terminal-symbol">⬡</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">2</span>
+                    <span class="terminal-code">P-FLOW 2</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-sgrid" data-wire-id="timed-3" data-side="left" role="button" tabindex="0" aria-label="Terminal 3 S-Grid Orange Cross Safe 45 to 65 percent">
+                  <span class="node-badge-bezel bezel-cross"><span class="terminal-symbol">✚</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">3</span>
+                    <span class="terminal-code">S-GRID 3</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+
+                <button class="terminal node-badge node-badge-ncore" data-wire-id="timed-4" data-side="left" role="button" tabindex="0" aria-label="Terminal 4 N-Core Lime Shield Safe 30 to 50 percent">
+                  <span class="node-badge-bezel bezel-shield"><span class="terminal-symbol">⛉</span></span>
+                  <span class="node-badge-info">
+                    <span class="terminal-num">4</span>
+                    <span class="terminal-code">N-CORE 4</span>
+                  </span>
+                  <span class="node-badge-status">PENDING</span>
+                </button>
+              </div>
+
+              <!-- Visually Hidden Destination Terminals for Phase 5 -->
+              <div id="terminals-right-p5" class="terminal-column column-right visually-hidden-terminals" role="group" aria-label="Timed Destination Terminals" aria-hidden="true">
+                <button class="terminal" data-wire-id="timed-3" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">3</span><span class="terminal-code">S-GRID 3</span></span>
+                  <span class="terminal-bezel bezel-cross"><span class="terminal-symbol">✚</span></span>
+                </button>
+                <button class="terminal" data-wire-id="timed-1" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">1</span><span class="terminal-code">Q-PULSE 1</span></span>
+                  <span class="terminal-bezel bezel-star"><span class="terminal-symbol">★</span></span>
+                </button>
+                <button class="terminal" data-wire-id="timed-4" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">4</span><span class="terminal-code">N-CORE 4</span></span>
+                  <span class="terminal-bezel bezel-shield"><span class="terminal-symbol">⛉</span></span>
+                </button>
+                <button class="terminal" data-wire-id="timed-2" data-side="right" tabindex="-1">
+                  <span class="terminal-pip"></span>
+                  <span class="terminal-info"><span class="terminal-num">2</span><span class="terminal-code">P-FLOW 2</span></span>
+                  <span class="terminal-bezel bezel-hexagon"><span class="terminal-symbol">⬡</span></span>
+                </button>
+              </div>
+
+              <!-- Visually Hidden SVG Layer -->
+              <svg id="wiring-canvas-p5" class="wiring-svg-layer wire-overlay visually-hidden-canvas" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g id="p5-cables-group"></g>
+                <path id="p5-active-cable" class="active-drag-cable" d="" stroke-linecap="round" fill="none" />
+              </svg>
+
+              <!-- Center: Silicon PCB Maze Grid & Direct D-Pad Controls for Phase 5 -->
+              <div class="maze-center-viewport">
+                <div id="p5-maze-grid" class="maze-grid" role="region" aria-label="High-Voltage Silicon Circuit Maze" tabindex="0">
+                  <!-- Generated by MazeEngine -->
+                </div>
+
+                <!-- On-Screen Virtual D-Pad for Phase 5 -->
+                <div id="maze-dpad-p5" class="maze-dpad" role="group" aria-label="Directional Controls">
+                <!-- On-Screen Virtual D-Pad for Phase 5 (Clean Display: Hidden) -->
+                <div id="maze-dpad-p5" class="maze-dpad visually-hidden-dpad" role="group" aria-label="Directional Controls" aria-hidden="true" style="display:none">
+                  <button id="p5-dpad-up" class="dpad-btn dpad-up" type="button" aria-label="Move Up" data-dir="up">▲</button>
+                  <div class="dpad-horiz">
+                    <button id="p5-dpad-left" class="dpad-btn dpad-left" type="button" aria-label="Move Left" data-dir="left">◀</button>
+                    <div class="dpad-center" aria-hidden="true"></div>
+                    <button id="p5-dpad-right" class="dpad-btn dpad-right" type="button" aria-label="Move Right" data-dir="right">▶</button>
+                  </div>
+                  <button id="p5-dpad-down" class="dpad-btn dpad-down" type="button" aria-label="Move Down" data-dir="down">▼</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Precision Timing Trigger Button (Preserved for A11y & Tests, Visually Hidden in Maze) -->
+            <div class="timing-trigger-wrap visually-hidden-trigger" aria-hidden="true">
+              <button id="btn-timing-trigger" class="btn-primary timing-trigger-btn" type="button" tabindex="-1">ENGAGE CONDUIT CURRENT [SPACEBAR / TAP]</button>
+            </div>
+
+            <!-- Maze Telemetry & Instructions Bar -->
+            <div class="maze-control-hints">
+              <span class="hint-badge"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> / Virtual D-Pad to Navigate</span>
+              <span id="p5-maze-coord-display" class="hint-badge">Ant-Man: Junction (1, 1)</span>
+            <!-- Maze Telemetry & Instructions Bar (Clean Display: Screen Reader Only) -->
+            <div class="maze-control-hints visually-hidden-hints" aria-hidden="true" style="display:none">
+              <span id="p5-maze-coord-display" class="sr-only">Ant-Man: Junction (1, 1)</span>
+            </div>
+
+            <div id="p5-status-feedback" class="feedback-banner" aria-live="polite"></div>
+
+            <div class="action-footer">
+              <button id="btn-phase5-continue" class="btn-primary" type="button" disabled aria-hidden="true">Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 6: Debugging Placeholder ==================== -->
+        <section id="phase-6" class="phase-container" data-phase="6" aria-hidden="true" aria-labelledby="debug-placeholder-title">
+          <div class="card-modal debug-card">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="debug-badge">DIAGNOSTIC PROTOCOL INTERRUPT</div>
+            <!-- Mandatory Verbatim String: "DEBUGGING CHALLENGE — PLACEHOLDER" -->
+            <h2 id="debug-placeholder-title" class="debug-title">
+              DEBUGGING CHALLENGE — PLACEHOLDER
+            </h2>
+            <!-- Mandatory Explanatory Copy -->
+            <p id="debug-placeholder-copy" class="phase-description debug-copy">
+              Interactive nano-logic debugging simulation will be integrated in a future expansion. Use diagnostic bypass to proceed with system initialization.
+            </p>
+            <div class="debug-spec-grid">
+              <div class="spec-node"><span class="spec-label">LOGIC CORE:</span> OK (BYPASS GRANTED)</div>
+              <div class="spec-node"><span class="spec-label">NANO-FIRMWARE:</span> v4.12-SIM</div>
+              <div class="spec-node"><span class="spec-label">SECURITY:</span> LEVEL 5 CLEAR</div>
+            </div>
+            <div class="action-footer">
+              <!-- Mandatory Verbatim String: "Bypass for Testing" -->
+              <button id="btn-bypass-debug" class="btn-primary" type="button">Bypass for Testing</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 7: Machine Restart ==================== -->
+        <section id="phase-7" class="phase-container" data-phase="7" aria-hidden="true" aria-labelledby="restart-status-display">
+          <div class="card-modal restart-card">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="powerup-header">
+              <span class="power-glow-badge">RESTART PROTOCOL ACTIVATED</span>
+            </div>
+            <!-- Mandatory Verbatim Text: "NANOTECH SYSTEM RESTORED" / "ALL CIRCUITS OPERATIONAL" -->
+            <div id="restart-status-display" class="status-banner restored-banner">
+              <span class="status-main">NANOTECH SYSTEM RESTORED</span>
+              <span class="status-sub">ALL CIRCUITS OPERATIONAL</span>
+            </div>
+
+            <!-- Sequential Power-Up Indicators -->
+            <div id="powerup-stages" class="powerup-stages-container">
+              <div class="powerup-stage-item" data-stage="1">
+                <span class="stage-pip"></span>
+                <span class="stage-name">Tier 1: Quantum Conduits Online</span>
+              </div>
+              <div class="powerup-stage-item" data-stage="2">
+                <span class="stage-pip"></span>
+                <span class="stage-name">Tier 2: Logic Processing Grid Online</span>
+              </div>
+              <div class="powerup-stage-item" data-stage="3">
+                <span class="stage-pip"></span>
+                <span class="stage-name">Tier 3: Magnetic Containment Stabilized</span>
+              </div>
+            </div>
+
+            <p class="phase-description">
+              All power conduits stabilized. Microscopic repairs complete. Return to laboratory scale to complete mission.
+            </p>
+            <div class="action-footer">
+              <!-- Mandatory Verbatim String: "Continue" -->
+              <button id="btn-phase7-continue" class="btn-primary" type="button">Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PHASE 8: Return to Normal Size & Victory ==================== -->
+        <section id="phase-8" class="phase-container" data-phase="8" aria-hidden="true" aria-labelledby="victory-title">
+          <div class="card-modal victory-card">
+            <div class="hud-card-corners" aria-hidden="true">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+            </div>
+            <div class="victory-hero-badge" aria-hidden="true">
+              <img src="assets/images/ant-man-png-clipart.png" alt="Ant-Man Victorious" class="victory-hero-img" />
+            </div>
+            <div class="victory-trophy" aria-hidden="true">★</div>
+            <!-- Mandatory Verbatim String: "MISSION COMPLETED / NANOTECH REPAIRED" -->
+            <h1 id="victory-title" class="victory-title">
+              MISSION COMPLETED / NANOTECH REPAIRED
+            </h1>
+            <p id="victory-stats" class="victory-telemetry">
+              All 8 Quantum Conduits Restored | Internal Logic Bypassed & Verified | Nanotech Unit 100% Operational
+            </p>
+            <div class="victory-summary-box">
+              <div class="summary-metric">
+                <span class="metric-val">8 / 8</span>
+                <span class="metric-lbl">CONDUITS REPAIRED</span>
+              </div>
+              <div class="summary-metric">
+                <span class="metric-val">100%</span>
+                <span class="metric-lbl">INTEGRITY RATING</span>
+              </div>
+              <div class="summary-metric">
+                <span class="metric-val">STABLE</span>
+                <span class="metric-lbl">CONTAINMENT FIELD</span>
+              </div>
+            </div>
+            <div class="action-footer">
+              <!-- Mandatory Verbatim String: "Play Again" -->
+              <button id="btn-play-again" class="btn-primary" type="button">Play Again</button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Global HUD Footer Status Bar -->
+      <footer id="hud-footer" class="hud-footer">
+        <div class="footer-telemetry">
+          <span class="system-status-indicator">● SYSTEM STABLE</span>
+          <span class="footer-shortcut-hint">Controls: Mouse Drag / Tap / Keyboard (Tab, Space, Enter, Arrows, Esc)</span>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Screen Reader ARIA Live Regions (Polite & Assertive) -->
+    <div id="aria-live-polite" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="aria-live-assertive" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true"></div>
+    <!-- Aliased accessibility IDs mentioned in survey documents -->
+    <div id="a11y-announcer-polite" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="a11y-announcer-assertive" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

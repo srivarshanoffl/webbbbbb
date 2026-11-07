@@ -1,0 +1,24 @@
+BLACK WIDOW: DEAD FREQUENCY — ASSET NOTES
+
+widow-infiltration-walk.png
+Source page: https://www.vhv.rs/viewpic/bJRhiJ_avengers-2012-black-widow-hd-png-download/
+The source page identifies an Avengers 2012 Black Widow transparent PNG and states “Personal Use Only.” This frame is used for her entrance and extraction movement. The download included a checkerboard backdrop; it was removed locally for compositing. Marvel/Disney character and actor likeness rights are separate and are not granted by the source page.
+
+widow-relay-stance.png
+Source page: https://www.pngaaa.com/detail/1396641
+The source page provides the neutral standing Black Widow render. PNGAAA describes its uploads as available for personal and non-commercial projects at https://www.pngaaa.com/about. The downloaded preview had a checkerboard backdrop; it was removed locally for compositing. Marvel/Disney character and actor likeness rights are separate and are not granted by the source page.
+
+vault-room.jpg
+Source page: https://pixabay.com/photos/vault-vault-door-bank-safe-2383965/
+Photo by jenniferfgallagher. The source page says the image is free for use under the Pixabay Content License. It is used as the full-screen vault set and color-graded locally with CSS.
+
+vault-environment.svg
+Original project-local vector art authored for this game; no external source. Used as a low-opacity structural texture over the photo.
+
+Unused assets retained from earlier drafts:
+- black-widow-freepng.png: FreePNGimg, https://freepngimg.com/png/20098-black-widow-transparent-background/download, stated CC BY-NC 4.0.
+- black-widow-standing.png and black-widow-side-full.png: StickPNG, https://www.stickpng.com/img/comics-and-fantasy/black-widow/black-widow-standing, stated personal use only.
+
+Visual comparison downloads are in candidates/ and are not loaded by the game. Their original source pages and stated terms are listed in candidates/ASSET-CANDIDATES.txt. Marvel/Disney character and actor likeness rights are separate from all source-site terms.
+
+No external runtime services are used.

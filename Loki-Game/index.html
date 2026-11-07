@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loki: The Stolen Tesseract</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-container">
+    <!-- Parallax 2.5D Background Layers -->
+    <div id="vault-scene">
+      <div class="vault-bg-layer" id="bg-stars"></div>
+      <div class="vault-bg-layer" id="bg-vault"></div>
+      <div class="vault-bg-layer" id="bg-conduits"></div>
+      <div class="vault-lighting-overlay" id="ambient-light"></div>
+      <div class="alarm-lighting-overlay" id="alarm-light"></div>
+      
+      <!-- Central Vault Pedestal & Tesseract Chamber -->
+      <div id="tesseract-chamber">
+        <div id="barrier-dome" class="active">
+          <img src="assets/effects/energy-barrier.jpg" alt="Energy Barrier" class="barrier-img">
+          <div class="barrier-hex-grid"></div>
+        </div>
+        <div id="barrier-shards" class="barrier-shards-container"></div>
+        <div id="tesseract-cube">
+          <img src="assets/images/tesseract.jpg" alt="Tesseract" class="tesseract-img">
+          <img src="assets/images/tesseract.png" alt="Tesseract" class="tesseract-img">
+          <div class="tesseract-aura"></div>
+          <div class="tesseract-rays"></div>
+        </div>
+        <div id="pedestal">
+          <div class="pedestal-halo"></div>
+          <div class="pedestal-runes">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ</div>
+          <div class="pedestal-ring"></div>
+          <div class="pedestal-base"></div>
+          <div class="pedestal-shadow"></div>
+        </div>
+      </div>
+
+      <!-- Unified Loki Character Staging Area -->
+      <div id="loki-container">
+        <div class="loki-shadow"></div>
+        <div class="loki-magic-aura" id="loki-aura"></div>
+        <div class="loki-particles" id="loki-particles">
+          <img src="assets/effects/particle-green.svg" alt="" class="magic-particle-burst" aria-hidden="true">
+        </div>
+        
+        <!-- Master Consistent Loki Character -->
+        <div class="loki-sprite-wrapper" id="loki-actor">
+          <img id="loki-master" class="loki-master-art" src="assets/characters/loki-catch.png" alt="Loki in dark green Asgardian armor">
+          <div class="loki-casting-runes" id="loki-runes"></div>
+          <div class="loki-tesseract-dock" id="loki-held-cube">
+            <img src="assets/images/tesseract.jpg" alt="Captured Tesseract" class="docked-tesseract-img">
+            <img src="assets/images/tesseract.png" alt="Captured Tesseract" class="docked-tesseract-img">
+            <div class="tesseract-dock-pulse" id="tesseract-dock-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Magic Tendrils for finale -->
+      <div id="green-magic-bridge">
+        <div class="bridge-plasma-core"></div>
+        <div class="bridge-arcs"></div>
+      </div>
+    </div>
+
+    <!-- Cinematic Vault Infiltration Alarm System -->
+    <div id="vault-infiltration-system" class="infiltration-system" aria-hidden="true">
+      <div class="hazard-tape top">
+        <span class="hazard-text">⚠ SECURITY BREACH: UNAUTHORIZED INFILTRATION DETECTED // SECTOR 07 ⚠</span>
+      </div>
+      <div class="hazard-tape bottom">
+        <span class="hazard-text">⚠ TEMPORAL LOCKDOWN ACTIVE // CODE: TVA-404 // ALL EXITS SEALED ⚠</span>
+      </div>
+      <div class="klaxon-beacon left">
+        <div class="beacon-bulb"></div>
+        <div class="beacon-sweep"></div>
+      </div>
+      <div class="klaxon-beacon right">
+        <div class="beacon-bulb"></div>
+        <div class="beacon-sweep"></div>
+      </div>
+      <div class="alarm-scanner-beam"></div>
+    </div>
+
+    <!-- Interactive Gameplay Layer -->
+    <div id="interactive-stage">
+
+      <!-- PHASE 1: Introduction Overlay -->
+      <section id="phase-intro" class="phase-layer active">
+        <div class="intro-titles">
+          <span class="sub-title">ASGARDIAN INFILTRATION</span>
+          <h1 class="main-title">LOKI</h1>
+          <h2 class="artifact-title">THE STOLEN TESSERACT</h2>
+          <div class="vault-security-status">
+            <span class="status-indicator"></span>
+            <span class="status-text">COSMIC VAULT SECURITY: DUAL CONTAINMENT ARMED</span>
+          </div>
+          <button id="btn-start-puzzle" class="cyber-btn primary">
+            <span class="btn-glow"></span>
+            <span class="btn-text">INFILTRATE VAULT</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- PHASE 2: 9x7 Split-Beam Mirror Puzzle -->
+      <section id="phase-puzzle" class="phase-layer">
+        <div class="puzzle-hud-header">
+          <div class="hud-monitor-group">
+            <div class="hud-chip">
+              <span class="chip-label">SYSTEM</span>
+              <span class="chip-val">SPLIT-BEAM OPTICS</span>
+            </div>
+            <div class="hud-relays">
+              <div class="relay-tag" id="relay-alpha-tag">
+                <span class="relay-dot"></span>
+                <span class="relay-text">RELAY α: INACTIVE</span>
+              </div>
+              <div class="relay-tag" id="relay-beta-tag">
+                <span class="relay-dot"></span>
+                <span class="relay-text">RELAY β: INACTIVE</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="hud-instruction" id="mirror-instructions">
+            <strong>ROUTE THE SPLIT BEAM THROUGH THE VAULT</strong>
+            <span>Turn mirrors 90° · reach both relays · avoid the red decoys</span>
+          </div>
+
+          <div class="hud-controls">
+            <button id="btn-reset-mirrors" class="mini-btn" title="Reset all mirrors to initial positions">
+              RE-ALIGN <kbd>R</kbd>
+            </button>
+            <div class="integrity-readout" id="integrity-readout" aria-label="Vault integrity: three strikes remaining">
+              <span>VAULT INTEGRITY</span>
+              <div id="integrity-cells" aria-hidden="true">
+                <i class="integrity-cell"></i><i class="integrity-cell"></i><i class="integrity-cell"></i>
+              </div>
+            </div>
+            <div class="hud-status" id="puzzle-status">CONTAINMENT ACTIVE</div>
+          </div>
+        </div>
+
+        <div id="puzzle-board">
+          <!-- Canvas for real-time split laser beam rendering -->
+          <canvas id="beam-canvas" width="960" height="520"></canvas>
+
+          <!-- Fixed 9 x 7 optical circuit. Coordinates use this 960 x 520 canvas. -->
+          <div id="puzzle-grid">
+            <div id="source-emitter" class="puzzle-node emitter" style="left: 40px; top: 260px;">
+              <div class="node-core"></div>
+              <div class="node-ring"></div>
+              <span class="node-tag">EMITTER</span>
+            </div>
+
+            <div id="prism-splitter" class="puzzle-node splitter" style="left: 480px; top: 260px;">
+              <div class="splitter-facet-nw"></div>
+              <div class="splitter-facet-ne"></div>
+              <div class="splitter-core"></div>
+              <div class="splitter-prism"></div>
+              <div class="splitter-ring"></div>
+              <div class="splitter-orbit-ring"></div>
+              <span class="node-tag">PRISM</span>
+            </div>
+
+            <div class="puzzle-node obstacle-pillar" style="left: 260px; top: 40px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+            <div class="puzzle-node obstacle-pillar" style="left: 810px; top: 40px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+            <div class="puzzle-node obstacle-pillar" style="left: 920px; top: 40px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+            <div class="puzzle-node obstacle-pillar" style="left: 260px; top: 480px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+            <div class="puzzle-node obstacle-pillar" style="left: 810px; top: 480px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+            <div class="puzzle-node obstacle-pillar" style="left: 920px; top: 480px;" title="Obsidian beam blocker"><div class="pillar-core"></div><span class="pillar-rune">ᚦ</span></div>
+
+            <!-- Ten required route mirrors -->
+            <div id="mirror-0" class="puzzle-node mirror-slot" data-index="0" data-angle="180" style="left: 150px; top: 260px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 0" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">180°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-1" class="puzzle-node mirror-slot" data-index="1" data-angle="270" style="left: 150px; top: 113px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 1" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">270°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-2" class="puzzle-node mirror-slot" data-index="2" data-angle="180" style="left: 370px; top: 113px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 2" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">180°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-3" class="puzzle-node mirror-slot" data-index="3" data-angle="270" style="left: 370px; top: 260px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 3" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">270°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-4" class="puzzle-node mirror-slot" data-index="4" data-angle="180" style="left: 480px; top: 40px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 4" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">90°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-5" class="puzzle-node mirror-slot" data-index="5" data-angle="270" style="left: 700px; top: 40px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 5" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">180°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-6" class="puzzle-node mirror-slot" data-index="6" data-angle="180" style="left: 700px; top: 113px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 6" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">0°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-7" class="puzzle-node mirror-slot" data-index="7" data-angle="180" style="left: 480px; top: 480px;">
+              <div class="mirror-housing">
+                <img src="assets/images/mirror-tile.jpg" alt="Mirror 7" class="mirror-art">
+                <div class="mirror-surface-indicator"></div>
+                <div class="mirror-angle-tag">270°</div>
+              </div>
+              <div class="mirror-glow"></div>
+            </div>
+
+            <div id="mirror-8" class="puzzle-node mirror-slot" data-index="8" data-angle="0" style="left: 700px; top: 480px;">
+              <div class="mirror-housing"><img src="assets/images/mirror-tile.jpg" alt="Mirror 8" class="mirror-art"><div class="mirror-surface-indicator"></div><div class="mirror-angle-tag">0°</div></div><div class="mirror-glow"></div>
+            </div>
+            <div id="mirror-9" class="puzzle-node mirror-slot" data-index="9" data-angle="270" style="left: 700px; top: 407px;">
+              <div class="mirror-housing"><img src="assets/images/mirror-tile.jpg" alt="Mirror 9" class="mirror-art"><div class="mirror-surface-indicator"></div><div class="mirror-angle-tag">270°</div></div><div class="mirror-glow"></div>
+            </div>
+
+            <!-- Red decoy mirrors trigger a vault-integrity strike when hit -->
+            <div id="mirror-decoy-a" class="puzzle-node mirror-slot decoy-mirror-slot" data-index="10" data-angle="90" style="left: 150px; top: 333px;">
+              <div class="mirror-housing"><img src="assets/images/mirror-tile.jpg" alt="Decoy mirror A" class="mirror-art"><div class="mirror-surface-indicator"></div><div class="mirror-angle-tag">90°</div></div><div class="mirror-glow"></div><span class="decoy-mark">!</span>
+            </div>
+            <div id="mirror-decoy-b" class="puzzle-node mirror-slot decoy-mirror-slot" data-index="11" data-angle="180" style="left: 590px; top: 113px;">
+              <div class="mirror-housing"><img src="assets/images/mirror-tile.jpg" alt="Decoy mirror B" class="mirror-art"><div class="mirror-surface-indicator"></div><div class="mirror-angle-tag">180°</div></div><div class="mirror-glow"></div><span class="decoy-mark">!</span>
+            </div>
+
+            <!-- Dual Target Receivers & Vertical Containment Conduits -->
+            <!-- Receiver Alpha (Col 6, Row 1: x:920, y:113) -->
+            <div id="receiver-alpha" class="puzzle-node receiver" style="left: 920px; top: 113px;">
+              <div class="receiver-core"></div>
+              <div class="receiver-aperture"></div>
+              <span class="node-tag">RELAY α</span>
+            </div>
+
+            <!-- Vertical Containment Conduits linking Relays to Tesseract Chamber -->
+            <div id="conduit-alpha" class="containment-conduit conduit-north" style="left: 920px; top: 186px;">
+              <div class="conduit-stream"></div>
+              <div class="conduit-pulses"></div>
+            </div>
+            <div id="conduit-beta" class="containment-conduit conduit-south" style="left: 920px; top: 334px;">
+              <div class="conduit-stream"></div>
+              <div class="conduit-pulses"></div>
+            </div>
+
+            <!-- Receiver Beta (Col 6, Row 3: x:920, y:407) -->
+            <div id="receiver-beta" class="puzzle-node receiver" style="left: 920px; top: 407px;">
+              <div class="receiver-core"></div>
+              <div class="receiver-aperture"></div>
+              <span class="node-tag">RELAY β</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 3: Diagnostics System Failure & TVA Glitch Interruption -->
+      <section id="phase-debug" class="phase-layer">
+        <div class="terminal-container">
+          <div class="terminal-glitch-bar"></div>
+          <div class="terminal-frame">
+            <div class="terminal-header">
+              <div class="term-dots">
+                <span class="dot red"></span>
+                <span class="dot red"></span>
+                <span class="dot red"></span>
+              </div>
+              <div class="term-title">TVA COSMIC VAULT TERMINAL // EMERGENCY INTERRUPT</div>
+            </div>
+
+            <div class="terminal-body">
+              <div class="alarm-stamp">CRITICAL SYSTEM FAILURE</div>
+              
+              <div class="terminal-log">
+                <p class="log-line"><span class="log-prefix">&gt;&gt;</span> VAULT DIAGNOSTICS: INITIALIZED</p>
+                <p class="log-line success"><span class="log-prefix">&gt;&gt;</span> DUAL BEAM ALIGNMENT: 100% COMPLETE</p>
+                <p class="log-line success"><span class="log-prefix">&gt;&gt;</span> RELAY α &amp; RELAY β: CHARGED IN HARMONY</p>
+                <p class="log-line danger blink"><span class="log-prefix">&gt;&gt;</span> CENTRAL CONTROLLER: CORRUPTED [FATAL SECTOR]</p>
+                <p class="log-line warning"><span class="log-prefix">&gt;&gt;</span> ERROR CODE: TVA-404_TEMPORAL_OVERRIDE_ABORT</p>
+                <p class="log-line"><span class="log-prefix">&gt;&gt;</span> TESSERACT CONTAINMENT FIELD: LOCKED IN STASIS</p>
+                <p class="log-prompt-msg">SECURITY CONTROLLER NON-RESPONSIVE. MANUAL BYPASS REQUIRED.</p>
+              </div>
+
+              <div class="terminal-actions">
+                <button id="btn-debug-bypass" class="cyber-btn danger pulse">
+                  <span class="btn-glow"></span>
+                  <span class="btn-text">OVERRIDE LOCKDOWN</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 4: Tesseract Claim & Mission Victory -->
+      <section id="phase-finale" class="phase-layer">
+        <div id="finale-overlay">
+          <div id="victory-card" class="victory-panel hidden">
+            <div class="victory-seal">
+              <div class="asgardian-rune">ᛚᛟᚲᛁ</div>
+            </div>
+            <h1 class="victory-title">MISSION SUCCESSFUL</h1>
+            <p class="victory-desc">THE TESSERACT IS NOW IN LOKI'S POSSESSION.</p>
+            <div class="victory-stats">
+              <div class="stat-box">
+                <span class="stat-num">10/10</span>
+                <span class="stat-lbl">MIRRORS SYNCHRONIZED</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-num">DUAL</span>
+                <span class="stat-lbl">RELAYS CHARGED</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-num">TVA-404</span>
+                <span class="stat-lbl">PROTOCOL BYPASS</span>
+              </div>
+            </div>
+            <button id="btn-play-again" class="cyber-btn primary">
+              <span class="btn-glow"></span>
+              <span class="btn-text">REPLAY EXPERIENCE</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Cinematic Subtitle / Loki Dialogue Banner -->
+    <div id="dialogue-box" class="dialogue-hidden">
+      <div class="dialogue-speaker">
+        <span class="speaker-name">LOKI LAUFEYSON</span>
+        <span class="speaker-title">GOD OF MISCHIEF</span>
+      </div>
+      <div class="dialogue-content" id="dialogue-text"></div>
+    </div>
+
+    <!-- CRT Scanline & Vignette Effect Overlays -->
+    <div id="scanline-overlay"></div>
+    <div id="vignette-overlay"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

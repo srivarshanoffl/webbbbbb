@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Barlow+Condensed:wght@500;700;800;900&display=swap');
+
+:root { color-scheme: dark; --ink:#10152a; --paper:#f7eed7; --acid:#8dff38; --pink:#ff497d; --orange:#ffae42; }
+* { box-sizing:border-box; }
+html, body { margin:0; width:100vw; height:100vh; overflow:hidden; background:#080b18; font-family:"Barlow Condensed", Impact, sans-serif; color:var(--paper); }
+button { font:inherit; }
+.game-shell { width:100vw; height:100vh; padding:0; margin:0; }
+.comic-game { position:relative; isolation:isolate; width:100vw; height:100vh; overflow:hidden; border:none; border-radius:0; background:#142735; box-shadow:none; }
+.sky { position:absolute; inset:0; z-index:-8; background:radial-gradient(circle at 68% 12%, #ffa553 0 7%, transparent 7.5%), linear-gradient(145deg,#ef4c7e 0%,#a44c97 35%,#303a89 70%,#10152a 100%); }
+.halftone { position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.26; background-image:radial-gradient(#10152a 1.2px,transparent 1.8px); background-size:8px 8px; mix-blend-mode:multiply; }
+.city { position:absolute; inset:auto 0 16%; height:35%; z-index:-5; display:flex; align-items:end; opacity:.8; }
+.city span { position:relative; flex:1; background:#152052; border:3px solid #10152a; box-shadow:inset 15px 0 #263578; }
+.city span:nth-child(1){height:38%}.city span:nth-child(2){height:70%}.city span:nth-child(3){height:52%}.city span:nth-child(4){height:91%}.city span:nth-child(5){height:62%}.city span:nth-child(6){height:42%}
+.city span:after { content:""; position:absolute; inset:13px 22% 0; background:repeating-linear-gradient(180deg,#ffd866 0 7px,transparent 7px 17px); opacity:.75; }
+.smoke { position:absolute; z-index:-4; width:210px; height:210px; border-radius:50%; background:#eac7c9; filter:blur(8px); opacity:.36; }
+.smoke-one { top:22%; left:15%; }.smoke-two { top:10%; right:16%; width:280px; height:280px; }
+.hud { height:88px; padding:11px 22px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #10152a; background:rgba(12,15,39,.78); position:relative; z-index:5; }
+.logo { line-height:.8; text-shadow:3px 3px #10152a; }.logo span { display:block; font-family:Bangers,Impact,sans-serif; font-size:42px; letter-spacing:2px; color:var(--acid); transform:rotate(-2deg); }.logo small,.timer small,.eyebrow { font-weight:900; letter-spacing:1.5px; }
+.timer { text-align:center; line-height:.95; }.timer small { display:block; color:#fbc55c; font-size:11px; }.timer strong { font-size:32px; letter-spacing:1px; }
+.restart-button { border:2px solid var(--paper); padding:7px 14px; color:var(--paper); background:transparent; cursor:pointer; font-size:15px; font-weight:900; letter-spacing:1px; }.restart-button:hover { background:var(--paper); color:var(--ink); }
+.mission-bar { position:absolute; z-index:5; left:20px; top:112px; width:285px; padding:13px; border:3px solid var(--ink); background:#f7eed7; color:var(--ink); transform:rotate(-1deg); box-shadow:5px 5px #10152a; }.eyebrow { display:block; color:#d13060; font-size:11px; }.mission-bar p { margin:4px 0 9px; font-size:16px; font-weight:800; line-height:1; }.progress { height:8px; overflow:hidden; border:2px solid var(--ink); background:#fff; }.progress span { display:block; width:0; height:100%; background:var(--acid); transition:width .35s; }.mission-bar > span:last-child { font-size:11px; font-weight:900; }
+.playfield { position:absolute; inset:88px 0 0; overflow:hidden; }
+.structure { position:absolute; left:48%; bottom:9%; width:min(46vw,550px); height:70%; min-height:395px; transform:translateX(-50%) rotate(-1deg); filter:drop-shadow(15px 19px 0 rgba(16,21,42,.55)); }
+.building-body { position:absolute; inset:10% 4% 0; border:5px solid #10152a; background:linear-gradient(90deg,#74779b 0 13%,#b7b7bc 13% 28%,#757995 28% 55%,#a6a9b2 55% 76%,#6f748f 76%); clip-path:polygon(6% 0,89% 2%,100% 15%,96% 100%,0 100%,4% 45%); }.building-top { position:absolute; left:12%; top:2%; width:72%; height:18%; z-index:2; border:5px solid #10152a; background:#d6c4a9; transform:skewX(-13deg); }
+.floor { position:absolute; z-index:2; width:88%; left:6%; height:9px; background:#10152a; transform:rotate(-2deg); }.floor-one{top:32%}.floor-two{top:57%}.floor-three{top:78%}
+.crack { position:absolute; z-index:3; width:18px; height:56%; background:#222647; clip-path:polygon(44% 0,88% 0,62% 23%,100% 37%,48% 57%,70% 75%,9% 100%,36% 65%,0 43%,35% 23%); }.crack-one{top:28%;left:32%;transform:rotate(12deg)}.crack-two{top:12%;right:21%;transform:rotate(-15deg)}.crack-three{bottom:3%;right:8%;height:38%;transform:rotate(17deg)}
+.piece { position:absolute; z-index:4; left:var(--x); top:var(--y); width:var(--w); height:var(--h); border:4px solid #10152a; border-radius:4px; background:repeating-linear-gradient(135deg,#b5a385 0 13px,#8a7e6e 13px 23px); transform:rotate(var(--r)); cursor:grab; touch-action:none; box-shadow:4px 5px 0 rgba(16,21,42,.55); transition:filter .2s, opacity .3s, transform .15s; }.piece:after { content:""; position:absolute; inset:10% 18%; border-left:3px solid #403c47; border-right:3px solid #403c47; opacity:.7; }.piece span { position:absolute; z-index:1; right:6px; top:3px; color:#10152a; font-weight:900; font-size:13px; }.piece.safe { opacity:.76; }.piece.safe.active { outline:5px solid var(--acid); outline-offset:5px; animation:pulse 1s infinite; filter:brightness(1.25); }.piece.safe.active:before { content:""; position:absolute; width:38px; height:28px; left:50%; top:-39px; transform:translateX(-50%); background:var(--acid); clip-path:polygon(0 45%,72% 45%,72% 0,100% 50%,72% 100%,72% 55%,0 55%); }.piece.unsafe { cursor:not-allowed; filter:saturate(.35) brightness(.75); }.piece.dragging { position:fixed; z-index:20; pointer-events:none; margin:0; transition:none; transform:rotate(0deg) scale(1.08)!important; opacity:1; }
+@keyframes pulse { 50% { outline-color:#fff; filter:brightness(1.55); } }
+.removal-zone { position:absolute; z-index:3; right:5%; bottom:9%; width:126px; height:126px; display:grid; place-items:center; border:5px dashed var(--paper); border-radius:50%; background:rgba(16,21,42,.55); color:var(--paper); text-align:center; font-weight:900; line-height:.9; letter-spacing:1px; transform:rotate(8deg); }.removal-zone:before { content:""; position:absolute; inset:8px; border:3px solid var(--acid); border-radius:50%; }.removal-zone span { position:relative; z-index:1; }
+.hulk { position:absolute; z-index:2; left:5%; bottom:5%; width:235px; height:300px; filter:drop-shadow(8px 10px 0 #10152a); }.hulk-head { position:absolute; left:65px; top:4px; width:100px; height:110px; border:5px solid #10152a; border-radius:48% 48% 43% 43%; background:#6dca43; }.hulk-head:before { content:""; position:absolute; left:0; top:-20px; width:100%; height:45px; background:#17213d; clip-path:polygon(0 88%,10% 16%,28% 42%,40% 0,55% 40%,70% 7%,82% 44%,100% 18%,100% 100%); }.hulk-head i,.hulk-head b { position:absolute; width:13px; height:7px; top:58px; background:#10152a; }.hulk-head i{left:20px}.hulk-head b{right:20px}.hulk-body { position:absolute; left:35px; top:100px; width:155px; height:180px; border:5px solid #10152a; background:#58b53b; clip-path:polygon(17% 0,83% 0,100% 100%,0 100%); }.arm { position:absolute; top:-38px; width:63px; height:160px; border:5px solid #10152a; background:#66c545; }.arm-left{left:-60px;transform:rotate(25deg)}.arm-right{right:-60px;transform:rotate(-25deg)}.hulk-label { position:absolute; bottom:0; left:0; padding:7px 10px; border:3px solid #10152a; background:var(--acid); color:#10152a; font-family:Bangers,Impact,sans-serif; font-size:23px; line-height:.7; transform:rotate(-5deg); }.hulk-label small { font-family:"Barlow Condensed",sans-serif; font-size:8px; font-weight:900; }
+.foreground { position:absolute; z-index:3; inset:auto 0 0; height:17%; background:#151a32; clip-path:polygon(0 45%,12% 62%,24% 23%,38% 70%,52% 40%,66% 76%,78% 23%,91% 65%,100% 35%,100% 100%,0 100%); }.foreground i { position:absolute; width:60px; height:20px; border:3px solid #10152a; background:#bd9b75; transform:rotate(18deg); }.foreground i:nth-child(1){left:42%;top:45%}.foreground i:nth-child(2){left:68%;top:25%;transform:rotate(-30deg)}.foreground i:nth-child(3){left:18%;top:30%;transform:rotate(30deg)}
+.screen { position:absolute; z-index:30; inset:0; display:grid; place-items:center; padding:24px; background:rgba(7,9,23,.61); backdrop-filter:blur(3px); }.screen[hidden] { display:none; }.panel { width:min(100%,500px); padding:30px; border:5px solid var(--ink); background:var(--paper); color:var(--ink); text-align:center; box-shadow:12px 12px 0 var(--acid); transform:rotate(-1deg); }.stamp { display:inline-block; padding:5px 9px; border:2px solid currentColor; color:#c52e5f; font-weight:900; letter-spacing:1px; transform:rotate(-3deg); }.panel h1,.panel h2 { margin:14px 0 7px; font-family:Bangers,Impact,sans-serif; font-size:54px; line-height:.85; letter-spacing:1px; }.panel h1 em { color:#73bd38; font-style:normal; }.panel p { margin:12px auto 22px; max-width:390px; font-size:19px; font-weight:700; line-height:1.05; }.panel small { display:block; margin-top:15px; font-weight:900; letter-spacing:1px; }.primary-button { padding:12px 20px; border:3px solid var(--ink); background:var(--pink); box-shadow:4px 4px 0 var(--ink); color:#fff; cursor:pointer; font-size:20px; font-weight:900; letter-spacing:1px; }.primary-button:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }.primary-button b { color:var(--acid); font-size:24px; }
+.comic-game[data-state="collapse"] .playfield { animation:shake .5s both; }.comic-game[data-state="collapse"] .structure { animation:collapse .75s both; }.comic-game[data-state="complete"] .structure { filter:drop-shadow(0 0 18px var(--acid)); }.comic-game[data-state="complete"] .hulk { animation:celebrate .7s infinite alternate; }
+@keyframes shake { 20%,60%{transform:translateX(-12px)}40%,80%{transform:translateX(12px)} } @keyframes collapse { to{transform:translate(-50%,180px) rotate(13deg);opacity:0} } @keyframes celebrate { to{transform:translateY(-8px)} }
+@media (max-width:720px) { .game-shell{padding:0}.comic-game{border-width:0;min-height:590px}.hud{height:75px;padding:8px 12px}.logo span{font-size:32px}.restart-button{font-size:12px;padding:6px 8px}.mission-bar{top:88px;left:10px;width:225px;padding:9px}.mission-bar p{font-size:14px}.structure{left:58%;width:74vw;height:60%;bottom:13%}.hulk{left:-45px;bottom:3%;transform:scale(.78);transform-origin:bottom left}.removal-zone{right:4%;bottom:11%;width:94px;height:94px;font-size:13px}.panel{padding:25px 20px}.panel h1,.panel h2{font-size:44px}.panel p{font-size:17px}.city{bottom:13%} }
+
+/* Refinement pass: quieter palette, stronger depth, and less explicit puzzle signaling. */
+:root { --ink:#101820; --paper:#eef0df; --acid:#c5e86c; --pink:#ed6e58; --orange:#efbb70; }
+body { background:#0a1119; }
+.comic-game { border:none; border-radius:0; background:#142735; box-shadow:none; }
+.sky { background:radial-gradient(ellipse at 73% 25%,#d59b65 0%,#a87560 10%,transparent 34%),linear-gradient(155deg,#263d4a 0%,#334953 37%,#172b38 70%,#0d1a25 100%); }
+.halftone { opacity:.08; background-size:12px 12px; }
+.city { bottom:14%; opacity:.96; filter:drop-shadow(0 12px 10px #07131dcc); }
+.city span { background:linear-gradient(90deg,#101d2b,#243846 55%,#172a37); border:1px solid #43515a; box-shadow:inset 14px 0 #ffffff08; }
+.city span:after { inset:13px 22% 0; background:repeating-linear-gradient(180deg,#e3b97a 0 4px,transparent 4px 17px); opacity:.48; }
+.smoke { opacity:.17; background:#d5d1b0; }
+.hud { height:78px; padding:12px 32px; border-bottom:1px solid #e3dfcc30; background:#101c24d9; backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; }
+.logo { text-shadow:none; }.logo span { font-size:34px; color:#c5e86c; }.logo small { color:#a9b6b4; font-size:10px; }
+.timer { display:none!important; }
+.restart-button { border:1px solid #d5dccc66; border-radius:5px; font-size:12px; padding:8px 14px; color:#d8dfd5; }.restart-button:hover { background:#c5e86c; border-color:#c5e86c; color:#14202a; }
+.mission-bar { left:24px; top:103px; width:275px; padding:15px; border:1px solid #dce5d966; border-radius:8px; background:#101c24e8; color:#edf0df; transform:none; box-shadow:0 12px 30px #06101875; backdrop-filter:blur(10px); }
+.eyebrow { color:#c5e86c; font-size:10px; letter-spacing:1.7px; }.mission-bar p { font-size:15px; line-height:1.15; font-weight:700; color:#e4e8d8; }
+.pulse-readout { display:flex; align-items:center; gap:5px; margin:10px 0 8px; color:#9eaeaa; font-size:9px; font-weight:900; letter-spacing:1px; }.pulse-readout span { margin-right:auto; }.pulse-readout i { width:5px; height:8px; border-radius:4px; background:#748782; }.pulse-readout i:nth-of-type(2) { height:14px; }.pulse-readout i:last-child { height:5px; }
+.progress { height:5px; border:0; border-radius:5px; background:#34454b; }.progress span { background:#c5e86c; border-radius:5px; }.mission-bar > span:last-child { color:#9eaeaa; font-size:9px; letter-spacing:1px; }
+.structure { filter:drop-shadow(20px 24px 18px #060e19aa); }
+.building-body { border:2px solid #101820; background:linear-gradient(90deg,#657782 0 13%,#a6aaa0 13% 28%,#667984 28% 55%,#9da49f 55% 76%,#60727c 76%); box-shadow:inset 0 0 60px #172c3877; }
+.building-top { border:2px solid #101820; background:linear-gradient(160deg,#c0b89f,#817f77); box-shadow:0 10px 0 #273b45; }
+.floor { height:6px; background:#253740; box-shadow:0 2px 0 #c8c5b366; }.crack { opacity:.75; background:#2e3c3f; }
+.piece { border:2px solid #17232a; border-radius:3px; background:linear-gradient(145deg,#b6ad97,#827f74 45%,#a7a18f); box-shadow:3px 5px 8px #07131b88; opacity:.9; }
+.piece:after { inset:10% 18%; border-color:#424542; opacity:.42; }.piece span { color:#414847; font-size:10px; opacity:.7; }
+.piece.safe.active { outline:0; animation:strain 1.15s ease-in-out infinite; filter:brightness(1.04); }
+.piece.safe.active:before { width:17px; height:11px; top:-17px; background:#c5e86c; opacity:.65; }
+.piece.unsafe { cursor:grab; filter:none; }
+@keyframes strain { 0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(var(--r)) translateY(-2px)} }
+.removal-zone { width:112px; height:112px; border:1px dashed #d6e2c488; border-radius:50%; background:#101c2488; color:#dbe4d8; font-size:13px; transform:none; box-shadow:0 0 0 10px #ffffff08; }.removal-zone:before { inset:7px; border:1px solid #c5e86c77; }
+.hulk { filter:drop-shadow(8px 10px 0 #07131b88); transform:scale(1.04); transform-origin:bottom left; }
+.hulk-head,.hulk-body,.arm { border-color:#19302c; }.hulk-head { background:linear-gradient(140deg,#80bc68,#3e8257); }.hulk-body { background:linear-gradient(110deg,#70a957,#397e4c); }.arm { background:#4e9957; }
+.hulk-head:before { background:#26302e; }.hulk-head i,.hulk-head b { background:#182321; }
+.hulk-label { border:1px solid #d0dfbc; border-radius:4px; background:#192b2c; color:#d5e7bb; font-family:"Barlow Condensed",sans-serif; font-size:14px; line-height:.9; }.hulk-label small { font-size:8px; color:#a7bd9d; }
+.foreground { background:#101b24; }.foreground i { border:1px solid #26363c; background:#927f65; }
+.screen { background:#07121bc9; backdrop-filter:blur(8px); }.panel { border:1px solid #e5e8d7; border-radius:10px; background:#e9eadb; box-shadow:10px 12px 0 #a7c65b; transform:none; }.stamp { border-radius:3px; color:#a75143; font-size:11px; }.panel h1,.panel h2 { font-family:"Barlow Condensed",Impact,sans-serif; font-weight:900; font-size:48px; letter-spacing:-1px; }.panel h1 em { color:#628b4c; }.panel p { font-size:18px; line-height:1.2; color:#39464a; }
+.primary-button { border:0; border-radius:5px; background:#293e43; box-shadow:0 4px 0 #16252b; color:#f1f0df; font-size:16px; }.primary-button b { color:#c5e86c; }
+@media(max-width:720px) { .mission-bar{width:235px}.hud{height:75px}.piece span{display:none}.hulk{transform:scale(.78);transform-origin:bottom left}.removal-zone{width:92px;height:92px} }
+.structure { transform:translateX(-50%) rotate(calc(-1deg + var(--sway, 0deg))); transition:transform .45s cubic-bezier(.2,.8,.3,1); }
+.under-strain { filter:drop-shadow(0 0 7px #ed6e58); }
+.under-strain:after { border-color:#a95048; opacity:.95; }
+.piece { transition:left .12s, top .12s, filter .25s, opacity .25s; }
+.piece:hover { filter:brightness(1.16); }
+.removal-zone { transition:background .2s, box-shadow .2s; }
+.piece.dragging ~ .removal-zone { background:#536641aa; box-shadow:0 0 0 12px #c5e86c22,0 0 28px #c5e86c44; }
+.crack { width:12px; background:#b45c4e; filter:drop-shadow(0 0 4px #f0816577); }
+.crack-one { left:31%; top:29%; height:56%; transform:rotate(11deg); }
+.crack-two { left:56%; right:auto; top:19%; height:23%; transform:rotate(-16deg); }
+.crack-three { right:8%; bottom:4%; height:38%; transform:rotate(19deg); }
+.crack-four { right:11%; left:auto; top:68%; height:17%; transform:rotate(-23deg); }
+.crack-five { left:23%; top:40%; height:18%; transform:rotate(21deg); }
+.piece.hazard { border-color:#9b5148; background:repeating-linear-gradient(135deg,#b8a58d 0 10px,#837a6c 10px 20px); box-shadow:3px 5px 8px #07131b88,0 0 0 1px #df776566; }
+.piece.hazard:after { border-color:#a64e44; background:linear-gradient(130deg,transparent 45%,#b85449 46% 49%,transparent 50%); opacity:.85; }
+.piece.hazard:before { content:""; position:absolute; left:48%; top:-8px; width:3px; height:calc(100% + 16px); background:#c15d4d; opacity:.85; transform:rotate(16deg); }
+/* Heavy Industrial Reinforced Structural Pipes / Obstacles */
+.stick-pile { left:53%; bottom:12%; width:min(53vw,650px); height:57%; min-height:370px; perspective:1000px; transform-style:preserve-3d; filter:drop-shadow(0 26px 24px #050d13b3); }
+.rubble-shadow { position:absolute; left:8%; right:5%; bottom:-2%; height:34%; border-radius:48% 47% 18% 18%; background:radial-gradient(ellipse,#071017bb 0%,#09151b6b 56%,transparent 74%); transform:rotateX(68deg) translateZ(-35px); }
+.rubble-base { display:none; }
+.stick {
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--w);
+  height:28px;
+  z-index:calc(5 + var(--depth));
+  padding:0;
+  border:2px solid #141d24;
+  border-radius:4px;
+  background:linear-gradient(180deg,#3b4a54 0%,#6d8393 14%,#b8ccd9 28%,#eef5fa 38%,#7a91a0 48%,#324049 64%,#192329 82%,#0e151a 100%);
+  box-shadow:0 4px 0 #0b1216, 0 12px 18px rgba(3,8,14,.88), inset 0 2px 2px rgba(255,255,255,.6), inset 0 -3px 3px rgba(0,0,0,.75);
+  transform:translate(-50%,-50%) rotate(var(--angle)) translateZ(calc(var(--depth) * 6px));
+  transform-style:preserve-3d;
+  cursor:grab;
+  touch-action:none;
+  transition:filter .18s, box-shadow .18s, transform .15s;
+}
+
+/* Bolted industrial collar flanges at pipe ends */
+.stick:before {
+  content:"";
+  position:absolute;
+  left:-3px;
+  top:-4px;
+  width:14px;
+  height:calc(100% + 8px);
+  border-radius:3px;
+  background:linear-gradient(180deg,#556b7c,#9bb3c4 30%,#3d4e5a 65%,#162128);
+  border:1.5px solid #0f171d;
+  box-shadow:2px 0 4px rgba(0,0,0,.65), inset 0 1px 1px #ffffffaa;
+}
+.stick:after {
+  content:"";
+  position:absolute;
+  right:-3px;
+  top:-4px;
+  width:14px;
+  height:calc(100% + 8px);
+  border-radius:3px;
+  background:linear-gradient(180deg,#556b7c,#9bb3c4 30%,#3d4e5a 65%,#162128);
+  border:1.5px solid #0f171d;
+  box-shadow:-2px 0 4px rgba(0,0,0,.65), inset 0 1px 1px #ffffffaa;
+}
+
+/* Pipe Variant 1: Reinforced hydraulic line with hazard rings */
+.stick:nth-of-type(3n) {
+  background:
+    repeating-linear-gradient(90deg,transparent 0 32px,rgba(16,24,32,.75) 32px 36px,rgba(200,225,245,.4) 36px 38px,transparent 38px 46px),
+    linear-gradient(180deg,#2e3f4a 0%,#5e7686 14%,#abc0cf 28%,#e8f0f6 38%,#6e8694 48%,#283740 64%,#141e24 82%,#090f13 100%);
+}
+
+/* Pipe Variant 2: Heavy-gauge galvanized conduit with caution banding */
+.stick:nth-of-type(3n + 1) {
+  background:
+    repeating-linear-gradient(180deg,#293640 0%,#526877 14%,#9cb1c0 28%,#dbe7f0 38%,#617887 48%,#243138 64%,#12191f 82%,#0b1014 100%);
+}
+
+/* Pipe Variant 3: Heavy industrial alloy conduit with welded hazard seams */
+.stick:nth-of-type(4n + 2) {
+  background:
+    repeating-linear-gradient(60deg,transparent 0 20px,rgba(215,160,40,.6) 20px 26px,transparent 26px 32px),
+    linear-gradient(180deg,#354550 0%,#698090 14%,#b2c6d5 28%,#e6eff6 38%,#748b99 48%,#2d3b44 64%,#182127 82%,#0c1318 100%);
+}
+
+.stick:hover {
+  filter:brightness(1.22) drop-shadow(0 0 10px rgba(197,232,108,.75));
+}
+
+/* When dragged: high-tension metallic strain */
+.stick.dragging {
+  position:fixed;
+  z-index:55;
+  pointer-events:none;
+  transform:translate(-50%,-50%) rotate(var(--angle)) scale(1.08);
+  filter:brightness(1.3) drop-shadow(0 16px 20px rgba(0,0,0,.95)) drop-shadow(0 0 14px rgba(197,232,108,.75));
+  box-shadow:0 0 12px rgba(197,232,108,.8), inset 0 0 14px rgba(255,255,255,.9);
+  transition:none;
+}
+
+/* When blocked / hazard tension: red-hot structural shear warning */
+.stick.hazard-pulling {
+  filter:brightness(1.35) drop-shadow(0 0 18px #ff497d) drop-shadow(0 0 30px #efbb70)!important;
+  box-shadow:0 0 16px #ff497d, inset 0 0 16px #efbb70!important;
+  animation:pipe-shear-vibrate .09s infinite alternate;
+}
+@keyframes pipe-shear-vibrate {
+  0% { transform:translate(-51%,-50%) rotate(calc(var(--angle) - 1.5deg)); }
+  100% { transform:translate(-49%,-50%) rotate(calc(var(--angle) + 1.5deg)); }
+}
+
+.stick.depositing { position:fixed; z-index:50; pointer-events:none; animation:stick-deposit .42s cubic-bezier(.2,.75,.25,1) both; }
+.pile-shift { animation:stick-pile-shift .65s ease-out both; }
+.stick-pile.settling .rubble-base-art { animation:rubble-settle .44s ease-out; }
+.removal-zone.accepting { background:#c5e86c33; border-color:#c5e86c; box-shadow:0 0 0 10px #c5e86c22,0 0 36px #c5e86c99; animation:zone-impact .42s ease-out; }
+@keyframes stick-deposit { 0%{opacity:1;filter:brightness(1.3);transform:translate(-50%,-50%) rotate(var(--angle)) scale(1.08)} 48%{opacity:1;transform:translate(-50%,-50%) rotate(calc(var(--angle) - 8deg)) scale(.82)} 100%{opacity:0;filter:brightness(1.9);transform:translate(-50%,-50%) rotate(calc(var(--angle) + 14deg)) scale(.16)} }
+@keyframes rubble-settle { 0%{transform:rotateX(16deg) rotateZ(-2deg) translateZ(-28px)} 35%{transform:rotateX(19deg) rotateZ(-1deg) translateZ(-28px)} 72%{transform:rotateX(14deg) rotateZ(-2.5deg) translateZ(-28px)} 100%{transform:rotateX(16deg) rotateZ(-2deg) translateZ(-28px)} }
+@keyframes stick-pile-shift { 15%,55%{transform:translateX(-50%) rotate(-1deg) translateX(-9px)} 35%,75%{transform:translateX(-50%) rotate(1deg) translateX(9px)} 100%{transform:translateX(-50%) rotate(-1deg)} }
+@media(max-width:720px){.stick-pile{left:59%;bottom:14%;width:78vw;height:51%;min-height:320px}.stick{height:20px}}
+.sky { background:linear-gradient(180deg,#101c2440,#101c241a 48%,#101c244d),url("assets/rescue-background.png") center 56% / cover no-repeat; }
+.city,.smoke,.foreground { display:none; }
+
+/* Hulk - Clean, Grounded Comic Presence (Reduced Effects) */
+.hulk {
+  position:absolute;
+  z-index:2;
+  left:5%;
+  bottom:5%;
+  width:429px;
+  height:507px;
+  filter:drop-shadow(6px 8px 0 rgba(7,19,27,.85));
+  transition:left .26s cubic-bezier(.2,.85,.32,1), transform .22s ease;
+  transform-origin:bottom center;
+}
+.hulk-sprite {
+  position:absolute;
+  left:-23px;
+  bottom:29px;
+  width:410px;
+  height:436px;
+  object-fit:contain;
+  image-rendering:pixelated;
+  user-select:none;
+  pointer-events:none;
+}
+.hulk-label {
+  position:absolute;
+  bottom:0;
+  left:0;
+  z-index:3;
+  padding:8px 12px;
+  border:1px solid #d0dfbc;
+  border-radius:4px;
+  background:#192b2c;
+  color:#d5e7bb;
+  font-family:"Barlow Condensed",sans-serif;
+  font-size:16px;
+  line-height:.9;
+  letter-spacing:1px;
+}
+.hulk-label small { font-size:9px; color:#a7bd9d; }
+
+/* Clean Comic Drop-Shadow on Exertion (No Glowing Neon Aura) */
+.hulk.exerting {
+  filter:drop-shadow(6px 8px 0 rgba(7,19,27,.85))!important;
+}
+
+/* Grounded Warning on Blocked Pipe (No Pink Neon Aura) */
+.hulk.straining-hazard {
+  filter:drop-shadow(6px 8px 0 #07131b)!important;
+}
+
+/* Reduced Footfall Dust & Ground Fracture */
+.hulk-stomp-dust,
+.ground-fracture,
+.sparks-container,
+.impact-ring {
+  display:none!important;
+}
+
+/* Clean Physical Heave on Deposit */
+.hulk.heaving {
+  transform:scale(1.02) translateY(-4px);
+  transition:transform .18s cubic-bezier(.12,.85,.32,1);
+}
+
+/* Victory State Celebration (Clean Comic Shadow) */
+.comic-game[data-state="complete"] .hulk {
+  animation:hulk-victory 1.2s ease-in-out infinite alternate!important;
+  filter:drop-shadow(6px 8px 0 #07131b)!important;
+}
+@keyframes hulk-victory {
+  0%{transform:translateY(0) scale(1.02)}
+  100%{transform:translateY(-8px) scale(1.03)}
+}
+
+.rubble-base-art { position:absolute; z-index:1; left:-2%; bottom:-1%; width:104%; height:47%; object-fit:fill; transform:translateZ(-24px); filter:drop-shadow(0 15px 12px #071017bb); pointer-events:none; user-select:none; }
+.comic-game[data-state="clearing"] .rubble-base-art,.comic-game[data-state="clearing"] .rubble-shadow { animation:rubble-clear .8s ease-in forwards; }
+.comic-game[data-state="complete"] .rubble-base-art,.comic-game[data-state="complete"] .rubble-shadow { opacity:0; }
+@keyframes rubble-clear { to { opacity:0; transform:translateY(70px) translateZ(-24px) scale(.93); filter:blur(3px); } }
+
+@media(max-width:720px) {
+  .hulk { transform:scale(.72); transform-origin:bottom left; }
+  .hulk-sprite { width:351px; height:384px; left:-20px; bottom:25px; }
+}
+
+.console-window { width:min(100%,540px); overflow:hidden; border:2px solid #9dab86; border-radius:8px; background:#0b1417; color:#e0ead6; box-shadow:0 22px 70px #000b,0 0 0 5px #111b1c; font-family:"Barlow Condensed",sans-serif; }
+.console-titlebar { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #46574b; background:linear-gradient(90deg,#263a36,#182627); color:#c5e86c; font-size:13px; font-weight:900; letter-spacing:1.5px; }
+.console-controls { display:flex; gap:6px; }.console-controls i { width:9px; height:9px; border-radius:50%; background:#bd6a5a; }.console-controls i:nth-child(2){background:#d6b05b}.console-controls i:nth-child(3){background:#78b978}
+.console-content { padding:26px 28px 30px; }.console-alert { color:#e68d67; font-size:12px; font-weight:900; letter-spacing:1.5px; }.console-content h2 { margin:7px 0 8px; color:#f3eedf; font:36px/1 Bangers,Impact,sans-serif; letter-spacing:1px; }.console-content p { max-width:420px; margin:0 0 17px; color:#bdc9b8; font-size:17px; font-weight:700; }.console-output { display:grid; gap:4px; min-height:86px; margin-bottom:22px; padding:12px 14px; border:1px solid #3c5545; background:#06100f; color:#92c68b; font-family:Consolas,monospace; font-size:12px; }.console-output b { animation:console-caret .8s steps(2,end) infinite; }.console-content .primary-button { border-color:#bdd66d; background:#4d713e; box-shadow:4px 4px 0 #17241d; }
+@keyframes console-caret { 50%{opacity:0} }
+@keyframes frame-settle { 0%{filter:brightness(1)} 28%{filter:brightness(1.35) drop-shadow(0 0 8px #c5e86c88)} 65%{filter:brightness(.92)} 100%{filter:brightness(1)} }
+
+/* Atmospheric Background VFX */
+.bg-vfx { position:absolute; inset:0; z-index:-7; pointer-events:none; overflow:hidden; }
+.searchlight-beam { position:absolute; bottom:8%; width:320px; height:120%; pointer-events:none; clip-path:polygon(47% 100%, 53% 100%, 100% 0, 0 0); transform-origin:50% 100%; mix-blend-mode:screen; filter:blur(8px); background:linear-gradient(to top,rgba(255,230,165,.16) 0%,rgba(180,225,245,.08) 50%,transparent 94%); }
+.beam-left { left:18%; animation:searchlight-sweep-l 18s ease-in-out infinite alternate; }
+.beam-right { left:74%; animation:searchlight-sweep-r 23s ease-in-out infinite alternate; }
+@keyframes searchlight-sweep-l { 0%{transform:rotate(-22deg);opacity:.65} 50%{transform:rotate(-5deg);opacity:.95} 100%{transform:rotate(12deg);opacity:.55} }
+@keyframes searchlight-sweep-r { 0%{transform:rotate(18deg);opacity:.6} 50%{transform:rotate(3deg);opacity:.9} 100%{transform:rotate(-14deg);opacity:.65} }
+
+.skyline-beacons { position:absolute; inset:0; pointer-events:none; }
+.beacon { position:absolute; width:3px; height:3px; border-radius:50%; pointer-events:none; }
+.beacon-1 { left:17%; top:41%; background:#ff4a58; color:#ff4a58; animation:beacon-strobe 2s steps(1,end) infinite; }
+.beacon-2 { left:31%; top:45%; background:#ffae42; color:#ffae42; animation:beacon-strobe 2.8s steps(1,end) infinite .9s; }
+.beacon-3 { left:69%; top:37%; background:#ff4a58; color:#ff4a58; animation:beacon-strobe 2.4s steps(1,end) infinite 1.5s; }
+.beacon-4 { left:83%; top:43%; background:#62d8ff; color:#62d8ff; animation:beacon-strobe 3.2s steps(1,end) infinite .4s; }
+@keyframes beacon-strobe { 0%,100%{opacity:.2;box-shadow:none} 48%,52%{opacity:1;box-shadow:0 0 6px 2px currentColor} }
+
+.vfx-mist-layer { position:absolute; inset:0; z-index:-6; pointer-events:none; overflow:hidden; }
+.mist-cloud { position:absolute; bottom:12%; width:135%; height:260px; filter:blur(24px); pointer-events:none; mix-blend-mode:screen; opacity:.28; }
+.mist-a { left:-18%; background:radial-gradient(ellipse 65% 50% at 50% 60%,rgba(95,140,160,.2) 0%,rgba(45,75,90,.08) 45%,transparent 75%); animation:mist-drift-l 28s ease-in-out infinite alternate; }
+.mist-b { left:-15%; background:radial-gradient(ellipse 70% 45% at 50% 65%,rgba(135,120,100,.16) 0%,rgba(65,70,75,.06) 50%,transparent 75%); animation:mist-drift-r 36s ease-in-out infinite alternate; }
+@keyframes mist-drift-l { 0%{transform:translateX(-50px) scaleY(.92)} 100%{transform:translateX(55px) scaleY(1.08)} }
+@keyframes mist-drift-r { 0%{transform:translateX(45px) scaleY(1.06)} 100%{transform:translateX(-50px) scaleY(.9)} }
+
+.vfx-embers-layer { position:absolute; inset:0; z-index:-5; pointer-events:none; overflow:hidden; }
+.ember { position:absolute; left:var(--x); top:var(--y); width:var(--size); height:var(--size); border-radius:50%; background:var(--c); box-shadow:0 0 5px var(--c),0 0 10px var(--c); opacity:0; pointer-events:none; animation:ember-rise var(--dur) ease-out infinite; animation-delay:var(--delay); }
+@keyframes ember-rise {
+  0%{opacity:0;transform:translate3d(0,0,0) scale(.6)}
+  15%{opacity:.7}
+  75%{opacity:.55}
+  100%{opacity:0;transform:translate3d(var(--dx),-380px,0) scale(1.15);filter:blur(1px)}
+}
+
+/* Comic Panel Vignette */
+.comic-game:after { content:""; position:absolute; inset:0; z-index:22; pointer-events:none; border-radius:inherit; box-shadow:inset 0 0 90px rgba(5,11,18,.62); }
+
+@media(max-width:720px) {
+  .searchlight-beam { width:210px; }
+  .mist-cloud { height:180px; }
+}

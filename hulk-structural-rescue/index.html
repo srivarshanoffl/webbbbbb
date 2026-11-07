@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#10152a" />
+  <title>Hulk: Structural Rescue</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="game-shell" aria-label="Hulk Structural Rescue game">
+    <section class="comic-game" id="game" data-state="start">
+      <div class="sky layer" data-depth="0.04"></div>
+
+      <!-- Atmospheric Background VFX Layers -->
+      <div class="bg-vfx layer" data-depth="0.07" aria-hidden="true">
+        <div class="searchlight-beam beam-left"></div>
+        <div class="searchlight-beam beam-right"></div>
+        <div class="skyline-beacons">
+          <span class="beacon beacon-1"></span>
+          <span class="beacon beacon-2"></span>
+          <span class="beacon beacon-3"></span>
+          <span class="beacon beacon-4"></span>
+        </div>
+      </div>
+
+      <div class="vfx-mist-layer layer" data-depth="0.11" aria-hidden="true">
+        <div class="mist-cloud mist-a"></div>
+        <div class="mist-cloud mist-b"></div>
+      </div>
+
+      <div class="vfx-embers-layer layer" data-depth="0.16" aria-hidden="true">
+        <span class="ember" style="--x:14%;--y:88%;--dur:9.2s;--delay:0.3s;--dx:24px;--size:3.5px;--c:#ffb252"></span>
+        <span class="ember" style="--x:28%;--y:92%;--dur:11.4s;--delay:2.1s;--dx:-18px;--size:2.5px;--c:#c5e86c"></span>
+        <span class="ember" style="--x:42%;--y:85%;--dur:8.6s;--delay:4.4s;--dx:32px;--size:4px;--c:#ffa042"></span>
+        <span class="ember" style="--x:54%;--y:90%;--dur:10.2s;--delay:1.0s;--dx:-28px;--size:3px;--c:#ffcf70"></span>
+        <span class="ember" style="--x:66%;--y:87%;--dur:12.1s;--delay:5.8s;--dx:20px;--size:2px;--c:#e4e8d8"></span>
+        <span class="ember" style="--x:75%;--y:93%;--dur:9.8s;--delay:3.2s;--dx:-15px;--size:3.5px;--c:#c5e86c"></span>
+        <span class="ember" style="--x:22%;--y:89%;--dur:13.0s;--delay:6.5s;--dx:18px;--size:2px;--c:#e4e8d8"></span>
+        <span class="ember" style="--x:48%;--y:94%;--dur:10.8s;--delay:7.2s;--dx:-22px;--size:3.5px;--c:#ff8e42"></span>
+        <span class="ember" style="--x:61%;--y:86%;--dur:8.9s;--delay:8.1s;--dx:25px;--size:3px;--c:#c5e86c"></span>
+        <span class="ember" style="--x:82%;--y:91%;--dur:11.7s;--delay:4.9s;--dx:-19px;--size:2.5px;--c:#ffa852"></span>
+        <span class="ember" style="--x:36%;--y:95%;--dur:9.5s;--delay:9.3s;--dx:30px;--size:3px;--c:#ffd278"></span>
+        <span class="ember" style="--x:71%;--y:84%;--dur:12.5s;--delay:1.7s;--dx:-25px;--size:2px;--c:#e4e8d8"></span>
+      </div>
+
+      <div class="halftone" aria-hidden="true"></div>
+
+      <header class="hud">
+        <div class="logo"><span>HULK</span><small>STRUCTURAL RESCUE</small></div>
+        <button class="restart-button" id="restartButton" type="button">RESTART</button>
+      </header>
+
+      <section class="mission-bar" aria-live="polite">
+        <span class="eyebrow">DEBRIS RECOVERY</span>
+        <p id="missionText">Pull one clear rod at a time. Keep the pile still.</p>
+        <div class="pulse-readout"><span>HULK'S SENSE</span><i></i><i></i><i></i></div>
+        <div class="progress" aria-label="Structural progress"><span id="progressFill"></span></div>
+        <span id="progressText">0 / 12 PULLED</span>
+      </section>
+
+      <div class="playfield" id="playfield">
+        <div class="removal-zone" id="removalZone" aria-label="Safe removal zone">
+          <span>EXIT<br />ZONE</span>
+        </div>
+
+        <div class="hulk" aria-label="Animated Hulk">
+          <img class="hulk-sprite" src="assets/hulk-animation/idle-0.png" alt="Hulk" draggable="false" />
+          <div class="hulk-label">HULK<br /><small>STABILITY SENSE</small></div>
+        </div>
+
+        <div class="structure stick-pile" id="structure" aria-label="Tangled three-dimensional debris pile">
+          <div class="rubble-shadow"></div><img class="rubble-base-art" src="assets/rubble-obstacle.svg" alt=""
+            aria-hidden="true" />
+          <button class="piece stick" data-stick="a" style="--x:24%;--y:29%;--w:67%;--angle:-24deg;--depth:1"
+            aria-label="Debris rod A"></button>
+          <button class="piece stick" data-stick="b" style="--x:51%;--y:35%;--w:70%;--angle:15deg;--depth:4"
+            aria-label="Debris rod B"></button>
+          <button class="piece stick" data-stick="c" style="--x:71%;--y:52%;--w:65%;--angle:68deg;--depth:2"
+            aria-label="Debris rod C"></button>
+          <button class="piece stick" data-stick="d" style="--x:38%;--y:56%;--w:75%;--angle:-50deg;--depth:5"
+            aria-label="Debris rod D"></button>
+          <button class="piece stick" data-stick="e" style="--x:60%;--y:70%;--w:65%;--angle:25deg;--depth:3"
+            aria-label="Debris rod E"></button>
+          <button class="piece stick" data-stick="f" style="--x:25%;--y:72%;--w:58%;--angle:82deg;--depth:6"
+            aria-label="Debris rod F"></button>
+          <button class="piece stick" data-stick="g" style="--x:47%;--y:45%;--w:60%;--angle:-10deg;--depth:7"
+            aria-label="Debris rod G"></button>
+          <button class="piece stick" data-stick="h" style="--x:74%;--y:27%;--w:56%;--angle:52deg;--depth:8"
+            aria-label="Debris rod H"></button>
+          <button class="piece stick" data-stick="i" style="--x:35%;--y:37%;--w:52%;--angle:43deg;--depth:9"
+            aria-label="Debris rod I"></button>
+          <button class="piece stick" data-stick="j" style="--x:64%;--y:48%;--w:75%;--angle:-35deg;--depth:10"
+            aria-label="Debris rod J"></button>
+          <button class="piece stick" data-stick="k" style="--x:48%;--y:78%;--w:64%;--angle:-70deg;--depth:11"
+            aria-label="Debris rod K"></button>
+          <button class="piece stick" data-stick="l" style="--x:57%;--y:24%;--w:50%;--angle:75deg;--depth:12"
+            aria-label="Debris rod L"></button>
+        </div>
+        <div class="debris foreground" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="screen start-screen" id="startScreen">
+        <div class="panel"><span class="stamp">INCIDENT 616</span>
+          <h1>PULL CLEAN.<br /><em>KEEP IT STEADY.</em></h1>
+          <p>Twelve heavy rods are tangled in the rubble. Pull them in a clear order without shifting a rod that crosses
+            over them. Carry every free rod to the exit.</p><button class="primary-button" id="startButton"
+            type="button">BEGIN RESCUE <b>→</b></button><small>FIND A CLEAR PATH • PULL ALL TWELVE</small>
+        </div>
+      </div>
+
+      <div class="screen bug-screen" id="bugScreen" hidden>
+        <section class="console-window" role="dialog" aria-modal="true" aria-labelledby="bugTitle">
+          <header class="console-titlebar"><span>STARK SYSTEM CONSOLE</span>
+            <div class="console-controls" aria-hidden="true"><i></i><i></i><i></i></div>
+          </header>
+          <div class="console-content"><span class="console-alert">SYSTEM ISSUE DETECTED</span>
+            <h2 id="bugTitle">A BUG NEEDS ATTENTION</h2>
+            <p>All twelve rods are out. The fix action is still a placeholder; continue to close out the rescue.</p>
+            <div class="console-output" aria-hidden="true"><span>&gt; diagnostics pending</span><span>&gt; fix routine:
+                TODO</span><b>_</b></div><button class="primary-button" id="fixNowButton" type="button">FIX NOW
+              <b>→</b></button>
+          </div>
+        </section>
+      </div>
+
+      <div class="screen result-screen" id="resultScreen" hidden>
+        <div class="panel"><span class="stamp" id="resultStamp">STRUCTURE LOST</span>
+          <h2 id="resultTitle">TOO MUCH PRESSURE.</h2>
+          <p id="resultText"></p><button class="primary-button" id="againButton" type="button">TRY AGAIN
+            <b>↻</b></button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+
+</html>

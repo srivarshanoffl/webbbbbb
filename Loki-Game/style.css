@@ -1,0 +1,2190 @@
+/* ==========================================================================
+   LOKI: THE STOLEN TESSERACT - CINEMATIC 2.5D STYLING (REDESIGNED)
+   ========================================================================== */
+
+:root {
+  --color-cosmic-black: #03040a;
+  --color-vault-steel: #111424;
+  --color-tesseract-blue: #00d2ff;
+  --color-tesseract-glow: rgba(0, 210, 255, 0.7);
+  --color-tesseract-deep: #0044ff;
+  --color-loki-green: #00ff77;
+  --color-loki-gold: #f2c94c;
+  --color-loki-emerald: #0b5e39;
+  --color-alarm-red: #ff2244;
+  --color-alarm-glow: rgba(255, 34, 68, 0.6);
+  --color-obsidian: #180d12;
+  --color-text-bright: #e8f4fc;
+  --color-text-dim: #7a8c9e;
+  
+  --font-title: 'Cinzel', serif;
+  --font-tech: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-cosmic-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-tech);
+  color: var(--color-text-bright);
+}
+
+/* ==========================================================================
+   GAME VIEWPORT ROOT (Fixed 16:9 Aspect Ratio)
+   ========================================================================== */
+#game-container {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: #020307;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.98), 0 0 40px rgba(0, 180, 255, 0.2);
+  perspective: 1200px;
+}
+
+/* Cinematic Anamorphic Letterbox Bars */
+#game-container::before, #game-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background: #000000;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(0,0,0,0.9);
+}
+#game-container::before { top: 0; }
+#game-container::after { bottom: 0; }
+
+/* ==========================================================================
+   2.5D VAULT SCENE & PARALLAX BACKGROUND
+   ========================================================================== */
+#vault-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vault-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+#bg-stars {
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 150px 80px, #a8d5ff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 300px 240px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 600px 120px, #00d2ff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 800px 350px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 1000px 180px, #a8d5ff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 550px 550px;
+  opacity: 0.6;
+  transform: translateZ(-300px) scale(1.3);
+  animation: cosmicDrift 60s linear infinite;
+}
+
+#bg-vault {
+  background-image: url('assets/backgrounds/vault-bg.jpg');
+  transform: translateZ(-100px) scale(1.1);
+  filter: contrast(1.15) brightness(0.92);
+}
+
+#bg-conduits {
+  background: 
+    radial-gradient(ellipse at 50% 60%, rgba(0, 180, 255, 0.15) 0%, transparent 70%),
+    linear-gradient(125deg, transparent 40%, rgba(0, 210, 255, 0.08) 50%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Volumetric Light Shafts */
+.vault-lighting-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 68% 45%, rgba(0, 210, 255, 0.28) 0%, transparent 60%),
+    linear-gradient(115deg, rgba(0, 255, 119, 0.06) 0%, transparent 45%, rgba(0, 210, 255, 0.1) 80%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition: opacity 0.8s ease;
+}
+
+.alarm-lighting-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 20, 50, 0.5) 0%, transparent 75%);
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 0.5s ease;
+}
+
+.alarm-active .alarm-lighting-overlay {
+  opacity: 1;
+  animation: alarmPulse 0.8s infinite alternate ease-in-out;
+}
+
+.infiltration-active .alarm-lighting-overlay {
+  opacity: 1;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(255, 20, 50, 0.65) 0%, transparent 80%),
+    radial-gradient(circle at 15% 75%, rgba(255, 0, 40, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 85% 60%, rgba(255, 0, 40, 0.45) 0%, transparent 60%);
+  animation: infiltrationStrobe 0.55s infinite alternate ease-in-out;
+}
+
+/* ==========================================================================
+   CINEMATIC VAULT INFILTRATION ALARMS (PHASE 3)
+   ========================================================================== */
+.infiltration-system {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.infiltration-active .infiltration-system {
+  opacity: 1;
+}
+
+.hazard-tape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(255, 34, 68, 0.7);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+  z-index: 50;
+}
+
+.hazard-tape.top {
+  top: 0px;
+  background: repeating-linear-gradient(45deg, #1b0307, #1b0307 20px, #ff2244 20px, #ff2244 40px);
+  border-bottom: 2px solid #ff3355;
+  transform: translateY(-100%);
+}
+
+.hazard-tape.bottom {
+  bottom: 0px;
+  background: repeating-linear-gradient(-45deg, #1b0307, #1b0307 20px, #ff2244 20px, #ff2244 40px);
+  border-top: 2px solid #ff3355;
+  transform: translateY(100%);
+}
+
+.infiltration-active .hazard-tape.top {
+  transform: translateY(0);
+}
+
+.infiltration-active .hazard-tape.bottom {
+  transform: translateY(0);
+}
+
+.hazard-text {
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  background: rgba(5, 1, 2, 0.88);
+  padding: 3px 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 34, 68, 0.8);
+  text-shadow: 0 0 10px #ff2244, 0 0 20px #ff0033;
+  animation: hazardTextPulse 0.6s infinite alternate;
+}
+
+.klaxon-beacon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.infiltration-active .klaxon-beacon {
+  opacity: 1;
+}
+
+.klaxon-beacon.left {
+  top: 60px;
+  left: 60px;
+}
+
+.klaxon-beacon.right {
+  top: 60px;
+  right: 60px;
+}
+
+.beacon-bulb {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: #ff2244;
+  box-shadow: 0 0 25px #ff0033, 0 0 45px #ff2244;
+  animation: pulseGlow 0.5s infinite alternate;
+}
+
+.beacon-sweep {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(255, 34, 68, 0.85) 0deg, transparent 50deg, transparent 360deg);
+  animation: klaxonSpin 1.2s linear infinite;
+  mix-blend-mode: screen;
+}
+
+.alarm-scanner-beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, transparent, rgba(255, 34, 68, 0.6), transparent);
+  box-shadow: 0 0 25px #ff2244, 0 0 50px #ff0033;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.infiltration-active .alarm-scanner-beam {
+  opacity: 0.8;
+  animation: scannerSweep 3.5s ease-in-out infinite alternate;
+}
+
+/* Complete Infiltration Alarm Dismissal / Power-Down */
+.powering-down .hazard-tape.top {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.powering-down .hazard-tape.bottom {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.powering-down.infiltration-system {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+@keyframes infiltrationStrobe {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.95; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes hazardTextPulse {
+  0% { color: #ffffff; text-shadow: 0 0 8px #ff2244; }
+  100% { color: #ffccd4; text-shadow: 0 0 16px #ff0033, 0 0 28px #ff2244; }
+}
+
+@keyframes klaxonSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scannerSweep {
+  0% { left: 10%; transform: rotate(-5deg); }
+  50% { left: 50%; transform: rotate(0deg); }
+  100% { left: 90%; transform: rotate(5deg); }
+}
+
+/* ==========================================================================
+   CENTRAL TESSERACT CHAMBER & PEDESTAL
+   ========================================================================== */
+#tesseract-chamber {
+  position: absolute;
+  top: 428px;
+  left: 1091px;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 12;
+}
+
+#tesseract-cube {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: tesseractFloat 4s ease-in-out infinite alternate;
+  z-index: 10;
+  transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tesseract-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 20px var(--color-tesseract-blue)) drop-shadow(0 0 40px #0055ff);
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px var(--color-tesseract-blue)) drop-shadow(0 0 35px rgba(0, 210, 255, 0.6));
+}
+
+.tesseract-aura {
+  position: absolute;
+  inset: -8px;
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.35) 0%, transparent 75%);
+  animation: pulseGlow 2.5s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+.tesseract-rays {
+  position: absolute;
+  inset: -25px;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(0,210,255,0.2) 60deg, transparent 120deg, rgba(0,210,255,0.2) 240deg, transparent 300deg);
+  animation: rotateRays 12s linear infinite;
+  mix-blend-mode: screen;
+  opacity: 0.22;
+}
+
+/* Subtle, refined containment dome - background is delicate rather than an overpowering opaque disc */
+#barrier-dome {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+#barrier-dome.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#barrier-dome.dissolved {
+  opacity: 0;
+  transform: scale(1.4);
+  pointer-events: none;
+}
+
+.barrier-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.38;
+  filter: brightness(0.95) contrast(1.15);
+  animation: barrierPulse 3s infinite alternate ease-in-out;
+}
+
+.barrier-hex-grid {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  box-shadow: inset 0 0 16px rgba(0, 210, 255, 0.2), 0 0 14px rgba(0, 210, 255, 0.25);
+}
+
+/* Floating Hexagon Shatter Fragments for Phase 4 Finale */
+.barrier-shards-container {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  z-index: 16;
+}
+
+.barrier-shard {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 210, 255, 0.35);
+  border: 1.5px solid rgba(0, 255, 230, 0.8);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.7);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  opacity: 0;
+}
+
+.barrier-shards-active .barrier-shard {
+  animation: shardShatterOut 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shardShatterOut {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+  60% { opacity: 0.85; }
+  100% { transform: var(--shard-vector) scale(0.3) rotate(180deg); opacity: 0; }
+}
+
+/* Minimalist Asgardian Containment Dais */
+#pedestal {
+  position: absolute;
+  bottom: -18px;
+  width: 100px;
+  height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+}
+
+.pedestal-shadow {
+  position: absolute;
+  bottom: -8px;
+  width: 110px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 210, 255, 0.1) 45%, transparent 75%);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+.pedestal-halo {
+  position: absolute;
+  top: -6px;
+  width: 75px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 210, 255, 0.45) 0%, transparent 70%);
+  filter: blur(2px);
+  animation: pulseGlow 2.5s infinite alternate;
+}
+
+.pedestal-runes {
+  font-family: var(--font-title);
+  font-size: 7px;
+  letter-spacing: 4px;
+  color: var(--color-tesseract-blue);
+  text-shadow: 0 0 6px var(--color-tesseract-blue);
+  opacity: 0.75;
+  margin-bottom: 2px;
+}
+
+.pedestal-ring {
+  width: 88px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 210, 255, 0.55);
+  background: radial-gradient(ellipse at center, rgba(0, 210, 255, 0.25) 0%, rgba(10, 25, 45, 0.8) 70%, transparent 100%);
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.4), inset 0 0 10px rgba(0, 210, 255, 0.25);
+}
+
+.pedestal-base {
+  width: 65px;
+  height: 20px;
+  background: linear-gradient(180deg, #1e2e42 0%, #0e1724 45%, #05080f 100%);
+  clip-path: polygon(18% 0%, 82% 0%, 100% 100%, 0% 100%);
+  border-top: 1.5px solid var(--color-loki-gold);
+  box-shadow: inset 0 1px 4px rgba(242, 201, 76, 0.3), 0 6px 14px rgba(0, 0, 0, 0.9);
+}
+
+/* ==========================================================================
+   UNIFIED CONSISTENT LOKI CHARACTER STAGING
+   ========================================================================== */
+#loki-container {
+  position: absolute;
+  bottom: 0px;
+  left: -15px;
+  width: 280px;
+  height: 460px;
+  z-index: 35;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  transition: left 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.loki-shadow {
+  position: absolute;
+  bottom: 0;
+  width: 210px;
+  height: 30px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.98) 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+}
+
+.loki-magic-aura {
+  position: absolute;
+  bottom: 40px;
+  width: 240px;
+  height: 350px;
+  background: radial-gradient(ellipse at center, rgba(0, 255, 119, 0.28) 0%, transparent 70%);
+  opacity: 0.65;
+  filter: blur(14px);
+  animation: magicAuraPulse 3s ease-in-out infinite alternate;
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.alarm-active .loki-magic-aura {
+  background: radial-gradient(ellipse at center, rgba(255, 34, 68, 0.35) 0%, transparent 70%);
+}
+
+.loki-particles {
+  position: absolute;
+  bottom: 120px;
+  width: 220px;
+  height: 220px;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.magic-particle-burst {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 15px var(--color-loki-green));
+  animation: particleWiggle 2.5s infinite alternate ease-in-out;
+}
+
+.loki-sprite-wrapper {
+  position: relative;
+  width: 280px;
+  height: 450px;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+}
+
+/* Master high-fidelity Loki Art with Seamless Vignette Mask (No Box Borders!) */
+.loki-master-art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 10%);
+  mask-image: linear-gradient(to top, transparent 0%, black 10%);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 119, 0.45)) drop-shadow(0 15px 35px rgba(0,0,0,0.95));
+  animation: lokiIdleBreath 4s ease-in-out infinite alternate;
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+/* Loki dynamic reaction states */
+.loki-actor-casting .loki-master-art {
+  filter: drop-shadow(0 0 25px var(--color-loki-green)) drop-shadow(0 0 45px rgba(0,255,119,0.7));
+  transform: translateY(-4px) scale(1.02);
+}
+
+.loki-actor-glitch .loki-master-art {
+  filter: drop-shadow(0 0 25px var(--color-alarm-red)) drop-shadow(0 0 45px rgba(255,34,68,0.7));
+  animation: lokiGlitchJitter 0.15s infinite alternate;
+}
+
+.loki-actor-victory .loki-master-art {
+  filter: drop-shadow(0 0 35px var(--color-loki-green)) drop-shadow(0 0 50px var(--color-tesseract-blue));
+}
+
+.loki-casting-runes {
+  position: absolute;
+  top: 130px;
+  left: 60px;
+  width: 110px;
+  height: 110px;
+  border: 2px dashed rgba(0, 255, 119, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.4s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.loki-actor-casting .loki-casting-runes {
+  opacity: 1;
+  transform: scale(1);
+  animation: spinSlow 8s linear infinite;
+}
+
+.loki-tesseract-dock {
+  position: absolute;
+  top: 165px;
+  left: 135px;
+  width: 56px;
+  height: 56px;
+  top: 245px;
+  left: 145px;
+  width: 62px;
+  height: 62px;
+  opacity: 0;
+  transform: scale(0.3);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.loki-actor-victory .loki-tesseract-dock {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tesseract-dock-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid #00ff77;
+  box-shadow: 0 0 35px #00ff77, 0 0 60px #00d2ff, inset 0 0 25px #ffffff;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tesseract-dock-pulse.pulsing {
+  animation: catchShockwave 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes catchShockwave {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  60% { opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+.docked-tesseract-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 15px var(--color-tesseract-blue)) drop-shadow(0 0 35px #00ff77) drop-shadow(0 0 50px #ffffff);
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px var(--color-tesseract-blue)) drop-shadow(0 0 30px #00ff77);
+  animation: pulseGlow 1.8s infinite alternate;
+}
+
+#green-magic-bridge {
+  position: absolute;
+  top: 430px;
+  left: 170px;
+  width: 920px;
+  height: 24px;
+  opacity: 0;
+  transform-origin: left center;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  z-index: 25;
+}
+
+#green-magic-bridge.active {
+  opacity: 1;
+}
+
+.bridge-plasma-core {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 6px;
+  background: linear-gradient(90deg, #00ff77 0%, #00e5ff 60%, #ffffff 95%, #ffffff 100%);
+  box-shadow: 
+    0 0 25px #00ff77,
+    0 0 50px rgba(0, 210, 255, 0.8),
+    0 0 80px rgba(0, 255, 119, 0.6);
+  animation: energyBridgePulse 0.9s infinite alternate;
+}
+
+.bridge-arcs {
+  position: absolute;
+  inset: -12px 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0, 255, 119, 0.4) 45px, transparent 50px);
+  filter: blur(2px);
+  animation: cosmicDrift 2s linear infinite reverse;
+}
+
+/* ==========================================================================
+   INTERACTIVE STAGES & PHASE MANAGEMENT
+   ========================================================================== */
+#interactive-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.phase-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.phase-layer.active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* ==========================================================================
+   PHASE 1: INTRODUCTION STYLING
+   ========================================================================== */
+#phase-intro {
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, rgba(3, 4, 10, 0.65) 0%, rgba(3, 4, 10, 0.9) 100%);
+}
+
+.intro-titles {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: introFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sub-title {
+  font-family: var(--font-tech);
+  font-size: 13px;
+  letter-spacing: 7px;
+  color: var(--color-loki-green);
+  text-shadow: 0 0 10px rgba(0, 255, 119, 0.6);
+  margin-bottom: 8px;
+}
+
+.main-title {
+  font-family: var(--font-title);
+  font-size: 72px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: #fff;
+  text-shadow: 0 0 35px rgba(242, 201, 76, 0.5), 0 0 70px rgba(0, 255, 119, 0.35);
+  background: linear-gradient(180deg, #ffffff 30%, #e6be60 75%, #00ff77 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.artifact-title {
+  font-family: var(--font-tech);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 9px;
+  color: var(--color-tesseract-blue);
+  text-shadow: 0 0 20px var(--color-tesseract-blue);
+  margin-top: 4px;
+  margin-bottom: 30px;
+}
+
+.vault-security-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(17, 20, 36, 0.85);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 8px 18px;
+  border-radius: 20px;
+  margin-bottom: 35px;
+  backdrop-filter: blur(8px);
+}
+
+.status-indicator {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--color-alarm-red);
+  box-shadow: 0 0 10px var(--color-alarm-red);
+  animation: blink 1s infinite alternate;
+}
+
+.status-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #c0d4e8;
+}
+
+/* ==========================================================================
+   BUTTONS & CYBERNETIC UI ELEMENTS
+   ========================================================================== */
+.cyber-btn {
+  position: relative;
+  background: rgba(8, 14, 28, 0.85);
+  border: 1px solid rgba(0, 210, 255, 0.5);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 14px 34px;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+
+.cyber-btn:hover {
+  border-color: var(--color-tesseract-blue);
+  box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 15px rgba(0, 210, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.cyber-btn:active {
+  transform: translateY(0);
+}
+
+.cyber-btn.primary {
+  border-color: var(--color-loki-green);
+}
+
+.cyber-btn.primary:hover {
+  border-color: var(--color-loki-green);
+  box-shadow: 0 0 25px rgba(0, 255, 119, 0.5), inset 0 0 15px rgba(0, 255, 119, 0.2);
+}
+
+.cyber-btn.danger {
+  border-color: var(--color-alarm-red);
+  color: #ffcad1;
+}
+
+.cyber-btn.danger:hover {
+  border-color: var(--color-alarm-red);
+  box-shadow: 0 0 30px var(--color-alarm-red), inset 0 0 20px rgba(255, 34, 68, 0.4);
+}
+
+.cyber-btn.pulse {
+  animation: btnPulse 1.8s infinite;
+}
+
+.mini-btn {
+  background: rgba(14, 22, 38, 0.85);
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  color: #c0d8f0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mini-btn:hover {
+  border-color: var(--color-loki-gold);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(242, 201, 76, 0.4);
+}
+
+.btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: 0.5s;
+}
+
+.cyber-btn:hover .btn-glow {
+  left: 100%;
+}
+
+/* ==========================================================================
+   PHASE 2: COMPLEX 9x7 SPLIT-BEAM PUZZLE STYLING
+   ========================================================================== */
+#phase-puzzle {
+  padding: 16px 30px;
+}
+
+.puzzle-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 16, 28, 0.88);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 6px;
+  padding: 8px 20px;
+  backdrop-filter: blur(8px);
+}
+
+.hud-monitor-group {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.hud-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-dim);
+  letter-spacing: 2px;
+}
+
+.chip-val {
+  font-family: var(--font-tech);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-tesseract-blue);
+  letter-spacing: 2px;
+}
+
+.hud-relays {
+  display: flex;
+  gap: 12px;
+}
+
+.relay-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(20, 30, 48, 0.7);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  color: var(--color-text-dim);
+  transition: all 0.3s ease;
+}
+
+.relay-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-alarm-red);
+  box-shadow: 0 0 6px var(--color-alarm-red);
+}
+
+.relay-tag.powered {
+  border-color: var(--color-loki-green);
+  background: rgba(0, 255, 119, 0.15);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 255, 119, 0.35);
+}
+
+.relay-tag.powered .relay-dot {
+  background: var(--color-loki-green);
+  box-shadow: 0 0 10px var(--color-loki-green);
+}
+
+.hud-instruction {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-loki-green);
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(0, 255, 119, 0.4);
+}
+
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-status {
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  background: rgba(255, 34, 68, 0.15);
+  border: 1px solid var(--color-alarm-red);
+  color: var(--color-alarm-red);
+  transition: all 0.4s ease;
+}
+
+.hud-status.connected {
+  background: rgba(0, 210, 255, 0.2);
+  border-color: var(--color-tesseract-blue);
+  color: var(--color-tesseract-blue);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+}
+
+#puzzle-board {
+  position: relative;
+  flex: 1;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#beam-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 960px;
+  height: 520px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#puzzle-grid {
+  position: relative;
+  width: 960px;
+  height: 520px;
+  z-index: 10;
+}
+
+/* Nodes Positioning Base & Grounding 2.5D Pedestal Shadows */
+.puzzle-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.9));
+}
+
+.puzzle-node::before {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  width: 76px;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0,0,0,0.4) 50%, transparent 75%);
+  border-radius: 50%;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Emitter Node */
+.emitter {
+  width: 72px;
+  height: 72px;
+}
+
+.emitter .node-core {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--color-tesseract-blue) 45%, #002277 85%, #00081a 100%);
+  box-shadow: 
+    0 0 25px var(--color-tesseract-blue), 
+    0 0 50px rgba(0, 150, 255, 0.8),
+    inset 0 0 10px #ffffff;
+  animation: pulseGlow 1.8s infinite alternate;
+}
+
+.emitter .node-ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 210, 255, 0.7);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.3), inset 0 0 10px rgba(0, 210, 255, 0.2);
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Asgardian Beam Splitter Node (Hyper-Crystal Core) */
+.splitter {
+  width: 82px;
+  height: 82px;
+}
+
+.splitter-core {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #00ff88 35%, #00d2ff 75%, #042416 100%);
+  transform: rotate(45deg);
+  box-shadow: 
+    0 0 30px var(--color-loki-green),
+    0 0 55px rgba(0, 210, 255, 0.5),
+    inset 0 0 12px #ffffff;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splitter.active .splitter-core {
+  background: radial-gradient(circle, #ffffff 0%, #00e5ff 35%, #00ff88 70%, #002b1b 100%);
+  box-shadow: 
+    0 0 45px var(--color-tesseract-blue), 
+    0 0 80px var(--color-loki-green), 
+    0 0 120px rgba(0, 255, 119, 0.6),
+    inset 0 0 18px #ffffff;
+  animation: prismPulse 1.2s infinite alternate ease-in-out;
+}
+
+.splitter-prism {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(0, 255, 119, 0.5);
+  box-shadow: 0 0 20px rgba(0, 255, 119, 0.3);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.splitter-ring {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 1px dotted rgba(0, 210, 255, 0.6);
+  box-shadow: inset 0 0 12px rgba(0, 210, 255, 0.2);
+  animation: spinSlow 10s linear infinite reverse;
+}
+
+/* Obsidian Obstacle Monoliths */
+.obstacle-pillar {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background: radial-gradient(circle at 35% 35%, #300f1c 0%, #12050b 70%, #050103 100%);
+  border: 2px solid rgba(255, 34, 68, 0.65);
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.98), 
+    0 0 24px rgba(255, 34, 68, 0.45), 
+    inset 0 0 18px rgba(255, 34, 68, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.obstacle-pillar:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.98), 0 0 35px var(--color-alarm-red);
+}
+
+.pillar-core {
+  width: 38px;
+  height: 38px;
+  background: #090205;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 34, 68, 0.4);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.95);
+}
+
+.pillar-rune {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 900;
+  color: #ff3355;
+  opacity: 0.85;
+  text-shadow: 0 0 12px #ff1133, 0 0 25px rgba(255, 0, 50, 0.8);
+  animation: runeBlink 2.5s infinite alternate ease-in-out;
+}
+
+/* Receivers (Alpha & Beta Gyro-Turbines) */
+.receiver {
+  width: 76px;
+  height: 76px;
+}
+
+.receiver .receiver-core {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #182844 0%, #08101d 80%, #02050a 100%);
+  border: 2px solid rgba(0, 210, 255, 0.5);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.95);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.receiver.active .receiver-core {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--color-tesseract-blue) 45%, #0033aa 85%, #001033 100%);
+  box-shadow: 
+    0 0 45px var(--color-tesseract-blue), 
+    0 0 85px #0066ff,
+    inset 0 0 15px #ffffff;
+  border-color: #ffffff;
+}
+
+.receiver .receiver-aperture {
+  position: absolute;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 210, 255, 0.4);
+  box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.25), 0 0 15px rgba(0, 210, 255, 0.2);
+  animation: spinSlow 12s linear infinite;
+}
+
+.receiver.active .receiver-aperture {
+  border-color: var(--color-tesseract-blue);
+  box-shadow: inset 0 0 30px var(--color-tesseract-blue), 0 0 35px var(--color-tesseract-blue);
+  animation: pulseGlow 1s infinite alternate;
+}
+
+.node-tag {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--color-tesseract-blue);
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
+}
+
+/* Vertical Containment Conduits */
+.containment-conduit {
+  position: absolute;
+  width: 20px;
+  height: 74px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.conduit-stream {
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 210, 255, 0.4) 0%, rgba(0, 210, 255, 0.15) 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+  transition: all 0.5s ease;
+}
+
+.conduit-pulses {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #00d2ff 60%, transparent 100%);
+  box-shadow: 0 0 12px var(--color-tesseract-blue);
+  opacity: 0.5;
+  animation: conduitPulse 2s infinite ease-in-out;
+}
+
+.containment-conduit.charged .conduit-stream {
+  width: 8px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-tesseract-blue) 40%, #00ff88 100%);
+  box-shadow: 
+    0 0 20px var(--color-tesseract-blue),
+    0 0 40px #00ff88,
+    0 0 60px rgba(0, 210, 255, 0.9);
+  animation: energyBridgePulse 0.4s infinite alternate;
+}
+
+.containment-conduit.charged .conduit-pulses {
+  opacity: 1;
+  transform: scale(1.6);
+  box-shadow: 0 0 25px #ffffff, 0 0 50px var(--color-tesseract-blue);
+}
+
+.containment-conduit.conduit-venting .conduit-stream {
+  width: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #00e5ff 70%, transparent 100%);
+  box-shadow: 0 0 35px #00e5ff, 0 0 60px #ffffff;
+  animation: conduitVent 0.8s ease-out forwards;
+}
+
+@keyframes conduitPulse {
+  0% { transform: translateY(-25px); opacity: 0.2; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(25px); opacity: 0.2; }
+}
+
+@keyframes conduitVent {
+  0% { opacity: 1; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(1.8); }
+}
+
+/* Asgardian Runic Mirror Slots */
+.mirror-slot {
+  width: 78px;
+  height: 78px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mirror-slot:hover {
+  transform: translate(-50%, -50%) scale(1.1) perspective(400px) rotateX(6deg);
+}
+
+.mirror-housing {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16, 26, 44, 0.95) 0%, rgba(6, 11, 20, 0.98) 100%);
+  border: 1.5px solid rgba(0, 210, 255, 0.45);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.95), 
+    inset 0 0 15px rgba(0, 210, 255, 0.2), 
+    0 0 15px rgba(0, 210, 255, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Asgardian Corner Filigree Accents */
+.mirror-housing::before, .mirror-housing::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--color-loki-gold);
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 5;
+}
+.mirror-housing::before { top: 3px; left: 3px; border-right: none; border-bottom: none; }
+.mirror-housing::after { bottom: 3px; right: 3px; border-left: none; border-top: none; }
+
+.mirror-slot:hover .mirror-housing {
+  border-color: var(--color-loki-green);
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.98), 
+    0 0 25px rgba(0, 255, 119, 0.5), 
+    inset 0 0 20px rgba(0, 255, 119, 0.25);
+}
+
+.mirror-slot.energized .mirror-housing {
+  border-color: var(--color-tesseract-blue);
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.98), 
+    0 0 35px var(--color-tesseract-blue), 
+    inset 0 0 25px rgba(0, 210, 255, 0.45);
+}
+
+.mirror-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  filter: contrast(1.15) brightness(0.9);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Illuminated Prismatic Crystal Blade */
+.mirror-surface-indicator {
+  position: absolute;
+  width: 86px;
+  height: 5px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, #ffffff 40%, var(--color-tesseract-blue) 75%, #ffffff 100%);
+  box-shadow: 
+    0 0 12px var(--color-tesseract-blue), 
+    0 0 24px #ffffff,
+    0 0 4px #ffffff;
+  border-radius: 3px;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mirror-angle-tag {
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #a8d5ff;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 1px 4px;
+  border-radius: 3px;
+  z-index: 6;
+}
+
+.mirror-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 16px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.35) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mirror-slot.energized .mirror-glow {
+  opacity: 1;
+  animation: pulseGlow 1.5s infinite alternate;
+}
+
+.mirror-slot.locked {
+  cursor: default;
+  pointer-events: none;
+}
+
+.mirror-slot.locked .mirror-housing {
+  border-color: var(--color-loki-green);
+  box-shadow: 0 0 35px var(--color-loki-green);
+}
+  box-shadow: 0 0 25px var(--color-loki-green);
+}
+
+/* ==========================================================================
+   PHASE 3: TVA DIAGNOSTICS & DEBUG INTERRUPT STYLING
+   ========================================================================== */
+#phase-debug {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 50px;
+  background: transparent;
+}
+
+.terminal-container {
+  width: 440px;
+  position: relative;
+}
+
+.terminal-glitch-bar {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--color-alarm-red);
+  box-shadow: 0 0 15px var(--color-alarm-red);
+  animation: glitchBar 0.3s infinite alternate;
+}
+
+.terminal-frame {
+  background: #080305;
+  border: 2px solid var(--color-alarm-red);
+  box-shadow: 0 0 40px var(--color-alarm-glow), inset 0 0 25px rgba(255, 20, 50, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.terminal-header {
+  background: #1c050a;
+  border-bottom: 1px solid rgba(255, 34, 68, 0.4);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.term-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.term-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-alarm-red);
+}
+
+.term-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #ff99aa;
+}
+
+.terminal-body {
+  padding: 28px 34px;
+  display: flex;
+  flex-direction: column;
+}
+
+.alarm-stamp {
+  font-family: var(--font-tech);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--color-alarm-red);
+  text-shadow: 0 0 20px var(--color-alarm-red);
+  margin-bottom: 20px;
+  animation: textGlitch 2s infinite;
+}
+
+.terminal-log {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: #c9ccd6;
+  margin-bottom: 28px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 16px 20px;
+  border-radius: 4px;
+  border-left: 3px solid var(--color-alarm-red);
+}
+
+.log-line.success { color: var(--color-tesseract-blue); }
+.log-line.danger { color: var(--color-alarm-red); font-weight: 700; }
+.log-line.warning { color: var(--color-loki-gold); }
+.log-prefix { opacity: 0.5; margin-right: 6px; }
+
+.log-prompt-msg {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 34, 68, 0.3);
+  color: #ffadb7;
+  letter-spacing: 1px;
+}
+
+.terminal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   PHASE 4: CLAIM TESSERACT & FINALE
+   ========================================================================== */
+#phase-finale {
+  justify-content: center;
+  align-items: center;
+}
+
+#finale-overlay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 80px;
+}
+
+.victory-panel {
+  background: rgba(7, 12, 22, 0.94);
+  border: 1px solid rgba(242, 201, 76, 0.6);
+  border-radius: 12px;
+  padding: 28px 48px;
+  max-width: 540px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 50px rgba(242, 201, 76, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: victoryZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  backdrop-filter: blur(12px);
+}
+
+.victory-panel.hidden {
+  display: none;
+}
+
+.victory-seal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--color-loki-gold);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(242, 201, 76, 0.5);
+}
+
+.asgardian-rune {
+  font-size: 22px;
+  color: var(--color-loki-gold);
+}
+
+.victory-title {
+  font-family: var(--font-title);
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  color: #fff;
+  background: linear-gradient(180deg, #ffffff 30%, #e6be60 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.victory-desc {
+  font-family: var(--font-tech);
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--color-tesseract-blue);
+  text-shadow: 0 0 12px var(--color-tesseract-blue);
+  margin-bottom: 28px;
+}
+
+.victory-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+.stat-box {
+  background: rgba(16, 26, 44, 0.7);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 6px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-family: var(--font-tech);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-loki-green);
+}
+
+.stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--color-text-dim);
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   CINEMATIC DIALOGUE BOX
+   ========================================================================== */
+#dialogue-box {
+  position: absolute;
+  bottom: 16px;
+  left: 220px;
+  width: 440px;
+  max-width: 90%;
+  background: linear-gradient(100deg, rgba(5, 12, 22, .96), rgba(6, 16, 28, .92));
+  border: 1px solid rgba(0, 255, 119, 0.4);
+  border-left: 5px solid var(--color-loki-green);
+  border-radius: 8px;
+  padding: 12px 20px;
+  z-index: 50;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 255, 119, 0.15);
+  backdrop-filter: blur(12px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+#dialogue-box.dialogue-hidden {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
+.dialogue-speaker {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.speaker-name {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--color-loki-gold);
+  text-shadow: 0 0 10px rgba(242, 201, 76, 0.5);
+}
+
+.speaker-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--color-loki-green);
+}
+
+.dialogue-content {
+  font-family: var(--font-title);
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #fff;
+  min-height: 24px;
+}
+
+/* ==========================================================================
+   VIGNETTE & SCANLINES
+   ========================================================================== */
+#scanline-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0.35;
+}
+
+#vignette-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+  z-index: 95;
+}
+
+/* Final pass: blend character art into the scene and keep the optics legible. */
+#game-container {
+  width: min(100vw, 177.7778vh);
+  height: min(100vh, 56.25vw);
+  max-width: none;
+  max-height: none;
+}
+
+.loki-shadow {
+  width: 230px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .82), transparent 72%);
+}
+
+#phase-puzzle {
+  padding: clamp(12px, 1.8vw, 24px) clamp(16px, 3vw, 42px);
+}
+
+.puzzle-hud-header {
+  display: grid;
+  grid-template-columns: auto minmax(220px, 1fr) auto;
+  gap: clamp(12px, 2vw, 26px);
+  min-height: 76px;
+  padding: 12px clamp(14px, 2vw, 24px);
+  border-color: rgba(73, 202, 255, .24);
+  border-radius: 12px;
+  background: linear-gradient(110deg, rgba(5, 13, 25, .94), rgba(9, 24, 40, .86));
+  box-shadow: 0 12px 35px rgba(0, 0, 0, .35), inset 0 1px rgba(255, 255, 255, .05);
+}
+
+.hud-monitor-group {
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+.hud-instruction {
+  display: grid;
+  gap: 4px;
+  justify-self: center;
+  max-width: 470px;
+  color: #9fffd0;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: .8px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.hud-instruction strong {
+  color: #effff7;
+  font: 700 12px var(--font-tech);
+  letter-spacing: 1px;
+}
+
+.hud-instruction span {
+  color: #91aebd;
+  font: 11px/1.4 var(--font-mono);
+  letter-spacing: .3px;
+}
+
+.hud-controls {
+  gap: 10px;
+}
+
+.hud-status {
+  max-width: 230px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+}
+
+.mini-btn kbd {
+  padding: 1px 4px;
+  border: 1px solid rgba(192, 216, 240, .25);
+  border-radius: 3px;
+  color: #8097a9;
+  font: 9px var(--font-mono);
+}
+
+#puzzle-board {
+  overflow: hidden;
+  isolation: isolate;
+  margin-top: 14px;
+  border: 1px solid rgba(57, 177, 222, .16);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(7, 60, 76, .27), transparent 67%),
+    linear-gradient(rgba(30, 116, 151, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 116, 151, .055) 1px, transparent 1px),
+    rgba(2, 8, 17, .28);
+  background-size: auto, 40px 40px, 40px 40px, auto;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, .36), 0 18px 45px rgba(0, 0, 0, .18);
+}
+
+#puzzle-board::before,
+#puzzle-board::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#puzzle-board::before {
+  inset: 18px;
+  border: 1px solid rgba(103, 210, 238, .07);
+  clip-path: polygon(0 0, 18% 0, 18% 1px, 82% 1px, 82% 0, 100% 0, 100% 18%, calc(100% - 1px) 18%, calc(100% - 1px) 82%, 100% 82%, 100% 100%, 82% 100%, 82% calc(100% - 1px), 18% calc(100% - 1px), 18% 100%, 0 100%, 0 82%, 1px 82%, 1px 18%, 0 18%);
+}
+
+#beam-canvas {
+  transform: translate(-50%, -50%) scale(var(--puzzle-scale, 1));
+  transform-origin: center;
+}
+
+#puzzle-grid {
+  flex: 0 0 960px;
+  transform: scale(var(--puzzle-scale, 1));
+  transform-origin: center;
+}
+
+.mirror-slot {
+  border-radius: 12px;
+  outline: none;
+}
+
+.mirror-slot:focus-visible .mirror-housing {
+  border-color: #fff1a8;
+  box-shadow: 0 0 0 3px rgba(255, 226, 126, .26), 0 0 28px rgba(255, 215, 112, .7);
+}
+
+.mirror-slot.locked:focus-visible .mirror-housing {
+  box-shadow: 0 0 0 3px rgba(0, 255, 119, .24), 0 0 25px var(--color-loki-green);
+}
+
+.mirror-housing {
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(15, 29, 45, .98), rgba(2, 8, 17, .98));
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 -8px 14px rgba(0, 210, 255, .1);
+}
+
+.mirror-surface-indicator {
+  width: 58px;
+  height: 5px;
+  border: 1px solid rgba(226, 250, 255, .7);
+  box-shadow: 0 0 10px var(--color-tesseract-blue), 0 0 24px rgba(0, 210, 255, .8);
+}
+
+.obstacle-pillar {
+  background: linear-gradient(145deg, #202835, #080a12 68%);
+  border-color: rgba(255, 111, 101, .42);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .6), inset 0 0 16px rgba(255, 60, 72, .13);
+}
+
+.receiver .receiver-core,
+.emitter .node-core {
+  box-shadow: 0 0 22px currentColor, 0 0 52px rgba(0, 210, 255, .42);
+}
+
+
+
+#tesseract-cube.scripted-motion {
+  animation: none;
+}
+
+#tesseract-cube.surging .tesseract-img {
+  animation: artifactCharge .7s ease-in-out infinite alternate;
+}
+
+#tesseract-cube.in-flight .tesseract-img {
+  animation: none;
+}
+
+@keyframes artifactCharge {
+  from { filter: drop-shadow(0 0 25px var(--color-tesseract-blue)) drop-shadow(0 0 50px #0055ff) brightness(1); }
+  to { filter: drop-shadow(0 0 45px #fff) drop-shadow(0 0 90px #00d2ff) brightness(1.35); }
+}
+
+@media (max-width: 980px) {
+  .puzzle-hud-header {
+    grid-template-columns: 1fr auto;
+  }
+  .hud-instruction {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+  }
+  .hud-controls {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .hud-relays {
+    gap: 6px;
+  }
+  .relay-tag {
+    font-size: 9px;
+    letter-spacing: .7px;
+    padding: 3px 6px;
+  }
+}
+
+/* The vault's integrity and decoy hazards are part of the optics, not a score HUD. */
+.hud-controls {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.integrity-readout {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 112px;
+  color: #88a6b5;
+  font: 8px var(--font-mono);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+#integrity-cells {
+  display: flex;
+  gap: 7px;
+}
+
+.integrity-cell {
+  display: block;
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(119, 255, 207, .9);
+  background: linear-gradient(135deg, #d9fff4, #37eaaa 55%, #087c77);
+  box-shadow: 0 0 8px rgba(49, 237, 183, .7), inset 0 0 4px rgba(255,255,255,.7);
+  transition: opacity .3s ease, filter .3s ease, transform .3s ease;
+}
+
+.integrity-cell.spent {
+  opacity: .22;
+  filter: grayscale(1);
+  transform: rotate(45deg) scale(.7);
+  box-shadow: none;
+}
+
+.decoy-mirror-slot .mirror-housing {
+  border-color: rgba(255, 67, 83, .72);
+  box-shadow: 0 0 14px rgba(255, 37, 62, .25), inset 0 0 18px rgba(255, 30, 55, .16);
+}
+
+.decoy-mirror-slot .mirror-surface-indicator {
+  background: linear-gradient(90deg, #fff 0%, #ff667a 45%, #ff193d 100%);
+  box-shadow: 0 0 12px #ff2648, 0 0 26px rgba(255, 20, 50, .7);
+}
+
+.decoy-mark {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  z-index: 5;
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border: 1px solid rgba(255, 141, 145, .75);
+  border-radius: 50%;
+  background: rgba(69, 4, 15, .9);
+  color: #ffdadd;
+  font: 700 11px var(--font-mono);
+  box-shadow: 0 0 12px rgba(255, 40, 70, .55);
+  pointer-events: none;
+}
+
+.decoy-mirror-slot.energized .mirror-housing {
+  border-color: #ff364f;
+  box-shadow: 0 0 22px #ff193d, inset 0 0 20px rgba(255, 14, 45, .58);
+}
+
+#puzzle-board.decoy-hit {
+  animation: decoyPulse .2s ease-in-out 2;
+}
+
+#puzzle-board.overload {
+  animation: vaultOverload .12s linear 8;
+  box-shadow: inset 0 0 120px rgba(255, 0, 42, .48), 0 0 50px rgba(255, 0, 40, .7);
+}
+
+.hud-status.connected {
+  border-color: #66ffc2;
+  color: #c4ffe3;
+  background: rgba(0, 255, 139, .15);
+  box-shadow: 0 0 25px rgba(0, 255, 139, .32);
+}
+
+.loki-sprite-wrapper {
+  width: 300px;
+  height: 470px;
+}
+
+.loki-master-art {
+  transition: filter .5s ease, transform .5s ease, opacity .25s ease;
+  filter: brightness(1.1) contrast(1.08) drop-shadow(0 0 20px rgba(0, 255, 119, .38)) drop-shadow(0 14px 30px rgba(0,0,0,.6));
+}
+
+.loki-actor-casting .loki-master-art {
+  filter: brightness(1.14) contrast(1.1) drop-shadow(0 0 34px rgba(0, 255, 119, .84)) drop-shadow(0 0 68px rgba(0,210,255,.45));
+}
+
+.loki-actor-glitch .loki-master-art {
+  filter: brightness(1.1) contrast(1.14) drop-shadow(0 0 25px rgba(255, 34, 68, .85));
+}
+
+.loki-actor-victory .loki-master-art {
+  filter: brightness(1.18) contrast(1.12) drop-shadow(0 0 40px rgba(0, 255, 119, .85)) drop-shadow(0 0 74px rgba(0,210,255,.72));
+}
+
+.vault-lighting-overlay {
+  background:
+    radial-gradient(ellipse at 22% 72%, rgba(0, 255, 119, .15), transparent 34%),
+    radial-gradient(circle at 68% 45%, rgba(0, 210, 255, .28) 0%, transparent 60%),
+    linear-gradient(115deg, rgba(0, 255, 119, .08) 0%, transparent 45%, rgba(0, 210, 255, .12) 80%);
+}
+
+#green-magic-bridge.active {
+  background: linear-gradient(90deg, rgba(0,255,119,.98), rgba(0,210,255,.96), rgba(236,255,255,.94));
+  box-shadow: 0 0 32px var(--color-loki-green), 0 0 70px var(--color-tesseract-blue);
+}
+
+@keyframes decoyPulse {
+  50% { filter: brightness(1.7) saturate(1.6); transform: translateX(3px); }
+}
+
+@keyframes vaultOverload {
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ==========================================================================
+   ANIMATIONS & KEYFRAMES
+   ========================================================================== */
+@keyframes lokiIdleBreath {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-3px) scale(1.008); }
+  100% { transform: translateY(0px) scale(1); }
+}
+
+@keyframes lokiGlitchJitter {
+  0% { transform: translate(-2px, 1px); }
+  100% { transform: translate(2px, -1px); }
+}
+
+@keyframes tesseractFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.5; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes rotateRays {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes barrierPulse {
+  0% { transform: scale(1); filter: brightness(1.1) contrast(1.2); }
+  100% { transform: scale(1.03); filter: brightness(1.35) contrast(1.4); }
+}
+
+@keyframes magicAuraPulse {
+  0% { opacity: 0.35; transform: scale(0.95); }
+  100% { opacity: 0.75; transform: scale(1.05); }
+}
+
+@keyframes particleWiggle {
+  0% { transform: scale(0.95) rotate(-3deg); }
+  100% { transform: scale(1.08) rotate(3deg); }
+}
+
+@keyframes energyBridgePulse {
+  0% { box-shadow: 0 0 25px var(--color-loki-green); filter: brightness(1); }
+  100% { box-shadow: 0 0 55px var(--color-tesseract-blue); filter: brightness(1.35); }
+}
+
+@keyframes cosmicDrift {
+  0% { background-position: 0 0; }
+  100% { background-position: 550px 550px; }
+}
+
+@keyframes spinSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes alarmPulse {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.7; }
+}
+
+@keyframes btnPulse {
+  0% { box-shadow: 0 0 10px rgba(255, 34, 68, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(255, 34, 68, 0.8), inset 0 0 15px rgba(255, 34, 68, 0.4); }
+  100% { box-shadow: 0 0 10px rgba(255, 34, 68, 0.4); }
+}
+
+@keyframes introFadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes victoryZoom {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes glitchBar {
+  0% { transform: scaleX(1); opacity: 0.8; }
+  50% { transform: scaleX(0.7) translateX(30px); opacity: 0.4; }
+  100% { transform: scaleX(1.1); opacity: 1; }
+}
+
+@keyframes textGlitch {
+  0% { transform: none; }
+  92% { transform: none; }
+  93% { transform: skewX(-10deg) scaleY(1.1); text-shadow: -2px 0 red, 2px 0 blue; }
+  95% { transform: none; }
+  97% { transform: skewX(12deg); text-shadow: 2px 0 red, -2px 0 blue; }
+  100% { transform: none; }
+}
+
+@keyframes prismPulse {
+  0% { transform: rotate(45deg) scale(0.96); filter: brightness(1) saturate(1.2); }
+  100% { transform: rotate(45deg) scale(1.08); filter: brightness(1.3) saturate(1.5); }
+}
+
+@keyframes runeBlink {
+  0% { opacity: 0.4; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1.06); filter: drop-shadow(0 0 16px #ff1133); }
+}

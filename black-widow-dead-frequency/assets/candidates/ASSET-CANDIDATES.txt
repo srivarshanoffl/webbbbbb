@@ -1,0 +1,41 @@
+BLACK WIDOW IMAGE COMPARISON — NOT USED BY THE GAME
+
+The game uses widow-infiltration-walk.png and widow-relay-stance.png from the parent assets folder. These candidates were downloaded and inspected for fit. The checkerboard-backed previews and combat poses were rejected because they looked like a fight scene or did not composite cleanly over the vault.
+
+widow-walk-vhv.png and widow-vhv-pose-248939.png
+VHV, https://www.vhv.rs/viewpic/bJRhiJ_avengers-2012-black-widow-hd-png-download/
+The source page states personal use only. The image is a forward walking pose. This is the source for the selected, locally cleaned entrance pose.
+
+widow-standing-pngaaa.png
+PNGAAA, https://www.pngaaa.com/detail/1396641
+PNGAAA describes its uploaded PNGs as for personal and non-commercial projects: https://www.pngaaa.com/about. Neutral standing pose; selected as the relay stance after removing its baked checkerboard preview.
+
+widow-crouch-pngaaa.png
+PNGAAA, https://www.pngaaa.com/detail/1082965
+PNGAAA describes its uploaded PNGs as for personal and non-commercial projects. Rejected: low combat crouch with illuminated batons.
+
+widow-standing-clipart.png
+Clipart Library, https://clipart-library.com/clip-art/61-611898_blackwidow-natasharomanoff-marvel-png-transparent-black-widow-avengers.htm
+The page describes the image as free to use. Rejected: this downloaded file has a solid white background.
+
+widow-vhv-pose-600126.png
+VHV, https://www.vhv.rs/viewpic/boJbRh_avengers-black-widow-png-transparent-png/
+The source page states personal use only. Rejected: low combat crouch with a glowing baton.
+
+widow-freepngimg-widow-png.png, widow-freepngimg-picture.png, and widow-freepngimg-file.png
+FreePNGimg pages: https://freepngimg.com/png/11095-black-widow-png, https://freepngimg.com/png/11096-black-widow-png-picture, and https://freepngimg.com/png/20693-black-widow-file
+The pages state CC BY-NC 4.0 and request attribution to FreePNGimg.com. Rejected: the options show combat batons or a baked-in scene background.
+
+corridor-photo-candidate.jpeg
+Pexels, https://www.pexels.com/photo/moody-industrial-corridor-with-concrete-walls-40812207/
+The page labels the photo free to use. Rejected: it is a generic utility passage with a prominent exit sign and fire equipment.
+
+unsplash-datacenter.jpg
+Unsplash, https://unsplash.com/photos/a-hallway-with-metal-doors-yptHztJuRZA
+The page states the Unsplash License. Rejected: bright datacenter racks and an office-like corridor do not fit the vault.
+
+unsplash-bunker.jpg
+Unsplash, https://unsplash.com/photos/a-long-narrow-hallway-with-a-door-leading-to-another-room-YJ9D1qkbN_k
+The page states the Unsplash License. Rejected: the bunker corridor is warm, old, and too plainly lit for the chosen vault scene.
+
+These source-site terms do not grant Marvel/Disney character or actor likeness rights.

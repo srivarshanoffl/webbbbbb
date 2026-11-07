@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#102536" />
+  <title>Captain America: Safe Passage</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="game" class="game" data-phase="title" data-section="1" aria-label="Captain America: Safe Passage">
+    <div class="city-backdrop" aria-hidden="true"></div>
+    <div class="city-haze" aria-hidden="true"></div>
+    <div class="street" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="rubble rubble-left" aria-hidden="true"></div>
+    <div class="rubble rubble-right" aria-hidden="true"></div>
+
+    <header class="hud">
+      <div class="brand"><span class="brand-star">★</span><div><strong>CAPTAIN AMERICA</strong><small>SAFE PASSAGE</small></div></div>
+      <div class="route-status"><span id="sectionLabel">SECTION 1 / 3</span><div class="route-track"><i id="routeProgress"></i></div></div>
+      <div class="civilian-status"><span class="status-icon">●●●</span><b id="civilianText">3 SAFE</b></div>
+    </header>
+
+    <canvas id="vfxCanvas" class="vfx-canvas" aria-hidden="true"></canvas>
+    <div class="screen-flash" id="screenFlash" aria-hidden="true"></div>
+
+    <div class="mission-cue" id="missionCue" aria-live="polite">Stay between the threat and the civilians.</div>
+    <div class="trajectory" id="trajectory" hidden aria-hidden="true"></div>
+    <div class="warning" id="warning" hidden><span class="warning-mark">!</span><span id="warningText">INCOMING</span><i class="warning-arrow" id="warningArrow">→</i></div>
+
+    <div class="escort-group" id="civilians" aria-label="Three civilians being escorted">
+      <img class="standing" src="assets/civilians.png" alt="Three civilians supporting each other as they move to safety" draggable="false" />
+      <img class="fallen" src="assets/civilians-fallen.png" alt="One civilian has fallen while the other two help him" draggable="false" />
+      <span class="group-label">STAY CLOSE</span>
+    </div>
+
+    <div class="captain" id="captain" aria-label="Captain America">
+      <img id="captainSprite" class="captain-sprite" src="assets/captain-america.png" alt="Captain America in a defensive stance" draggable="false" />
+      <img id="shield" class="shield" src="assets/shield.svg" alt="Draggable Captain America shield" draggable="false" />
+      <span class="captain-shadow" aria-hidden="true"></span>
+    </div>
+
+    <div class="hazard" id="hazard" hidden aria-hidden="true"><img class="hazard-art" src="assets/debris-obstacle.png" alt="" draggable="false" /><i></i><i></i></div>
+    <div class="impact" id="impact" aria-hidden="true"><span id="impactText">BLOCKED!</span><i></i><i></i><i></i><i></i></div>
+
+    <div class="touch-controls" aria-label="Touch controls">
+      <div class="move-controls"><button data-move="left" aria-label="Move left">◀</button><button data-move="right" aria-label="Move right">▶</button></div>
+    </div>
+    <div class="desktop-hint" id="desktopHint">A / D MOVE <span>•</span> DRAG SHIELD ONTO THE THREAT PATH</div>
+
+    <section class="scene-screen title-screen" id="titleScreen">
+      <div class="title-copy"><span class="eyebrow">MARVEL HERO RESCUE</span><h1>SAFE<br /><em>PASSAGE</em></h1><p>Keep the shield between danger and the people counting on you.</p><button class="action-button" id="startButton">START RESCUE <b>→</b></button><small>MOVE CAP • DRAG SHIELD • READ THE PATH</small></div>
+      <div class="title-note">NEW YORK<br />EVACUATION ROUTE</div>
+    </section>
+
+    <section class="scene-screen interruption-screen" id="bugScreen" hidden>
+      <div class="interruption-copy"><span class="eyebrow">SIGNAL INTERRUPTION</span><h2>FIELD SYSTEM<br /><em>GLITCH</em></h2><p>A placeholder system bug interrupts the route. Clear it to continue the escort.</p><div class="console-lines"><span>&gt; route link unstable</span><span>&gt; repair routine: pending</span></div><button class="action-button" id="fixNowButton">FIX NOW <b>→</b></button></div>
+    </section>
+
+    <section class="scene-screen fallen-screen" id="fallenScreen" hidden>
+      <div class="fallen-copy"><span class="eyebrow">EVACUATION PAUSED</span><h2>ONE CIVILIAN<br /><em>IS DOWN</em></h2><p>The group has stumbled in the crossfire. Check on them before the route continues.</p><button class="action-button" id="fallenContinueButton">CONTINUE <b>→</b></button></div>
+    </section>
+
+    <section class="scene-screen outcome-screen" id="outcomeScreen" hidden>
+      <div class="outcome-copy"><span class="eyebrow" id="outcomeEyebrow">CHECKPOINT</span><h2 id="outcomeTitle">THE GROUP NEEDS COVER</h2><p id="outcomeText">The last hazard got through. Reset this section and try again.</p><button class="action-button" id="outcomeButton">RETRY SECTION <b>↻</b></button></div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

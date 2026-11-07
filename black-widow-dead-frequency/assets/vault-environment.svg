@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#252a2b"/><stop offset=".52" stop-color="#111619"/><stop offset="1" stop-color="#080a0c"/></linearGradient>
+ <linearGradient id="steel" x1="0" x2="1" y2="1"><stop stop-color="#4c5557"/><stop offset=".22" stop-color="#242b2e"/><stop offset=".52" stop-color="#101518"/><stop offset=".82" stop-color="#303739"/><stop offset="1" stop-color="#111518"/></linearGradient>
+ <radialGradient id="redGlow"><stop stop-color="#b6323d" stop-opacity=".7"/><stop offset="1" stop-color="#b6323d" stop-opacity="0"/></radialGradient>
+ <radialGradient id="coldGlow"><stop stop-color="#87989a" stop-opacity=".28"/><stop offset="1" stop-color="#87989a" stop-opacity="0"/></radialGradient>
+ <linearGradient id="floor" x1="0" y1="0" x2=".15" y2="1"><stop stop-color="#272d30"/><stop offset="1" stop-color="#090c0e"/></linearGradient>
+ <pattern id="grate" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 0H28M0 0V28" stroke="#a3abad" stroke-opacity=".12" stroke-width="2"/></pattern>
+ <filter id="blur"><feGaussianBlur stdDeviation="36"/></filter>
+</defs>
+<rect width="1920" height="1080" fill="url(#bg)"/>
+<ellipse cx="1450" cy="560" rx="590" ry="480" fill="url(#redGlow)"/>
+<ellipse cx="450" cy="630" rx="470" ry="410" fill="url(#coldGlow)"/>
+<!-- distant structural ribs -->
+<g opacity=".55" stroke="#7d8889" stroke-width="7">
+ <path d="M80 0V632M196 0V620M322 0V619M470 0V612M620 0V606M770 0V602M915 0V599M1070 0V596M1235 0V590M1400 0V585M1580 0V580M1770 0V575"/>
+ <path d="M0 124H1920M0 258H1920M0 396H1920M0 534H1920" stroke-opacity=".35"/>
+</g>
+<g stroke="#030506" stroke-width="17" opacity=".8">
+ <path d="M145 0V631M365 0V615M595 0V606M828 0V600M1065 0V594M1300 0V590M1538 0V582M1775 0V574"/>
+</g>
+<!-- reinforced vault ribs, receding into center -->
+<path d="M0 0H1920V645L1320 699H580L0 641Z" fill="url(#steel)" opacity=".52"/>
+<path d="M0 95H1920M0 190H1920M0 287H1920M0 386H1920M0 489H1920M0 587H1920" stroke="#aab3b2" stroke-opacity=".13" stroke-width="2"/>
+<path d="M100 0 210 640M370 0 440 642M650 0 680 642M940 0V644M1255 0 1200 644M1560 0 1450 640M1820 0 1690 640" stroke="#020405" stroke-width="26" opacity=".6"/>
+<!-- overhead panels -->
+<path d="M0 0H1920L1680 178H220Z" fill="#171d20" stroke="#5a6465" stroke-opacity=".5" stroke-width="5"/>
+<path d="M145 0 340 142M450 0 590 142M760 0 850 142M1160 0 1080 142M1465 0 1305 142M1775 0 1515 142" stroke="#7d8989" stroke-opacity=".23" stroke-width="5"/>
+<path d="M0 0 260 156M1920 0 1640 156" stroke="#080b0d" stroke-width="30"/>
+<!-- cold wall strips -->
+<path d="M142 161H155V488H142ZM608 165H619V477H608ZM1088 166H1098V481H1088ZM1730 160H1742V473H1730Z" fill="#aab6b3" opacity=".3" filter="url(#blur)"/>
+<path d="M145 186V477M612 189V467M1092 187V470M1735 185V457" stroke="#d5ddda" stroke-opacity=".44" stroke-width="3"/>
+<!-- distant vents and grille -->
+<g fill="#101619" stroke="#576264" stroke-opacity=".62" stroke-width="3">
+ <path d="M75 310H282V496H75ZM400 292H552V482H400ZM1362 285H1510V468H1362ZM1603 303H1843V482H1603Z"/>
+</g>
+<path d="M78 314H278V492H78ZM403 296H549V478H403ZM1365 289H1507V464H1365ZM1606 307H1840V478H1606Z" fill="url(#grate)"/>
+<!-- access conduits -->
+<g stroke="#929b99" stroke-opacity=".3" stroke-width="9"><path d="M40 524H340V364H393M1868 526H1598V360H1525M554 508V410H625M1250 506V416H1314"/><path d="M342 366V318M1596 362V319" stroke="#e34650" stroke-opacity=".52" stroke-width="4"/></g>
+<!-- floor plane perspective -->
+<path d="M0 620 580 690H1320L1920 622V1080H0Z" fill="url(#floor)"/>
+<path d="M0 620 580 690M1920 622 1320 690M960 690 960 1080M580 690 150 1080M1320 690 1770 1080M780 690 620 1080M1140 690 1320 1080" stroke="#8a9697" stroke-opacity=".16" stroke-width="3"/>
+<g stroke="#bdc7c4" stroke-opacity=".11" stroke-width="2"><path d="M0 715H1920M0 816H1920M0 930H1920M0 1049H1920"/><path d="M390 665 55 1080M710 684 520 1080M1200 684 1410 1080M1510 667 1875 1080"/></g>
+<!-- steel seams and red floor markings -->
+<path d="M0 802H247M1672 802H1920M0 1000H520M1400 1000H1920" stroke="#bd333f" stroke-opacity=".62" stroke-width="6"/>
+<path d="M200 691 0 925M1725 694 1920 925" stroke="#e23948" stroke-opacity=".44" stroke-width="5"/>
+<path d="M875 697H1045L1080 739H840Z" fill="#899493" opacity=".08"/>
+<g fill="#a7b0ac" opacity=".7"><circle cx="178" cy="528" r="4"/><circle cx="333" cy="523" r="3"/><circle cx="540" cy="540" r="4"/><circle cx="1380" cy="542" r="3"/><circle cx="1650" cy="524" r="4"/></g>
+<rect width="1920" height="1080" fill="#080a0b" opacity=".17"/>
+</svg>

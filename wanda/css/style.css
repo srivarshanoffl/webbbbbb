@@ -1,0 +1,1876 @@
+/* ==========================================================================
+   WANDA – THE PORTAL AWAKENING
+   2.5D Mystical Atmosphere & Chaos Magic Styling
+   ========================================================================== */
+
+:root {
+  --bg-dark: #070308;
+  --bg-deep: #0e050f;
+  --chaos-red: #ff103f;
+  --chaos-scarlet: #e50938;
+  --chaos-glow: #ff2a5f;
+  --chaos-crimson: #a00020;
+  --chaos-dark: #4a000f;
+  --chaos-pink: #ff6699;
+  --gold-accent: #f5c542;
+  --cyan-accent: #00f0ff;
+  --font-mystic: 'Cinzel', 'Cinzel Decorative', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-sans: 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  color: #fff;
+  font-family: var(--font-sans);
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, #20040f 0%, #0c0208 50%, #040105 100%);
+}
+
+/* ==========================================================================
+   2.5D VIEWPORT & STAGE
+   ========================================================================== */
+
+#game-viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: perspective 2s ease, transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#world-stage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Camera States for 2.5D Experience */
+#game-viewport.cam-phase-1 #world-stage {
+  transform: translateZ(0px) rotateX(2deg) rotateY(0deg);
+}
+#game-viewport.cam-phase-2 #world-stage {
+  transform: translateZ(120px) translateX(-180px) translateY(40px) rotateY(-6deg) rotateX(4deg);
+}
+#game-viewport.cam-phase-3 #world-stage {
+  transform: translateZ(120px) translateX(180px) translateY(40px) rotateY(6deg) rotateX(4deg);
+}
+#game-viewport.cam-phase-4 #world-stage {
+  transform: translateZ(90px) translateY(-50px) rotateX(6deg);
+}
+#game-viewport.cam-phase-5 #world-stage {
+  transform: translateZ(40px) translateY(10px) rotateX(8deg);
+}
+#game-viewport.cam-phase-6 #world-stage {
+  transform: translateZ(240px) translateY(80px) rotateX(12deg);
+}
+
+/* ==========================================================================
+   HEX REALITY WARP DOME & SANCTUM MONOLITHS
+   ========================================================================== */
+
+.hex-boundary-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 6;
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(229, 9, 56, 0.12) 80%, rgba(255, 16, 63, 0.25) 100%),
+    repeating-linear-gradient(60deg, rgba(255, 16, 63, 0.03) 0px, rgba(255, 16, 63, 0.03) 1px, transparent 1px, transparent 32px),
+    repeating-linear-gradient(120deg, rgba(255, 16, 63, 0.03) 0px, rgba(255, 16, 63, 0.03) 1px, transparent 1px, transparent 32px);
+  box-shadow: inset 0 0 120px rgba(255, 16, 63, 0.35);
+  animation: hexWarpBreathe 8s ease-in-out infinite alternate;
+}
+
+@keyframes hexWarpBreathe {
+  0% { opacity: 0.5; filter: contrast(100%) hue-rotate(0deg); }
+  50% { opacity: 0.85; filter: contrast(120%) hue-rotate(10deg); }
+  100% { opacity: 0.6; filter: contrast(105%) hue-rotate(-5deg); }
+}
+
+/* Floating Ancient Monolith Spires in 2.5D Space */
+.sanctum-monolith {
+  position: absolute;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+.monolith-pillar {
+  width: 36px;
+  height: 320px;
+  background: linear-gradient(180deg, #1b050c 0%, #0d0206 50%, #20040f 100%);
+  border: 1px solid rgba(255, 30, 80, 0.3);
+  box-shadow: 
+    0 0 25px rgba(255, 16, 63, 0.25),
+    inset 0 0 15px rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 15px 0;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 12%, 100% 88%, 85% 100%, 15% 100%, 0% 88%, 0% 12%);
+}
+
+.monolith-rune {
+  font-family: var(--font-mystic);
+  font-size: 18px;
+  color: var(--chaos-pink);
+  text-shadow: 
+    0 0 8px var(--chaos-red),
+    0 0 18px var(--chaos-scarlet);
+  animation: runePulsate 3s ease-in-out infinite alternate;
+}
+
+.monolith-glow {
+  position: absolute;
+  width: 80px;
+  height: 340px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 16, 63, 0.2) 0%, transparent 75%);
+  filter: blur(20px);
+}
+
+.monolith-1 {
+  left: 6%;
+  top: 10%;
+  transform: translateZ(-380px) rotateY(24deg) rotateX(4deg);
+  animation: floatMonolith1 9s ease-in-out infinite alternate;
+}
+.monolith-2 {
+  right: 6%;
+  top: 8%;
+  transform: translateZ(-350px) rotateY(-22deg) rotateX(5deg);
+  animation: floatMonolith2 11s ease-in-out infinite alternate;
+}
+.monolith-3 {
+  left: 12%;
+  bottom: 10%;
+  transform: translateZ(-280px) rotateY(18deg) rotateX(-6deg);
+  animation: floatMonolith3 8.5s ease-in-out infinite alternate;
+}
+.monolith-4 {
+  right: 12%;
+  bottom: 8%;
+  transform: translateZ(-260px) rotateY(-20deg) rotateX(-5deg);
+  animation: floatMonolith4 10s ease-in-out infinite alternate;
+}
+
+@keyframes runePulsate {
+  0% { opacity: 0.6; filter: brightness(90%); }
+  100% { opacity: 1; filter: brightness(150%); }
+}
+
+@keyframes floatMonolith1 {
+  0% { transform: translateZ(-380px) translateY(0px) rotateY(24deg); }
+  100% { transform: translateZ(-380px) translateY(-25px) rotateY(27deg); }
+}
+@keyframes floatMonolith2 {
+  0% { transform: translateZ(-350px) translateY(0px) rotateY(-22deg); }
+  100% { transform: translateZ(-350px) translateY(-30px) rotateY(-25deg); }
+}
+@keyframes floatMonolith3 {
+  0% { transform: translateZ(-280px) translateY(0px) rotateY(18deg); }
+  100% { transform: translateZ(-280px) translateY(20px) rotateY(15deg); }
+}
+@keyframes floatMonolith4 {
+  0% { transform: translateZ(-260px) translateY(0px) rotateY(-20deg); }
+  100% { transform: translateZ(-260px) translateY(22px) rotateY(-18deg); }
+}
+
+/* ==========================================================================
+   BACKGROUND LAYERS & PARALLAX
+   ========================================================================== */
+
+.ambient-nebula {
+  position: absolute;
+  width: 140vw;
+  height: 140vh;
+  left: -20vw;
+  top: -20vh;
+  width: 150vw;
+  height: 150vh;
+  left: -25vw;
+  top: -25vh;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 50% 45%, rgba(229, 9, 56, 0.22) 0%, rgba(160, 0, 32, 0.10) 40%, transparent 70%),
+    radial-gradient(circle at 20% 80%, rgba(255, 16, 63, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(138, 5, 45, 0.16) 0%, transparent 60%);
+  filter: blur(40px);
+  animation: nebulaBreathe 12s infinite ease-in-out alternate;
+  transform: translateZ(-300px);
+    radial-gradient(circle at 50% 45%, rgba(229, 9, 56, 0.28) 0%, rgba(160, 0, 32, 0.14) 40%, transparent 70%),
+    radial-gradient(circle at 18% 75%, rgba(255, 16, 63, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 82% 25%, rgba(138, 5, 45, 0.2) 0%, transparent 60%);
+  filter: blur(45px);
+  animation: nebulaBreathe 14s infinite ease-in-out alternate;
+  transform: translateZ(-320px);
+}
+
+@keyframes nebulaBreathe {
+  0% { transform: translateZ(-300px) scale(1) rotate(0deg); opacity: 0.7; }
+  100% { transform: translateZ(-300px) scale(1.12) rotate(3deg); opacity: 1; }
+  0% { transform: translateZ(-320px) scale(1) rotate(0deg); opacity: 0.75; }
+  100% { transform: translateZ(-320px) scale(1.15) rotate(4deg); opacity: 1; }
+}
+
+/* Volumetric God Rays from Temple Ceiling */
+/* Volumetric God Rays from Temple Vault */
+.ambient-godrays {
+  position: absolute;
+  width: 120vw;
+  height: 120vh;
+  top: -20vh;
+  left: -10vw;
+  width: 140vw;
+  height: 140vh;
+  top: -30vh;
+  left: -20vw;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(255, 30, 80, 0.04) 0px,
+    rgba(255, 30, 80, 0.04) 40px,
+    transparent 60px,
+    transparent 140px
+    118deg,
+    rgba(255, 30, 80, 0.05) 0px,
+    rgba(255, 30, 80, 0.05) 45px,
+    transparent 70px,
+    transparent 150px
+  );
+  filter: blur(16px);
+  opacity: 0.8;
+  animation: godRaysDrift 18s ease-in-out infinite alternate;
+  transform: translateZ(-200px);
+  filter: blur(20px);
+  opacity: 0.85;
+  animation: godRaysDrift 20s ease-in-out infinite alternate;
+  transform: translateZ(-220px);
+}
+
+@keyframes godRaysDrift {
+  0% { transform: translateZ(-200px) rotate(-1deg) scale(0.98); opacity: 0.6; }
+  100% { transform: translateZ(-200px) rotate(2deg) scale(1.04); opacity: 0.9; }
+  0% { transform: translateZ(-220px) rotate(-2deg) scale(0.96); opacity: 0.65; }
+  100% { transform: translateZ(-220px) rotate(3deg) scale(1.06); opacity: 0.95; }
+}
+
+/* ==========================================================================
+   RICH 2.5D MYSTIC RUNIC SANCTUM GROUND
+   ========================================================================== */
+
+.mystic-ground {
+  position: absolute;
+  width: 1550px;
+  height: 1550px;
+  bottom: -490px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: rotateX(74deg) translateZ(-160px);
+  background: 
+    radial-gradient(circle, rgba(255, 16, 63, 0.35) 0%, rgba(160, 0, 32, 0.16) 40%, rgba(10, 2, 7, 0.9) 72%);
+  border: 2px solid rgba(255, 16, 63, 0.55);
+  box-shadow: 
+    0 0 140px rgba(255, 16, 63, 0.55),
+    inset 0 0 160px rgba(255, 16, 63, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  transition: filter 1.5s ease, transform 1.8s ease;
+}
+
+.mystic-ground.ground-pulse-fast {
+  filter: brightness(130%) drop-shadow(0 0 40px var(--gold-accent));
+}
+
+.mystic-ground.ground-portal-surge {
+  filter: brightness(140%) drop-shadow(0 0 70px var(--chaos-pink));
+  animation: groundSurgeThrob 2s ease-in-out infinite alternate;
+}
+
+@keyframes groundSurgeThrob {
+  0% { transform: rotateX(74deg) translateZ(-160px) scale(0.97); }
+  100% { transform: rotateX(74deg) translateZ(-160px) scale(1.05); }
+}
+
+/* Branching Ley-Line Fissures */
+.ground-leylines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 16, 63, 0.4) 25%, transparent 65%),
+    conic-gradient(from 0deg, transparent 0deg, rgba(255, 16, 63, 0.25) 20deg, transparent 40deg, rgba(245, 197, 66, 0.2) 60deg, transparent 80deg, rgba(255, 16, 63, 0.25) 110deg, transparent 130deg, rgba(255, 16, 63, 0.3) 180deg, transparent 200deg, rgba(245, 197, 66, 0.2) 230deg, transparent 260deg, rgba(255, 16, 63, 0.25) 290deg, transparent 310deg, rgba(255, 16, 63, 0.3) 360deg);
+  mix-blend-mode: screen;
+  filter: blur(14px);
+  animation: leyLinePulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes leyLinePulse {
+  0% { transform: scale(0.92) rotate(0deg); opacity: 0.65; }
+  50% { transform: scale(1.05) rotate(10deg); opacity: 0.95; filter: blur(10px); }
+  100% { transform: scale(0.92) rotate(0deg); opacity: 0.65; }
+}
+
+/* High-Detail Vector Sanctum Ground Seal SVG */
+.ground-seal-svg {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  animation: groundSealSpin 80s linear infinite;
+  filter: drop-shadow(0 0 25px rgba(255, 16, 63, 0.7));
+}
+
+@keyframes groundSealSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.inner-runes-ring {
+  animation: innerRuneCounterSpin 45s linear infinite reverse;
+  transform-origin: 500px 500px;
+}
+
+@keyframes innerRuneCounterSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Expanding Ground Shockwave Ripples */
+.ground-energy-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 30, 80, 0.6);
+  box-shadow: 0 0 30px rgba(255, 16, 63, 0.4);
+  pointer-events: none;
+  animation: groundRippleWave 7s linear infinite;
+}
+
+.ground-energy-ripple.ripple-1 { animation-delay: 0s; }
+.ground-energy-ripple.ripple-2 { animation-delay: 2.3s; }
+.ground-energy-ripple.ripple-3 { animation-delay: 4.6s; }
+
+@keyframes groundRippleWave {
+  0% { width: 120px; height: 120px; opacity: 0.9; border-color: rgba(245, 197, 66, 0.9); }
+  70% { opacity: 0.6; }
+  100% { width: 1400px; height: 1400px; opacity: 0; border-color: rgba(255, 16, 63, 0); }
+}
+
+/* 2.5D Particle Canvas */
+#particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Lightning Canvas for Phase 5 */
+#lightning-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* ==========================================================================
+   WANDA MAXIMOFF CHARACTER RIG (CONSISTENT CINEMATIC CUTOUT)
+   ========================================================================== */
+
+#wanda-container {
+  position: absolute;
+  width: 350px;
+  height: 460px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: transform 2.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1.8s ease, filter 1.8s ease;
+  pointer-events: none;
+}
+
+/* Floating Meditation Idle */
+.wanda-floating {
+  animation: wandaLevitate 5s ease-in-out infinite alternate;
+}
+
+@keyframes wandaLevitate {
+  0% {
+    transform: translateY(0px) rotateX(1deg) rotateZ(0deg);
+  }
+  50% {
+    transform: translateY(-26px) rotateX(-1deg) rotateZ(0.6deg);
+  }
+  100% {
+    transform: translateY(0px) rotateX(1deg) rotateZ(0deg);
+  }
+}
+
+/* Grand Spectral Scarlet Crest SVG (Flares in Phase 5 & 6) */
+.wanda-crest-svg {
+  position: absolute;
+  width: 440px;
+  height: 260px;
+  top: -70px;
+  opacity: 0;
+  transition: opacity 1.8s ease, transform 1.8s ease;
+  transform: translateZ(-35px) scale(0.95);
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 35px var(--chaos-red));
+}
+
+.wanda-crest-svg.crest-energized {
+  opacity: 0.9 !important;
+  transform: translateZ(-35px) scale(1.28) !important;
+  filter: drop-shadow(0 0 65px var(--chaos-pink)) !important;
+}
+
+/* Wanda Aura / Chaos Corona */
+.wanda-aura {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 16, 63, 0.45) 0%, rgba(180, 0, 40, 0.18) 50%, transparent 75%);
+  filter: blur(30px);
+  z-index: 1;
+  animation: auraPulse 3.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes auraPulse {
+  0% { transform: scale(0.92) translateZ(-20px); opacity: 0.7; }
+  100% { transform: scale(1.22) translateZ(-20px); opacity: 1; }
+}
+
+/* Outer Telekinetic Corona for Channeling Peaks */
+.wanda-telekinetic-corona {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 60, 100, 0.35);
+  box-shadow: 0 0 60px rgba(255, 16, 63, 0.3);
+  opacity: 0.4;
+  animation: coronaSpin 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes coronaSpin {
+  0% { transform: rotate(0deg) scale(0.95); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(0.95); }
+}
+
+/* Swirling Chaos Silk Ribbons around her Torso & Arms (Preserves Face & Eyes) */
+.chaos-silk {
+  position: absolute;
+  border-radius: 50% 40% 60% 30%;
+  border: 2px solid rgba(255, 60, 100, 0.45);
+  box-shadow: 0 0 20px rgba(255, 16, 63, 0.4);
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.chaos-silk-1 {
+  width: 290px;
+  height: 160px;
+  bottom: 40px;
+  left: 30px;
+  animation: silkSwirl1 7s ease-in-out infinite alternate;
+}
+.chaos-silk-2 {
+  width: 260px;
+  height: 140px;
+  bottom: 60px;
+  right: 35px;
+  animation: silkSwirl2 9s ease-in-out infinite alternate reverse;
+}
+
+@keyframes silkSwirl1 {
+  0% { transform: rotate(-8deg) scale(0.95) translateZ(10px); }
+  50% { transform: rotate(6deg) scale(1.08) translateZ(25px); }
+  100% { transform: rotate(-8deg) scale(0.95) translateZ(10px); }
+}
+@keyframes silkSwirl2 {
+  0% { transform: rotate(10deg) scale(1.05) translateZ(15px); }
+  50% { transform: rotate(-6deg) scale(0.92) translateZ(5px); }
+  100% { transform: rotate(10deg) scale(1.05) translateZ(15px); }
+}
+
+/* Authentic Cinematic Wanda Cutout Image */
+.wanda-cinematic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 5;
+  filter: 
+    drop-shadow(0 0 24px rgba(255, 16, 63, 0.6)) 
+    drop-shadow(0 0 55px rgba(229, 9, 56, 0.35));
+  transition: all 1.8s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Dynamic Mudra Plasma Orbs - Accurately pinned to Mudra Hands */
+.hand-flare {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, var(--chaos-glow) 50%, transparent 80%);
+  filter: blur(3px);
+  animation: flareSpark 1.2s infinite alternate ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+.hand-flare.left-hand {
+  top: 322px;
+  left: 16px;
+}
+.hand-flare.right-hand {
+  top: 322px;
+  right: 16px;
+}
+
+.hand-plasma-core {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, var(--chaos-pink) 45%, var(--chaos-red) 75%, transparent 100%);
+  box-shadow: 
+    0 0 15px #ffffff,
+    0 0 30px var(--chaos-glow);
+  animation: flareSpark 1.2s infinite alternate ease-in-out;
+}
+
+.hand-plasma-orbit {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 200, 220, 0.7);
+  box-shadow: 0 0 12px var(--chaos-red);
+  animation: plasmaOrbit 2.4s linear infinite;
+}
+
+@keyframes plasmaOrbit {
+  0% { transform: rotate(0deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(0.9); }
+}
+
+@keyframes flareSpark {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(1.4); opacity: 1; filter: blur(2px) drop-shadow(0 0 16px var(--chaos-red)); }
+  0% { transform: scale(0.85); opacity: 0.75; }
+  100% { transform: scale(1.35); opacity: 1; filter: blur(1.5px) drop-shadow(0 0 20px var(--chaos-red)); }
+}
+
+/* Phase 6: Wanda Transcendent Portal Ascension (Meditation Pose Preserved) */
+.wanda-ascend-portal {
+  transform: translateZ(-340px) translateY(-50px) scale(0.62) !important;
+  opacity: 0 !important;
+  filter: drop-shadow(0 0 80px var(--chaos-pink)) brightness(220%) !important;
+  transition: transform 2.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 2.0s ease 0.3s, filter 1.8s ease !important;
+}
+
+/* ==========================================================================
+   THE THREE FLOATING OBJECTS
+   ========================================================================== */
+
+.floating-object {
+  position: absolute;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s ease;
+  z-index: 25;
+}
+
+/* Object 1: Crystal (Left-Top) */
+#object-crystal {
+  width: 140px;
+  height: 180px;
+  left: calc(50% - 390px);
+  top: calc(50% - 150px);
+  animation: floatCrystal 6s ease-in-out infinite alternate;
+}
+@keyframes floatCrystal {
+  0% { transform: translateY(0px) rotateY(0deg) rotateZ(-3deg); }
+  50% { transform: translateY(-20px) rotateY(15deg) rotateZ(2deg); }
+  100% { transform: translateY(5px) rotateY(-10deg) rotateZ(-2deg); }
+}
+
+/* Object 2: Mystic Energy Ring (Right-Top) */
+#object-ring {
+  width: 170px;
+  height: 170px;
+  left: calc(50% + 220px);
+  top: calc(50% - 140px);
+  animation: floatRing 5.4s ease-in-out infinite alternate;
+}
+@keyframes floatRing {
+  0% { transform: translateY(0px) rotateX(15deg) rotateY(0deg); }
+  50% { transform: translateY(-25px) rotateX(-10deg) rotateY(25deg); }
+  100% { transform: translateY(10px) rotateX(10deg) rotateY(-15deg); }
+}
+
+/* Object 3: Mysterious Artifact (Bottom-Center/Right) */
+#object-artifact {
+  width: 160px;
+  height: 160px;
+  left: calc(50% + 180px);
+  top: calc(50% + 120px);
+  animation: floatArtifact 7s ease-in-out infinite alternate;
+}
+@keyframes floatArtifact {
+  0% { transform: translateY(0px) rotateY(0deg) rotateX(5deg); }
+  50% { transform: translateY(-18px) rotateY(-30deg) rotateX(-15deg); }
+  100% { transform: translateY(8px) rotateY(20deg) rotateX(10deg); }
+}
+
+/* Object Portal Designated Positions (Equilateral Triangle around Wanda/Portal) */
+.floating-object.placed-node-1 {
+  /* Top Apex Node */
+  animation: none !important;
+  left: calc(50% - 70px) !important;
+  top: calc(50% - 330px) !important;
+  transform: translateZ(-80px) scale(0.95) !important;
+  filter: drop-shadow(0 0 35px var(--chaos-red)) !important;
+}
+
+.floating-object.placed-node-2 {
+  /* Bottom Left Node */
+  animation: none !important;
+  left: calc(50% - 340px) !important;
+  top: calc(50% + 140px) !important;
+  transform: translateZ(-80px) scale(0.95) !important;
+  filter: drop-shadow(0 0 35px var(--chaos-red)) !important;
+}
+
+.floating-object.placed-node-3 {
+  /* Bottom Right Node */
+  animation: none !important;
+  left: calc(50% + 200px) !important;
+  top: calc(50% + 140px) !important;
+  transform: translateZ(-80px) scale(0.95) !important;
+  filter: drop-shadow(0 0 35px var(--chaos-red)) !important;
+}
+
+/* Crystal SVG & Rings */
+/* Relic 1: Celestial Crystal Wrapper & Prismatic Effects */
+.crystal-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crystal-specular-beam {
+  position: absolute;
+  width: 4px;
+  height: 260px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.9) 50%, transparent);
+  filter: blur(3px);
+  opacity: 0.65;
+  pointer-events: none;
+  animation: specularBeamPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes specularBeamPulse {
+  0% { transform: scaleY(0.8); opacity: 0.4; }
+  100% { transform: scaleY(1.2); opacity: 0.85; filter: blur(2px) drop-shadow(0 0 10px #ffffff); }
+}
+
+.crystal-asset-img {
+  width: 140px;
+  height: 180px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(255, 30, 80, 0.95)) drop-shadow(0 0 45px rgba(229, 9, 56, 0.6));
+  z-index: 2;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: crystalAssetHover 5s ease-in-out infinite alternate;
+}
+
+@keyframes crystalAssetHover {
+  0% { transform: scale(0.97) rotate(0deg); filter: drop-shadow(0 0 22px rgba(255, 30, 80, 0.9)); }
+  100% { transform: scale(1.04) rotate(2deg); filter: drop-shadow(0 0 38px rgba(255, 60, 110, 1)); }
+}
+
+/* Relic 2: Armillary Gyroscope of Chaos */
+.ring-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.gyro-asset-img {
+  width: 170px;
+  height: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(255, 30, 80, 0.9)) drop-shadow(0 0 50px rgba(255, 140, 0, 0.45));
+  z-index: 2;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: gyroAssetSpin 16s linear infinite;
+}
+
+@keyframes gyroAssetSpin {
+  0% { transform: rotate(0deg) scale(0.98); }
+  50% { transform: rotate(180deg) scale(1.03); }
+  100% { transform: rotate(360deg) scale(0.98); }
+}
+
+/* Miniature Hyper-Nova Plasma Core */
+.gyro-core {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-plasma-inner {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #ff6b8b 35%, var(--chaos-red) 75%, transparent 100%);
+  box-shadow: 
+    0 0 20px #ffffff,
+    0 0 40px var(--chaos-red);
+  animation: corePulse 1.4s ease-in-out infinite alternate;
+}
+
+.core-solar-flare {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px dotted rgba(255, 100, 130, 0.8);
+}
+.core-solar-flare.flare-1 {
+  animation: flareSpin 2.5s linear infinite;
+}
+.core-solar-flare.flare-2 {
+  animation: flareSpin 3.8s linear infinite reverse;
+  border-style: dashed;
+}
+
+.core-lens-flare {
+  position: absolute;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+@keyframes flareSpin {
+  0% { transform: rotate(0deg) scale(0.95); }
+  100% { transform: rotate(360deg) scale(1.08); }
+}
+
+@keyframes corePulse {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 35px var(--chaos-red); }
+  0% { transform: scale(0.85); opacity: 0.85; }
+  100% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 45px var(--chaos-pink); }
+}
+
+/* Oscillating erratic state for Phase 3 */
+.ring-oscillating {
+  animation: erraticWobble 0.35s ease-in-out infinite alternate !important;
+}
+@keyframes erraticWobble {
+  0% { transform: translate(-8px, -4px) rotate(-8deg); }
+  100% { transform: translate(8px, 6px) rotate(8deg); }
+  0% { transform: translate(-10px, -6px) rotate(-10deg); }
+  100% { transform: translate(10px, 8px) rotate(10deg); }
+}
+
+/* Object 3: Darkhold Artifact */
+/* Relic 3: Darkhold Obelisk with Hovering Armor Plates */
+.artifact-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.darkhold-plate {
+  position: absolute;
+  background: #180208;
+  border: 1.5px solid var(--chaos-red);
+  box-shadow: 0 0 15px rgba(255, 16, 63, 0.4);
+  pointer-events: none;
+  transition: transform 0.6s ease;
+}
+
+.plate-top {
+  width: 45px;
+  height: 12px;
+  top: 10px;
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  animation: plateFloatTop 4s ease-in-out infinite alternate;
+}
+.plate-bottom {
+  width: 45px;
+  height: 12px;
+  bottom: 10px;
+  clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+  animation: plateFloatBottom 4.5s ease-in-out infinite alternate;
+}
+.plate-left {
+  width: 12px;
+  height: 45px;
+  left: 10px;
+  clip-path: polygon(0% 20%, 100% 0%, 100% 100%, 0% 80%);
+  animation: plateFloatLeft 3.8s ease-in-out infinite alternate;
+}
+.plate-right {
+  width: 12px;
+  height: 45px;
+  right: 10px;
+  clip-path: polygon(0% 0%, 100% 20%, 100% 80%, 0% 100%);
+  animation: plateFloatRight 4.2s ease-in-out infinite alternate;
+}
+
+@keyframes plateFloatTop {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+@keyframes plateFloatBottom {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(8px); }
+}
+@keyframes plateFloatLeft {
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-8px); }
+}
+@keyframes plateFloatRight {
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(8px); }
+}
+
+.darkhold-asset-img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(200, 0, 50, 0.95)) drop-shadow(0 0 60px rgba(255, 16, 63, 0.5));
+  z-index: 2;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: darkholdAssetPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes darkholdAssetPulse {
+  0% { transform: scale(0.97) rotate(0deg); }
+  100% { transform: scale(1.05) rotate(6deg); filter: drop-shadow(0 0 40px rgba(255, 30, 80, 1)) drop-shadow(0 0 70px rgba(255, 16, 63, 0.7)); }
+}
+
+/* Phase 4 Glitch State */
+.glitch-freeze {
+  animation: glitchShake 0.15s infinite !important;
+  filter: drop-shadow(0 0 30px #00f0ff) contrast(180%) hue-rotate(90deg) !important;
+  animation: glitchShake 0.12s infinite !important;
+  filter: drop-shadow(0 0 35px #00f0ff) contrast(200%) hue-rotate(95deg) !important;
+}
+
+@keyframes glitchShake {
+  0% { transform: translate(-3px, 2px) skewX(2deg); }
+  25% { transform: translate(3px, -2px) skewY(-2deg); }
+  50% { transform: translate(-4px, -1px) skewX(-3deg); }
+  75% { transform: translate(2px, 3px) skewY(1deg); }
+  100% { transform: translate(-1px, -2px); }
+  0% { transform: translate(-4px, 3px) skewX(3deg); }
+  25% { transform: translate(4px, -3px) skewY(-3deg); }
+  50% { transform: translate(-5px, -2px) skewX(-4deg); }
+  75% { transform: translate(3px, 4px) skewY(2deg); }
+  100% { transform: translate(-2px, -3px); }
+}
+
+/* ==========================================================================
+   PORTAL (PHASE 5 & 6)
+   ========================================================================== */
+
+#portal-container {
+  position: absolute;
+  width: 580px;
+  height: 580px;
+  left: calc(50% - 290px);
+  top: calc(50% - 290px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transform: translateZ(-160px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2s ease, transform 2s ease;
+  z-index: 8;
+}
+
+#portal-container.portal-active {
+  opacity: 1;
+}
+
+.portal-accretion-disk {
+  position: absolute;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 40%, rgba(255, 16, 63, 0.3) 60%, rgba(255, 110, 150, 0.5) 75%, transparent 95%);
+  filter: blur(25px);
+  animation: accretionPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes accretionPulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.1); opacity: 1; filter: blur(35px); }
+}
+
+.portal-asset-img {
+  position: absolute;
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 60px var(--chaos-red)) drop-shadow(0 0 120px rgba(255, 16, 63, 0.8));
+  animation: portalAssetSpin 14s linear infinite;
+  z-index: 2;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@keyframes portalAssetSpin {
+  0% { transform: rotate(0deg) scale(0.97); }
+  50% { transform: rotate(180deg) scale(1.04); }
+  100% { transform: rotate(360deg) scale(0.97); }
+}
+
+.portal-vortex {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #000 0%, #150005 32%, rgba(229, 9, 56, 0.7) 65%, rgba(255, 16, 63, 0.98) 78%, transparent 88%);
+  box-shadow: 
+    0 0 100px var(--chaos-red),
+    0 0 200px rgba(255, 16, 63, 0.7),
+    inset 0 0 90px #000;
+  animation: portalSpin 9s linear infinite;
+}
+
+.portal-runes {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  width: 92%;
+  height: 92%;
+  border-radius: 50%;
+  border: 3px dashed rgba(255, 180, 200, 0.8);
+  box-shadow: 0 0 30px var(--chaos-glow);
+  border: 3.5px dashed rgba(255, 200, 220, 0.85);
+  box-shadow: 0 0 35px var(--chaos-glow);
+  animation: portalSpin 18s linear infinite reverse;
+}
+
+.portal-runes-inner {
+  position: absolute;
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+  border: 2px dotted rgba(245, 197, 66, 0.8);
+  box-shadow: 0 0 25px rgba(245, 197, 66, 0.5);
+  animation: portalSpin 12s linear infinite;
+}
+
+.portal-singularity {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: #000;
+  background: radial-gradient(circle, #000000 0%, #0a0105 70%, rgba(255, 16, 63, 0.4) 100%);
+  box-shadow: 
+    0 0 50px rgba(255, 16, 63, 0.9),
+    inset 0 0 40px rgba(255, 16, 63, 0.8);
+    0 0 60px rgba(255, 16, 63, 0.95),
+    inset 0 0 50px rgba(255, 16, 63, 0.85);
+  animation: singularityPulse 2s ease-in-out infinite alternate;
+}
+
+.portal-lens-flare {
+  position: absolute;
+  width: 1400px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 16, 63, 0.6) 30%, #ffffff 50%, rgba(255, 16, 63, 0.6) 70%, transparent 100%);
+  filter: blur(2px) drop-shadow(0 0 15px #ffffff);
+  pointer-events: none;
+  animation: lensFlareShimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes lensFlareShimmer {
+  0% { transform: scaleX(0.85) scaleY(0.8); opacity: 0.6; }
+  100% { transform: scaleX(1.15) scaleY(1.4); opacity: 1; }
+}
+
+@keyframes portalSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes singularityPulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 40px var(--chaos-red); }
+  100% { transform: scale(1.1); box-shadow: 0 0 80px var(--chaos-pink); }
+  0% { transform: scale(0.9); box-shadow: 0 0 50px var(--chaos-red); }
+  100% { transform: scale(1.15); box-shadow: 0 0 95px var(--chaos-pink); }
+}
+
+/* ==========================================================================
+   MINI-GAME OVERLAYS & UI PANELS
+   ========================================================================== */
+
+#ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 40px;
+}
+
+/* Top Header HUD */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+.game-title {
+  font-family: var(--font-mystic);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.game-title h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(255, 16, 63, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-title .subtitle {
+  font-size: 13px;
+  letter-spacing: 5px;
+  color: #ff99b0;
+  margin-top: 4px;
+}
+
+/* Phase Indicator Track */
+.phase-tracker {
+  display: flex;
+  gap: 12px;
+  background: rgba(14, 5, 15, 0.75);
+  border: 1px solid rgba(255, 16, 63, 0.3);
+  padding: 8px 18px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.tracker-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #887;
+  letter-spacing: 1px;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+.tracker-node:hover {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.tracker-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #332;
+  transition: all 0.4s ease;
+}
+
+.tracker-node.active {
+  color: #fff;
+  font-weight: 600;
+}
+.tracker-node.active .tracker-dot {
+  background: var(--chaos-glow);
+  box-shadow: 0 0 10px var(--chaos-glow);
+  transform: scale(1.3);
+}
+
+.tracker-node.completed {
+  color: var(--gold-accent);
+}
+.tracker-node.completed .tracker-dot {
+  background: var(--gold-accent);
+  box-shadow: 0 0 8px var(--gold-accent);
+}
+
+/* Bottom Interactive Instructions & Prompts */
+.hud-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+  margin-bottom: 20px;
+}
+
+.instruction-box {
+  background: rgba(14, 3, 10, 0.85);
+  border: 1px solid rgba(255, 16, 63, 0.4);
+  border-radius: 12px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 16, 63, 0.2);
+  transition: all 0.4s ease;
+  max-width: 650px;
+  text-align: center;
+}
+
+body.phase-stack-active .instruction-box { display: none; }
+
+.instruction-text {
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #fce8ed;
+}
+
+.instruction-text b {
+  color: var(--chaos-pink);
+  text-shadow: 0 0 8px var(--chaos-glow);
+}
+
+.key-badge {
+  display: inline-block;
+  background: #250610;
+  border: 1px solid rgba(255, 60, 100, 0.5);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin: 0 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* Controls buttons for mouse/touch fallback */
+.mini-game-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.action-pill-btn {
+  background: linear-gradient(135deg, #3d0012, #6b0520);
+  border: 1px solid rgba(255, 60, 100, 0.6);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+.action-pill-btn:hover {
+  background: linear-gradient(135deg, #7a0020, #bb0a35);
+  box-shadow: 0 0 15px var(--chaos-glow);
+  transform: translateY(-2px);
+}
+.action-pill-btn:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   PHASE 2: CRYSTAL ALIGNMENT HUD WIDGET
+   ========================================================================== */
+
+#alignment-widget {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: rgba(18, 4, 12, 0.9);
+  border: 1px solid rgba(255, 20, 60, 0.5);
+  border-radius: 12px;
+  padding: 14px 24px;
+  box-shadow: 0 0 25px rgba(255, 16, 63, 0.3);
+}
+
+.alignment-sync-meter {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 2px 0 6px 0;
+}
+
+.sync-meter-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(30, 8, 16, 0.9);
+  border: 1px solid rgba(255, 40, 80, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+
+.alignment-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff103f 0%, #ff5277 50%, #f5c542 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255, 30, 70, 0.8);
+  transition: width 0.15s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+.alignment-status-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #ffd1dc;
+  text-shadow: 0 0 8px rgba(255, 100, 140, 0.7);
+  font-weight: 600;
+}
+
+.ring-selection-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.ring-tab {
+  background: #20040f;
+  border: 1px solid #4a0018;
+  color: #aaa;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ring-tab.active {
+  background: var(--chaos-scarlet);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 0 10px var(--chaos-glow);
+}
+.ring-tab.completed {
+  border-color: var(--gold-accent);
+  color: var(--gold-accent);
+}
+
+/* Phase 2 replacement: telekinetic cradle with genuine and decoy relic pieces. */
+#alignment-widget.stack-widget {
+  width: min(1020px, 94vw);
+  gap: 9px;
+  padding: 12px 18px 10px;
+  background: linear-gradient(125deg, rgba(18, 4, 12, .95), rgba(24, 8, 18, .88));
+  border-color: rgba(255, 58, 100, .62);
+  box-shadow: 0 0 32px rgba(255, 16, 63, .28), 0 14px 40px #0009;
+  backdrop-filter: blur(12px);
+}
+
+.stack-widget-heading,
+.stack-widget-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stack-widget-heading strong {
+  display: block;
+  color: #ffe4ea;
+  font: 800 11px var(--font-sans);
+  letter-spacing: 2px;
+}
+
+.stack-widget-heading small {
+  display: block;
+  margin-top: 2px;
+  color: #ce9ba8;
+  font: 500 10px var(--font-sans);
+  letter-spacing: .5px;
+}
+
+#stack-progress {
+  color: #ffd36d;
+  font: 700 10px var(--font-mono);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.stack-playfield {
+  width: 100%;
+  min-height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 34px);
+}
+
+.stack-build-area {
+  position: relative;
+  flex: 0 0 230px;
+  height: 210px;
+  perspective: 500px;
+  background: radial-gradient(ellipse at 50% 90%, rgba(255, 22, 75, .17), transparent 68%);
+}
+
+.stack-target-art {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: .58;
+  filter: brightness(.72) saturate(.84);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity .55s ease, filter .55s ease;
+}
+
+.stack-slot.filled .stack-target-art,
+.stack-build-area.complete .stack-target-art {
+  opacity: 0;
+}
+
+.stack-slot {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(255, 130, 155, .36);
+  background: rgba(55, 9, 24, .24);
+  color: rgba(255, 212, 220, .62);
+  transition: opacity .25s, border-color .25s, filter .25s, transform .25s;
+}
+
+.stack-slot > span {
+  position: absolute;
+  z-index: 0;
+  font: 700 10px var(--font-mono);
+  opacity: .55;
+  pointer-events: none;
+}
+
+.slot-upper-left { left: 0; top: 0; width: 50%; height: 50%; }
+.slot-upper-right { right: 0; top: 0; width: 50%; height: 50%; }
+.slot-lower-left { left: 0; bottom: 0; width: 50%; height: 50%; }
+.slot-lower-right { right: 0; bottom: 0; width: 50%; height: 50%; }
+
+.stack-slot.active-target {
+  z-index: 2;
+  opacity: 1;
+  border-color: #ffe0a0;
+  background: rgba(255, 180, 72, .1);
+  filter: drop-shadow(0 0 13px rgba(255, 164, 72, .78));
+  animation: target-breathe 1.4s ease-in-out infinite alternate;
+}
+
+.stack-slot:not(.active-target):not(.filled) { opacity: .46; }
+.stack-slot.filled { opacity: 1; border: 0; background: transparent; filter: drop-shadow(0 0 10px rgba(255, 45, 90, .56)); }
+.stack-slot.hover-target { border-color: #fff2b0; filter: drop-shadow(0 0 16px #ffd36d); }
+.stack-slot.rejected { animation: stack-reject .32s ease-in-out; border-color: #ff3157; }
+
+.stack-piece-tray {
+  flex: 1 1 540px;
+  min-width: 0;
+  min-height: 126px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid rgba(255, 96, 127, .2);
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255, 25, 70, .035), rgba(0, 0, 0, .15));
+}
+
+.stack-piece {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 82px;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: filter .2s, background .2s, border-color .2s, box-shadow .2s, opacity .2s;
+}
+
+.stack-piece::after {
+  content: attr(data-tray-index);
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: #b9919a;
+  font: 600 8px var(--font-mono);
+}
+
+.piece-image {
+  position: relative;
+  display: block;
+  width: 94%;
+  height: 94%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, .55)) drop-shadow(0 0 7px rgba(255, 55, 89, .25));
+  pointer-events: none;
+  user-select: none;
+  transition: transform .2s, filter .2s;
+}
+
+.stack-piece:hover:not(.placed-piece), .stack-piece.selected-piece {
+  background: rgba(255, 70, 105, .1);
+  border-color: rgba(255, 146, 167, .62);
+  filter: drop-shadow(0 0 10px rgba(255, 40, 85, .38));
+}
+.stack-piece.selected-piece .piece-image { filter: drop-shadow(0 0 12px #ff416b); transform: translateY(-4px) scale(1.08); }
+.stack-piece.dragging-piece { z-index: 1000; cursor: grabbing; filter: drop-shadow(0 0 18px #ff4b74); }
+.stack-piece.dragging-piece:not(.steady-piece) .piece-image { transform-origin: 50% 85%; animation: piece-sway .34s ease-in-out infinite alternate; }
+.stack-piece.steady-piece .piece-image { animation: none; filter: drop-shadow(0 0 18px #ffd36d); }
+.stack-piece.placed-piece { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 0; cursor: default; pointer-events: none; }
+.stack-slot .placed-piece .piece-image { width: 100%; height: 100%; object-fit: fill; filter: drop-shadow(0 0 5px rgba(255, 49, 95, .22)); transition: none; }
+.stack-slot .placed-piece::after { display: none; }
+
+.stack-widget-footer { min-height: 17px; }
+#stack-feedback { flex: 1; min-width: 0; color: #f0d9df; font: 500 11px/1.3 var(--font-sans); letter-spacing: .3px; }
+.stack-stability { width: 130px; display: flex; align-items: center; gap: 7px; color: #9e7883; font: 700 7px var(--font-mono); white-space: nowrap; }
+.stack-stability { position: relative; }
+.stack-stability::before { content: ""; position: absolute; left: 0; top: calc(50% - 3px); width: 48px; height: 5px; border: 1px solid #7a384a; background: #240913; }
+.stack-stability i { position: absolute; left: 1px; top: calc(50% - 1px); width: 0; height: 3px; background: linear-gradient(90deg, #ff315f, #ffdb70); box-shadow: 0 0 6px #ff5273; transition: width .16s; }
+.stack-stability span { margin-left: 52px; }
+
+
+@keyframes target-breathe { to { filter: drop-shadow(0 0 17px rgba(255, 205, 105, .85)); } }
+@keyframes stack-reject { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes piece-sway { to { transform: rotate(8deg) translateY(2px); } }
+
+@media (max-width: 760px) {
+  #ui-layer { padding: 16px 12px; }
+  .hud-footer { gap: 9px; margin-bottom: 8px; }
+  #alignment-widget.stack-widget { width: 100%; padding: 9px 10px 8px; gap: 6px; }
+  .stack-widget-heading strong { font-size: 9px; letter-spacing: 1.4px; }
+  .stack-widget-heading small { font-size: 8px; }
+  #stack-progress { font-size: 8px; }
+  .stack-playfield { min-height: 0; flex-direction: column; gap: 2px; }
+  .stack-build-area { flex: 0 0 116px; width: 210px; height: 116px; }
+  .stack-piece-tray { width: 100%; min-height: 64px; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; padding: 2px; }
+  .stack-piece { height: 58px; }
+  .piece-image { width: 100%; height: 100%; }
+  .stack-widget-footer { min-height: 23px; }
+  #stack-feedback { max-width: 68%; font-size: 8px; line-height: 1.25; }
+  .stack-stability { transform: scale(.85); transform-origin: right center; }
+  .instruction-box { max-width: 100%; padding: 8px 12px; }
+  .instruction-text { font-size: 11px; letter-spacing: .4px; }
+}
+
+/* ==========================================================================
+   PHASE 3: STABILIZATION HUD WIDGET
+   ========================================================================== */
+
+#stabilization-widget {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: rgba(18, 4, 12, 0.9);
+  border: 1px solid rgba(255, 20, 60, 0.5);
+  border-radius: 12px;
+  padding: 16px 28px;
+  box-shadow: 0 0 25px rgba(255, 16, 63, 0.3);
+  min-width: 380px;
+}
+
+.meter-track {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  background: #150208;
+  border: 1px solid rgba(255, 30, 70, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.meter-target-zone {
+  position: absolute;
+  top: 0;
+  left: 65%;
+  width: 22%;
+  height: 100%;
+  background: rgba(0, 240, 160, 0.35);
+  border-left: 2px solid #00ffa0;
+  border-right: 2px solid #00ffa0;
+  box-shadow: inset 0 0 10px #00ffa0;
+}
+
+.meter-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #a00020, var(--chaos-scarlet), var(--chaos-pink));
+  box-shadow: 0 0 12px var(--chaos-glow);
+  transition: width 0.05s linear;
+}
+
+.stability-counters {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #ddd;
+}
+
+.stabilize-gem {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #250510;
+  border: 1px solid #660a20;
+  transform: rotate(45deg);
+  transition: all 0.4s ease;
+}
+.stabilize-gem.charged {
+  background: var(--gold-accent);
+  box-shadow: 0 0 14px var(--gold-accent);
+  border-color: #fff;
+}
+
+/* ==========================================================================
+   PHASE 4: SYSTEM ERROR & DEBUGGING PLACEHOLDER MODAL
+   ========================================================================== */
+
+#glitch-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 150;
+  display: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 0, 50, 0.08) 0px,
+    rgba(255, 0, 50, 0.08) 2px,
+    transparent 3px,
+    transparent 5px
+  );
+  animation: scanlineJitter 0.1s infinite;
+}
+
+@keyframes scanlineJitter {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+  100% { transform: translateY(-2px); }
+}
+
+#error-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+  width: 90%;
+  max-width: 580px;
+  background: rgba(10, 2, 7, 0.95);
+  border: 2px solid var(--chaos-red);
+  box-shadow: 
+    0 0 50px rgba(255, 16, 63, 0.6),
+    inset 0 0 30px rgba(255, 16, 63, 0.2);
+  border-radius: 12px;
+  padding: 30px;
+  backdrop-filter: blur(15px);
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  pointer-events: auto;
+  animation: modalGlitchIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes modalGlitchIn {
+  0% { transform: scale(0.8) skewX(10deg); opacity: 0; }
+  60% { transform: scale(1.03) skewX(-3deg); opacity: 1; }
+  100% { transform: scale(1) skewX(0); }
+}
+
+.error-header {
+  border-bottom: 1px solid rgba(255, 16, 63, 0.35);
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--chaos-pink);
+  letter-spacing: 2px;
+}
+
+.error-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: #38000d;
+  color: #ff3366;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid #ff103f;
+}
+
+.error-title {
+  font-family: var(--font-mystic);
+  font-size: 22px;
+  color: #ff204e;
+  text-shadow: 0 0 15px rgba(255, 32, 78, 0.8);
+  letter-spacing: 2px;
+}
+
+.error-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e5cad2;
+}
+
+/* Modular Debugging Placeholder Container */
+.debug-placeholder-zone {
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px dashed rgba(255, 60, 100, 0.6);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-mono);
+}
+
+.debug-header {
+  font-size: 12px;
+  color: #ffaa00;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.debug-code-preview {
+  font-size: 11px;
+  color: #a0c0e0;
+  background: #080105;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  line-height: 1.4;
+}
+
+.bypass-btn {
+  background: linear-gradient(135deg, #a00020, #e50938);
+  border: 1px solid #ff4d6d;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255, 16, 63, 0.5);
+  transition: all 0.3s ease;
+  align-self: center;
+  outline: none;
+}
+.bypass-btn:hover {
+  background: linear-gradient(135deg, #d0002a, #ff1a4a);
+  box-shadow: 0 0 35px var(--chaos-red);
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   PHASE 6: ENDING CINEMATIC CARD
+   ========================================================================== */
+
+#ending-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 2s ease;
+  padding: 40px;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.ending-title {
+  font-family: var(--font-mystic);
+  font-size: 38px;
+  letter-spacing: 6px;
+  color: #fff;
+  text-shadow: 0 0 30px var(--chaos-red);
+  margin-bottom: 12px;
+}
+
+.ending-subtitle {
+  font-size: 16px;
+  letter-spacing: 4px;
+  color: #ff809b;
+  margin-bottom: 30px;
+}
+
+.ending-story {
+  max-width: 600px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #ccc;
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.replay-btn {
+  background: transparent;
+  border: 1px solid var(--chaos-glow);
+  color: #fff;
+  font-family: var(--font-mystic);
+  font-size: 15px;
+  letter-spacing: 3px;
+  padding: 12px 34px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.replay-btn:hover {
+  background: var(--chaos-scarlet);
+  box-shadow: 0 0 30px var(--chaos-glow);
+}
+
+/* Screen Shake for Climax & Impacts */
+.screen-rumble {
+  animation: screenRumble 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes screenRumble {
+  10%, 90% { transform: translate3d(-3px, 2px, 0); }
+  20%, 80% { transform: translate3d(4px, -3px, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 4px, 0); }
+  40%, 60% { transform: translate3d(6px, -4px, 0); }
+}
+
+.screen-shake-heavy {
+  animation: heavyShake 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes heavyShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-8px, 6px) rotate(-1deg); }
+  30% { transform: translate(8px, -7px) rotate(1.2deg); }
+  45% { transform: translate(-6px, 5px) rotate(-0.8deg); }
+  60% { transform: translate(5px, -4px) rotate(0.6deg); }
+  75% { transform: translate(-3px, 2px) rotate(-0.3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+

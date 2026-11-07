@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Doctor Strange: The Three Lost Relics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-wrapper">
+    <div id="game-viewport">
+
+      <!-- PARALLAX BACKGROUND LAYERS -->
+      <div id="bg-container" class="bg-layer">
+        <div id="bg-far" class="bg-sublayer"></div>
+        <div id="bg-restored" class="bg-sublayer"></div>
+        <div id="reality-rift-overlay"></div>
+      </div>
+
+      <!-- PARTICLES & MAGIC CANVAS (Full viewport resolution) -->
+      <canvas id="fx-canvas"></canvas>
+
+      <!-- 2.5D STAGE: CHARACTERS & RELICS -->
+      <div id="stage-3d">
+
+        <!-- DOCTOR STRANGE CHARACTER RIG -->
+        <div id="strange-rig" class="character-rig idle">
+          <div class="strange-shadow"></div>
+          <div class="strange-sprite idle-sprite"></div>
+          
+          <!-- EYE OF AGAMOTTO AMULET GLOW ON CHEST -->
+          <div class="chest-eye-glow"></div>
+          
+          <!-- RAISED HAND: WARM ELDRITCH RING; FORWARD PALM: GREEN TIME MANDALA -->
+          <div class="tao-mandala left-hand"></div>
+          <div class="tao-mandala right-hand"></div>
+        </div>
+
+        <!-- RELIC INTERACTION STAGE -->
+        <div id="relic-stage">
+          <!-- SOLID STONE ALTAR PEDESTAL -->
+          <div id="relic-pedestal">
+            <div class="pedestal-stone-img"></div>
+            <div class="pedestal-glow"></div>
+          </div>
+
+          <!-- RELIC 1: THE ANCIENT VASE -->
+          <div id="relic-vase" class="relic-assembly">
+            <div class="vase-shards-container" id="vase-shards"></div>
+            
+            <!-- COLLECTIBLE ELEMENT: TIME CRYSTAL -->
+            <div id="collectible-crystal" class="collectible-element time-crystal" data-relic="crystal" title="Click to collect Time Crystal">
+              <div class="crystal-aura"></div>
+              <div class="crystal-core"></div>
+              <div class="collect-reticle">
+                <span class="reticle-bolt">⚡</span>
+                <span class="reticle-text">RETRIEVE TIME CRYSTAL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RELIC 2: THE MAGICAL CLOCK -->
+          <div id="relic-clock" class="relic-assembly">
+            <div class="clock-housing">
+              <div class="clock-face-img"></div>
+              <div class="clock-hands">
+                <div class="clock-hand hour-hand"></div>
+                <div class="clock-hand minute-hand"></div>
+              </div>
+            </div>
+            <div class="clock-gears-container" id="clock-gears"></div>
+            
+            <!-- COLLECTIBLE ELEMENT: ETERNITY GEAR -->
+            <div id="collectible-gear" class="collectible-element eternity-gear" data-relic="gear" title="Click to collect Eternity Gear">
+              <div class="gear-aura"></div>
+              <div class="gear-core"></div>
+              <div class="collect-reticle">
+                <span class="reticle-bolt">⚡</span>
+                <span class="reticle-text">RETRIEVE ETERNITY GEAR</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RELIC 3: THE COSMIC ORB -->
+          <div id="relic-orb" class="relic-assembly">
+            <div class="orb-inner-singularity"></div>
+            <div class="orb-facets-container" id="orb-facets"></div>
+            
+            <!-- COLLECTIBLE ELEMENT: COSMIC CORE -->
+            <div id="collectible-core" class="collectible-element cosmic-core" data-relic="core" title="Click to collect Cosmic Core">
+              <div class="core-aura"></div>
+              <div class="core-nucleus"></div>
+              <div class="collect-reticle">
+                <span class="reticle-bolt">⚡</span>
+                <span class="reticle-text">RETRIEVE COSMIC CORE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- FINALE ALTAR CONVERGENCE -->
+          <div id="relic-finale-altar" class="relic-assembly">
+            <div class="altar-tri-seal"></div>
+            <div class="altar-socket socket-crystal" id="socket-1">
+              <div class="socket-rune-ring"></div>
+            </div>
+            <div class="altar-socket socket-gear" id="socket-2">
+              <div class="socket-rune-ring"></div>
+            </div>
+            <div class="altar-socket socket-core" id="socket-3">
+              <div class="socket-rune-ring"></div>
+            </div>
+            <div class="barrier-generator"></div>
+          </div>
+
+        </div> <!-- /#relic-stage -->
+
+      </div> <!-- /#stage-3d -->
+
+      <!-- PERSISTENT HUD LAYER -->
+      <div id="hud-layer">
+
+        <!-- TOP BAR: RELIC TRACKER -->
+        <header id="hud-top">
+          <div class="hud-brand">
+            <div class="eye-icon-mini"></div>
+            <div class="brand-text">
+              <span class="marvel-tag">MARVEL</span>
+              <h1>DOCTOR STRANGE</h1>
+              <span class="sub-title">THE THREE LOST RELICS</span>
+            </div>
+          </div>
+
+          <div class="tracker-box">
+            <div class="tracker-slots">
+              <!-- SLOT 1: TIME CRYSTAL -->
+              <div class="relic-slot" id="slot-crystal" data-status="empty">
+                <div class="slot-icon icon-crystal"></div>
+                <div class="slot-meta">
+                  <span class="slot-label">TIME CRYSTAL</span>
+                  <span class="slot-status">NOT COLLECTED</span>
+                </div>
+              </div>
+
+              <!-- SLOT 2: ETERNITY GEAR -->
+              <div class="relic-slot" id="slot-gear" data-status="empty">
+                <div class="slot-icon icon-gear"></div>
+                <div class="slot-meta">
+                  <span class="slot-label">ETERNITY GEAR</span>
+                  <span class="slot-status">NOT COLLECTED</span>
+                </div>
+              </div>
+
+              <!-- SLOT 3: COSMIC CORE -->
+              <div class="relic-slot" id="slot-core" data-status="empty">
+                <div class="slot-icon icon-core"></div>
+                <div class="slot-meta">
+                  <span class="slot-label">COSMIC CORE</span>
+                  <span class="slot-status">NOT COLLECTED</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tracker-progress">
+              <span class="prog-label">PROGRESS</span>
+              <span class="prog-counter" id="progress-text">0 / 3</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- DYNAMIC EXPOSURE BANNER (Positioned above bottom controls, never blocking the relic) -->
+        <div id="exposure-alert" class="hidden">
+          <span class="alert-icon">⚡</span>
+          <span class="alert-text">MAGICAL ELEMENT EXPOSED — RELEASE CONTROLS TO FREEZE TIME &amp; CLICK TO COLLECT</span>
+        </div>
+
+        <!-- BOTTOM BAR: AGAMOTTO TIME DIAL & SCRUBBER -->
+        <footer id="hud-bottom">
+          <!-- TIME DIAL WIDGET -->
+          <div class="time-dial-widget">
+            <div class="eye-dial-frame">
+              <div class="eye-dial-outer-ring"></div>
+              <div class="eye-dial-iris" id="eye-iris"></div>
+              <div class="eye-dial-pupil"></div>
+            </div>
+            <div class="dial-mode-readout">
+              <span class="dial-caption">EYE OF AGAMOTTO</span>
+              <span class="dial-state" id="time-state-label">|| TIMELINE FROZEN</span>
+            </div>
+          </div>
+
+          <!-- TIMELINE SCRUBBER TRACK -->
+          <div class="timeline-scrubber-container">
+            <div class="scrubber-header">
+              <span class="scrub-bound left">PAST (RECONSTRUCTED)</span>
+              <span class="scrub-title" id="active-relic-name">RELIC 1: THE ANCIENT VASE</span>
+              <span class="scrub-bound right">PRESENT (DESTROYED)</span>
+            </div>
+            
+            <div class="scrubber-track" id="timeline-track">
+              <!-- HIGHLIGHTED VISIBILITY WINDOW ZONE -->
+              <div class="window-zone" id="timeline-window-zone">
+                <span class="window-tag">EXPOSURE WINDOW (1.0s)</span>
+              </div>
+              <!-- CURRENT SCRUB HEAD -->
+              <div class="scrubber-head" id="timeline-head">
+                <div class="head-glow"></div>
+                <div class="head-pointer"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTROLS KEYPAD INDICATOR -->
+          <div class="controls-legend">
+            <div class="key-indicator" id="key-q">
+              <kbd>Q</kbd>
+              <span>HOLD REVERSE</span>
+            </div>
+            <div class="key-indicator" id="key-pause">
+              <kbd>RELEASE</kbd>
+              <span>FREEZE TIME</span>
+            </div>
+            <div class="key-indicator" id="key-e">
+              <kbd>E</kbd>
+              <span>HOLD FORWARD</span>
+            </div>
+            <div class="key-indicator" id="key-click">
+              <span class="mouse-icon">🖱️</span>
+              <span>CLICK TO COLLECT</span>
+            </div>
+          </div>
+        </footer>
+
+      </div> <!-- /#hud-layer -->
+
+      <button id="bug-window-toggle" class="bug-window-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="bug-window">
+        BUGS
+      </button>
+
+      <div id="bug-window" class="bug-window" role="dialog" aria-modal="true" aria-label="Bug window" aria-hidden="true">
+        <div class="bug-window-card">
+          <button id="solve-bug-btn" class="btn-mystic" type="button">SOLVE BUG</button>
+        </div>
+      </div>
+
+      <!-- CINEMATIC STORY & TUTORIAL MODAL -->
+      <div id="story-modal" class="modal-layer">
+        <div class="story-card">
+          <div class="speaker-tag">DOCTOR STRANGE — MASTER OF THE MYSTIC ARTS</div>
+          <h2 id="modal-title">THE FABRIC OF REALITY IS SHATTERING</h2>
+          <div class="story-content" id="modal-body">
+            <p>A catastrophic multidimensional collapse has severed three primal relics from their points of origin, scattering their magical elements across fractured moments in time.</p>
+            <p class="highlight-text">"The Eye of Agamotto can bend their timelines backwards. When each relic reconstructs, a temporal window opens where its magical element becomes visible. Freeze time and reclaim it."</p>
+            <div class="tutorial-instructions">
+              <div class="tut-step">
+                <div class="step-badge">1</div>
+                <div>Hold <strong class="key-label">Q</strong> to reverse time. Broken pieces reconstruct into the past.</div>
+              </div>
+              <div class="tut-step">
+                <div class="step-badge">2</div>
+                <div>Watch the highlighted <strong>Exposure Window</strong>. When the magical element glows, release <strong class="key-label">Q</strong> to freeze time.</div>
+                <div>Watch the relic reconstruct closely. When the magical element flashes into view (a rapid <strong>0.2s Window</strong>), release <strong class="key-label">Q</strong> to freeze time.</div>
+              </div>
+              <div class="tut-step">
+                <div class="step-badge">3</div>
+                <div>Click the floating element to collect it. If you overshoot, hold <strong class="key-label">E</strong> to move forward.</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button id="modal-continue-btn" class="btn-mystic">
+              <span>BEGIN TIME JOURNEY</span>
+              <kbd class="btn-kbd">SPACE</kbd>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CELEBRATION RECOVERY TOAST -->
+      <div id="relic-toast" class="toast-layer hidden">
+        <div class="toast-box">
+          <div class="toast-gem-icon" id="toast-icon"></div>
+          <div class="toast-text">
+            <span class="toast-sup">RELIC SECURED</span>
+            <h3 id="toast-title">TIME CRYSTAL COLLECTED</h3>
+            <p id="toast-desc">The emerald essence of Agamotto resonates within you.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINALE VICTORY SCREEN -->
+      <div id="victory-modal" class="modal-layer hidden">
+        <div class="victory-card">
+          <div class="victory-symbol"></div>
+          <h1 class="victory-headline">WORLD PROTECTED</h1>
+          <h2 class="victory-subheadline">ALL THREE MAGICAL ELEMENTS RECOVERED</h2>
+          <div class="victory-divider"></div>
+          <p class="victory-quote">"Reality has been restored across the multiverse. The temporal fabric stands united under the shield of Agamotto."</p>
+          <div class="recovered-elements-row">
+            <div class="recovered-pill green">
+              <span class="pill-dot"></span>
+              <span>TIME CRYSTAL</span>
+            </div>
+            <div class="recovered-pill gold">
+              <span class="pill-dot"></span>
+              <span>ETERNITY GEAR</span>
+            </div>
+            <div class="recovered-pill purple">
+              <span class="pill-dot"></span>
+              <span>COSMIC CORE</span>
+            </div>
+          </div>
+          <div class="victory-actions">
+            <button id="btn-replay" class="btn-mystic gold-style">
+              <span>REPLAY TIMELINE ADVENTURE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /#game-viewport -->
+  </div> <!-- /#game-wrapper -->
+
+  <script src="script.js"></script>
+</body>
+</html>

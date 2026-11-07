@@ -1,0 +1,3 @@
+Source archive: https://zachd.com/mvc2/resources/mvc2/Sprites_RGB/Sprites_Hulk.rar
+Source index: https://zachd.com/mvc2/resources/mvc2/images_charactersprites.html
+The downloaded archive contains captured Marvel vs. Capcom 2 Hulk character sprites. Eight idle-like frames, eight pulling/action frames, and six bracing/bending frames are used by this local prototype. Magenta was keyed out to transparency. The source page does not state a reuse license; the Marvel/Capcom character and game art remain their respective owners' intellectual property.

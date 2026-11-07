@@ -1,0 +1,3717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHANG-CHI — Broken Harmony</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%23e9bd5a' stroke-width='3.5'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23f7d878' stroke-width='2'/></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Rajdhani:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Ten Rings orbit engine -->
+    <style id="ring-css">
+        @keyframes ring-orbit {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .ring {
+            animation: ring-orbit 3s linear infinite;
+        }
+    </style>
+
+    <!-- ============ THE LIVE BUGGY STYLESHEET (Magical Light Bulb Defect) ============ -->
+    <style id="bulb-css">
+        /* magical light bulb shatter engine — core */
+        @keyframes bulb-shatter {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+                filter: drop-shadow(0 0 15px rgba(255, 220, 90, 0.9));
+            }
+            40% {
+                transform: scale(1.35) rotate(15deg);
+                opacity: 1;
+                filter: brightness(2.8) drop-shadow(0 0 50px rgba(255, 160, 40, 1));
+            }
+            100% {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+                filter: brightness(5);
+            }
+        }
+
+        .magical-bulb.destroying {
+            animation: bulbShatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+        }
+    </style>
+
+    <style>
+        /* ================================================================
+   SHANG-CHI: BROKEN HARMONY — main stylesheet
+   ================================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        html,
+        body {
+            height: 100%;
+            min-height: 100svh;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #07090d;
+            background-image: 
+                radial-gradient(ellipse at 50% 48%, rgba(7, 9, 13, 0.15) 0%, rgba(7, 9, 13, 0.45) 65%, rgba(4, 5, 8, 0.78) 100%),
+                url('assets/shangchi_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #e8dcc0;
+            font-family: 'Rajdhani', sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ---------------- stage & environment ---------------- */
+        #stage {
+            position: fixed;
+            inset: 0;
+            min-height: 100svh;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        #vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 6;
+            pointer-events: none;
+            background: radial-gradient(92% 84% at 50% 46%, transparent 55%, rgba(4, 5, 8, .68) 100%);
+        }
+
+        #motes {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #motes i {
+            position: absolute;
+            bottom: -8px;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: #e9bd5a;
+            filter: blur(.5px);
+            animation: moteRise linear infinite;
+        }
+
+        @keyframes moteRise {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            12% {
+                opacity: .4;
+            }
+
+            85% {
+                opacity: .22;
+            }
+
+            100% {
+                transform: translateY(-72vh);
+                opacity: 0;
+            }
+        }
+
+        #figure-wrap {
+            position: absolute;
+            left: 46%;
+            top: 54%;
+            width: 520px;
+            height: 560px;
+            z-index: 2;
+        }
+
+        .ambient {
+            position: absolute;
+            left: -60px;
+            top: -95px;
+            width: 640px;
+            height: 640px;
+            border-radius: 50%;
+            z-index: 0;
+            background: radial-gradient(closest-side, rgba(216, 166, 66, .17), rgba(216, 166, 66, .05) 46%, transparent 72%);
+            opacity: .6;
+            transition: opacity 2.2s;
+        }
+
+        body.final .ambient {
+            opacity: 1;
+        }
+
+        .ground {
+            position: absolute;
+            left: 50%;
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .g1 {
+            width: 460px;
+            height: 96px;
+            top: 466px;
+            transform: translateX(-50%);
+            border: 1px solid rgba(233, 189, 90, .11);
+        }
+
+        .g2 {
+            width: 320px;
+            height: 64px;
+            top: 476px;
+            transform: translateX(-50%);
+            border: 1px solid rgba(233, 189, 90, .06);
+        }
+
+        /* ---------------- ground cloud & mountain mist ---------------- */
+        .ground-mist-back {
+            position: absolute;
+            left: 260px;
+            top: 480px;
+            width: 580px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 4;
+            pointer-events: none;
+            background: 
+                radial-gradient(ellipse at 45% 65%, rgba(185, 215, 245, 0.42) 0%, rgba(130, 175, 220, 0.24) 45%, transparent 75%),
+                radial-gradient(ellipse at 60% 70%, rgba(245, 195, 110, 0.28) 0%, rgba(190, 140, 60, 0.12) 48%, transparent 72%);
+            filter: blur(14px);
+            animation: mistPulseBack 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes mistPulseBack {
+            0% { transform: translate(-50%, -50%) scale(0.96, 0.94); opacity: 0.85; }
+            100% { transform: translate(-50%, -50%) scale(1.05, 1.08); opacity: 1; }
+        }
+
+        .ground-mist-front {
+            position: absolute;
+            left: 260px;
+            top: 476px;
+            width: 480px;
+            height: 120px;
+            transform: translate(-50%, -50%);
+            z-index: 6;
+            pointer-events: none;
+            transition: filter 1s ease;
+        }
+
+        body.final .ground-mist-front {
+            filter: drop-shadow(0 0 16px rgba(255, 195, 60, 0.45));
+        }
+
+        .mist-cloud {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .mc-1 {
+            left: 25px;
+            bottom: 12px;
+            width: 260px;
+            height: 80px;
+            background: radial-gradient(ellipse at 50% 65%, rgba(200, 225, 250, 0.58) 0%, rgba(145, 185, 225, 0.32) 46%, rgba(100, 140, 185, 0.1) 68%, transparent 80%);
+            filter: blur(10px);
+            animation: mistFloat1 7.5s ease-in-out infinite alternate;
+        }
+
+        .mc-2 {
+            right: 20px;
+            bottom: 8px;
+            width: 290px;
+            height: 88px;
+            background: radial-gradient(ellipse at 50% 70%, rgba(250, 205, 120, 0.46) 0%, rgba(185, 150, 200, 0.28) 45%, rgba(120, 150, 190, 0.1) 68%, transparent 82%);
+            filter: blur(12px);
+            animation: mistFloat2 9s ease-in-out infinite alternate-reverse;
+        }
+
+        .mc-3 {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -4px;
+            width: 360px;
+            height: 64px;
+            background: radial-gradient(ellipse at 50% 75%, rgba(215, 235, 255, 0.52) 0%, rgba(150, 190, 230, 0.28) 48%, transparent 75%);
+            filter: blur(8px);
+            animation: mistDrift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes mistFloat1 {
+            0% { transform: translateY(0px) scale(1); opacity: 0.85; }
+            100% { transform: translateY(-7px) scale(1.08, 1.05); opacity: 1; }
+        }
+
+        @keyframes mistFloat2 {
+            0% { transform: translateY(0px) scale(1); opacity: 0.82; }
+            100% { transform: translateY(-9px) scale(1.06, 1.04); opacity: 1; }
+        }
+
+        @keyframes mistDrift {
+            0% { transform: translateX(-52%) scale(0.97); }
+            100% { transform: translateX(-48%) scale(1.04); }
+        }
+
+        #hero {
+            position: absolute;
+            left: 260px;
+            top: 255px;
+            width: 324px;
+            height: 486px;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .hero-body-wrap {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            animation: heroBreathe 3.8s ease-in-out infinite;
+            transform-origin: 50% 92%;
+        }
+
+        @keyframes heroBreathe {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-5px) scale(1.008, 1.012);
+            }
+        }
+
+        .hero-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #hero-img {
+            filter: drop-shadow(0 16px 30px rgba(0, 0, 0, .82)) drop-shadow(0 2px 10px rgba(0, 0, 0, .6));
+            transition: filter 0.8s ease;
+        }
+
+        #hero-shadow {
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            top: auto;
+            width: 280px;
+            height: 56px;
+            transform: translateX(-50%);
+            object-fit: contain;
+            z-index: 4;
+            opacity: 0.75;
+            animation: shadowPulse 3.8s ease-in-out infinite;
+        }
+
+        @keyframes shadowPulse {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.75;
+            }
+            50% {
+                transform: translateX(-50%) scale(0.93);
+                opacity: 0.58;
+            }
+        }
+
+        .glow-layer {
+            mix-blend-mode: screen;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1.2s ease;
+        }
+
+        body.broken .glow-layer {
+            opacity: 0.5;
+            filter: hue-rotate(185deg) brightness(1.3) drop-shadow(0 0 14px rgba(40, 220, 250, 0.85));
+            animation: chiFlicker 2.4s ease-in-out infinite;
+        }
+
+        body.fixed .glow-layer {
+            opacity: 0.65;
+            filter: brightness(1.25) drop-shadow(0 0 16px rgba(255, 190, 60, 0.85));
+            animation: chiPulse 2.8s ease-in-out infinite;
+        }
+
+        body.final .glow-layer {
+            opacity: 0.85;
+            filter: brightness(1.4) drop-shadow(0 0 24px rgba(255, 210, 80, 0.95));
+        }
+
+        @keyframes chiFlicker {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.65; }
+        }
+
+        @keyframes chiPulse {
+            0%, 100% {
+                opacity: 0.45;
+                filter: brightness(1.1) drop-shadow(0 0 12px rgba(255, 190, 60, 0.6));
+            }
+            50% {
+                opacity: 0.85;
+                filter: brightness(1.35) drop-shadow(0 0 24px rgba(255, 220, 90, 0.95));
+            }
+        }
+
+        .hero-body-wrap.blast {
+            animation: heroBlast 0.45s ease-out;
+        }
+
+        @keyframes heroBlast {
+            0% { transform: scale(0.96) translateY(4px); }
+            40% { transform: scale(1.035) translateY(-7px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        .glow-layer.flare {
+            animation: glowFlare 0.55s ease-out;
+        }
+
+        @keyframes glowFlare {
+            0% { opacity: 1; filter: brightness(2) drop-shadow(0 0 35px rgba(255, 220, 100, 1)); }
+            100% { opacity: 0.85; filter: brightness(1.4) drop-shadow(0 0 24px rgba(255, 210, 80, 0.95)); }
+        }
+
+        #shock {
+            position: absolute;
+            left: 260px;
+            top: 215px;
+            width: 120px;
+            height: 120px;
+            margin: -60px 0 0 -60px;
+            border: 2px solid rgba(247, 216, 120, .75);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        #shock.go {
+            animation: shockw 1s cubic-bezier(.2, .7, .3, 1) forwards;
+        }
+
+        @keyframes shockw {
+            0% {
+                transform: scale(.4);
+                opacity: .85;
+            }
+
+            100% {
+                transform: scale(4.8);
+                opacity: 0;
+            }
+        }
+
+        /* ================================================================
+   THE TEN RINGS — ten independent layered metallic objects
+   ================================================================ */
+        .arm-anchor {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .ring-unit {
+            position: absolute;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            transition: transform 1.15s cubic-bezier(.3, .75, .25, 1);
+            will-change: transform;
+        }
+
+        .ring-plane {
+            position: absolute;
+            width: 0;
+            height: 0;
+            transition: transform 1.15s cubic-bezier(.3, .75, .25, 1);
+        }
+
+        .ring-gather {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .ring {
+            position: absolute;
+            width: 0;
+            height: 0;
+            will-change: transform;
+        }
+
+        /* BROKEN state — orbit engine offline, emergency drift protocol */
+        body.broken .ring {
+            animation: none !important;
+        }
+
+        body.broken .ring-unit {
+            animation: ring-chaos var(--bt) ease-in-out infinite;
+            animation-delay: var(--bd);
+        }
+
+        /* FIXED state — the corrected live rule in #ring-css drives .ring;
+   these rules only override per-ring duration / phase head-start */
+        body:not(.broken) .ring {
+            animation-duration: var(--t);
+            animation-delay: var(--dl);
+        }
+
+        body.fixed .ring-gather {
+            animation: ring-gather 1.25s cubic-bezier(.17, .8, .24, 1) both;
+        }
+
+        @keyframes ring-chaos {
+
+            0%,
+            100% {
+                transform: translate(var(--cx), var(--cy)) rotate(var(--cr));
+            }
+
+            50% {
+                transform: translate(calc(var(--cx) + var(--jx)), calc(var(--cy) + var(--jy))) rotate(calc(var(--cr) + var(--jr)));
+            }
+        }
+
+        @keyframes ring-orbit {
+            from {
+                transform: rotate(calc(var(--ph)*1deg)) translateX(var(--orb-r)) rotate(calc(var(--ph)*-1deg));
+            }
+
+            to {
+                transform: rotate(calc((var(--ph) + 360)*1deg)) translateX(var(--orb-r)) rotate(calc((var(--ph) + 360)*-1deg));
+            }
+        }
+
+        @keyframes ring-gather {
+            from {
+                transform: rotate(calc(var(--ph)*1deg)) translateX(calc(var(--orb-r)*-1)) rotate(calc(var(--ph)*-1deg)) scale(.5);
+                opacity: .3;
+            }
+
+            55% {
+                opacity: 1;
+            }
+
+            to {
+                transform: rotate(0deg) translateX(0px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* --- torus construction: depth slab + spinning metal + fixed light --- */
+        /* --- torus construction: depth slab + spinning metal + fixed light --- */
+        .r-body {
+            position: absolute;
+            left: calc(var(--d) / -2);
+            top: calc(var(--d) / -2);
+            filter: brightness(1) drop-shadow(0 4px 7px rgba(0, 0, 0, .5)) drop-shadow(0 0 16px rgba(255, 195, 75, .65)) drop-shadow(0 0 32px rgba(255, 155, 35, .35));
+            transition: filter 1.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        body.broken .r-body,
+        body.blue-rings .r-body {
+            filter: brightness(1.1) drop-shadow(0 3px 6px rgba(0, 0, 0, .55)) drop-shadow(0 0 18px rgba(35, 220, 250, .85)) drop-shadow(0 0 38px rgba(10, 160, 220, .45)) !important;
+        }
+
+        body.final .ring.projected .r-body,
+        body.gold-rings .r-body,
+        body.final .r-body {
+            filter: brightness(1.3) drop-shadow(0 4px 10px rgba(0, 0, 0, .65)) drop-shadow(0 0 24px rgba(255, 225, 95, 1)) drop-shadow(0 0 48px rgba(255, 170, 40, .7)) !important;
+        }
+
+        .r-tilt {
+            position: absolute;
+            inset: 0;
+        }
+
+        .r-depth,
+        .r-metal,
+        .r-gloss {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+        }
+
+        /* --- Aqua blue Wenwu shader layers (active in blue mode, dissolve to gold on fix) --- */
+        .r-depth::after,
+        .r-metal::after,
+        .r-gloss::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        body.broken .r-depth::after,
+        body.broken .r-metal::after,
+        body.broken .r-gloss::after,
+        body.blue-rings .r-depth::after,
+        body.blue-rings .r-metal::after,
+        body.blue-rings .r-gloss::after {
+            opacity: 1 !important;
+        }
+
+        body.gold-rings .r-depth::after,
+        body.gold-rings .r-metal::after,
+        body.gold-rings .r-gloss::after,
+        body.final .r-depth::after,
+        body.final .r-metal::after,
+        body.final .r-gloss::after {
+            opacity: 0 !important;
+        }
+
+        .r-depth {
+            transform: translate(2.6px, 3.4px);
+            /* extruded thickness */
+            background: conic-gradient(from 30deg, #170d02, #33200a 18%, #4d300d 40%, #201302 62%, #3a250b 82%, #170d02);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 41%, #000 44% 92%, transparent 95%);
+            mask: radial-gradient(closest-side, transparent 0 41%, #000 44% 92%, transparent 95%);
+        }
+
+        .r-depth::after {
+            background: conic-gradient(from 30deg, #01141c, #04222c 18%, #0a3a48 40%, #021a22 62%, #062f3a 82%, #01141c);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 41%, #000 44% 92%, transparent 95%);
+            mask: radial-gradient(closest-side, transparent 0 41%, #000 44% 92%, transparent 95%);
+        }
+
+        .r-metal {
+            will-change: transform;
+            background:
+                radial-gradient(closest-side, transparent 0 59%, rgba(56, 30, 4, .55) 62% 65%, transparent 68%),
+                radial-gradient(closest-side, transparent 0 42%, rgba(255, 224, 150, .16) 46% 50%, transparent 56%),
+                radial-gradient(closest-side, transparent 0 80%, rgba(43, 22, 3, .55) 87% 92%, transparent 96%),
+                conic-gradient(from 210deg, #6b4413, #9a6620 8%, #d9a43a 18%, #f7d878 26%, #ffe9a8 31%, #e2b04a 39%, #a06a1c 49%, #6b4413 59%, #8a5a1a 67%, #c8912f 77%, #f2cd6e 85%, #d9a43a 91%, #6b4413);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+            mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+        }
+
+        .r-metal::after {
+            background:
+                radial-gradient(closest-side, transparent 0 59%, rgba(3, 40, 52, .7) 62% 65%, transparent 68%),
+                radial-gradient(closest-side, transparent 0 42%, rgba(130, 240, 255, .35) 46% 50%, transparent 56%),
+                radial-gradient(closest-side, transparent 0 80%, rgba(2, 28, 38, .7) 87% 92%, transparent 96%),
+                conic-gradient(from 210deg, #052a36, #094759 8%, #138fa9 18%, #3dd5ed 26%, #bbf7ff 31%, #1fafd0 39%, #0d677e 49%, #052a36 59%, #084252 67%, #169dbb 77%, #55e2f7 85%, #1593af 91%, #052a36);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+            mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+        }
+
+        @keyframes sheen {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        body.broken .r-metal {
+            animation-duration: var(--bs) !important;
+            animation-direction: var(--bsd) !important;
+        }
+
+        .r-gloss {
+            background:
+                radial-gradient(circle at 32% 24%, rgba(255, 252, 236, .95) 0 4%, rgba(255, 240, 190, .5) 13%, transparent 27%),
+                radial-gradient(circle at 70% 78%, rgba(255, 190, 90, .42) 0 3%, transparent 18%),
+                radial-gradient(closest-side, transparent 0 43.5%, rgba(255, 236, 170, .9) 46.5% 49%, rgba(122, 74, 12, .28) 53%, transparent 59%);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+            mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+        }
+
+        .r-gloss::after {
+            background:
+                radial-gradient(circle at 32% 24%, rgba(235, 253, 255, .98) 0 4%, rgba(150, 240, 255, .7) 13%, transparent 27%),
+                radial-gradient(circle at 70% 78%, rgba(55, 205, 245, .5) 0 3%, transparent 18%),
+                radial-gradient(closest-side, transparent 0 43.5%, rgba(175, 245, 255, .95) 46.5% 49%, rgba(10, 80, 102, .4) 53%, transparent 59%);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+            mask: radial-gradient(closest-side, transparent 0 43%, #000 46% 91%, transparent 94%);
+        }
+
+        body.broken #motes i,
+        body.blue-rings #motes i {
+            background: rgba(80, 225, 255, .75) !important;
+            box-shadow: 0 0 8px rgba(80, 225, 255, .95) !important;
+        }
+
+        body.gold-rings #motes i,
+        body.final #motes i {
+            background: #e9bd5a !important;
+            box-shadow: 0 0 8px rgba(255, 200, 60, .95) !important;
+        }
+
+        .ring[data-g="outer"] .r-metal {
+            filter: brightness(.9) saturate(.94);
+        }
+
+        .ring[data-g="inner"] .r-metal {
+            filter: brightness(1.08);
+        }
+
+        /* group activation pulse */
+        @keyframes gpulse {
+            0% {
+                transform: scale(1);
+                filter: brightness(1) drop-shadow(0 4px 7px rgba(0, 0, 0, .5)) drop-shadow(0 0 14px rgba(255, 190, 80, .3));
+            }
+
+            30% {
+                transform: scale(1.17);
+                filter: brightness(1.6) drop-shadow(0 4px 7px rgba(0, 0, 0, .5)) drop-shadow(0 0 28px rgba(255, 208, 105, .9));
+            }
+
+            100% {
+                transform: scale(1);
+                filter: brightness(1) drop-shadow(0 4px 7px rgba(0, 0, 0, .5)) drop-shadow(0 0 14px rgba(255, 190, 80, .3));
+            }
+        }
+
+        body.ga-outer .ring[data-g="outer"] .r-body,
+        body.ga-middle .ring[data-g="middle"] .r-body,
+        body.ga-inner .ring[data-g="inner"] .r-body {
+            animation: gpulse .85s ease;
+        }
+
+        /* final synchronized breath */
+        @keyframes rbreathe {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1.06) drop-shadow(0 4px 8px rgba(0, 0, 0, .5)) drop-shadow(0 0 20px rgba(255, 200, 95, .5));
+            }
+
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.22) drop-shadow(0 4px 8px rgba(0, 0, 0, .5)) drop-shadow(0 0 30px rgba(255, 208, 110, .75));
+            }
+        }
+
+        body.final .r-body {
+            animation: rbreathe 3.4s ease-in-out infinite;
+        }
+
+        /* ================================================================
+           MOVIE-ACCURATE SOLID GOLDEN CYLINDRICAL FOREARM BRACERS & CHI AURA
+           ================================================================ */
+        .arm-chi-fire {
+            position: absolute;
+            width: 140px;
+            height: 190px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 1.2s ease, filter 1.2s ease;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 50% 50%, rgba(255, 210, 80, 0.75) 0%, rgba(255, 140, 25, 0.5) 42%, rgba(210, 80, 10, 0.25) 65%, transparent 80%);
+            filter: blur(10px);
+        }
+
+        body.broken .arm-chi-fire {
+            opacity: 0.22;
+            background: radial-gradient(ellipse at 50% 50%, rgba(40, 220, 255, 0.55) 0%, rgba(20, 140, 210, 0.3) 42%, transparent 75%);
+            filter: blur(12px) drop-shadow(0 0 16px rgba(40, 220, 255, 0.65));
+            animation: chiFlicker 2.4s ease-in-out infinite;
+        }
+
+        body.fixed .arm-chi-fire {
+            opacity: 0.65;
+            filter: blur(9px) drop-shadow(0 0 22px rgba(255, 180, 40, 0.85));
+            animation: armChiPulse 2.8s ease-in-out infinite;
+        }
+
+        body.final .arm-chi-fire {
+            opacity: 0.95;
+            filter: blur(7px) drop-shadow(0 0 26px rgba(255, 195, 50, 0.95)) drop-shadow(0 0 52px rgba(255, 130, 20, 0.7));
+            animation: armChiPulse 2.4s ease-in-out infinite;
+        }
+
+        @keyframes armChiPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.08, 1.04);
+                opacity: 1;
+                filter: blur(6px) drop-shadow(0 0 34px rgba(255, 205, 55, 1)) drop-shadow(0 0 60px rgba(255, 140, 25, 0.85));
+            }
+        }
+
+        .arm-chi-fire.flare {
+            animation: armChiFlare 0.55s ease-out;
+        }
+
+        @keyframes armChiFlare {
+            0% {
+                opacity: 1;
+                filter: blur(5px) drop-shadow(0 0 45px rgba(255, 230, 100, 1)) drop-shadow(0 0 80px rgba(255, 140, 20, 0.95));
+                transform: translate(-50%, -50%) scale(1.22);
+            }
+            100% {
+                opacity: 0.95;
+                filter: blur(7px) drop-shadow(0 0 26px rgba(255, 195, 50, 0.95)) drop-shadow(0 0 52px rgba(255, 130, 20, 0.7));
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Movie-accurate solid golden cylindrical bracers in final harmony */
+        body.final .ring-unit {
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        body.final .ring {
+            border-radius: 3px / 5px;
+            background: linear-gradient(90deg, 
+                #3a1d02 0%, 
+                #9e6610 8%, 
+                #fed568 20%, 
+                #fff8d4 28%, 
+                #d79924 48%, 
+                #7e4407 65%, 
+                #fcdd82 82%, 
+                #f6c95c 90%, 
+                #3a1d02 100%);
+            border-top: 1.2px solid #fff5cc;
+            border-bottom: 1.8px solid #381b02;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.75),
+                inset 0 -1.5px 3px rgba(0, 0, 0, 0.85),
+                0 3px 6px rgba(0, 0, 0, 0.9);
+            filter: drop-shadow(0 0 5px rgba(255, 205, 55, 0.95)) drop-shadow(0 0 14px rgba(255, 140, 20, 0.65));
+            position: relative;
+            overflow: visible;
+        }
+
+        body.final .r-body {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: none !important;
+        }
+
+        body.final .r-tilt,
+        body.final .r-depth,
+        body.final .r-metal,
+        body.final .r-gloss {
+            display: none !important;
+        }
+
+        /* Concentric ancient circular medallion seal engraved into the center of each ring band */
+        body.final .ring::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1.2px solid rgba(70, 36, 4, 0.95);
+            background: radial-gradient(circle, #fff3c4 24%, #824709 50%, #f7c756 75%);
+            box-shadow: 
+                0 0 0 1.2px rgba(255, 235, 150, 0.9),
+                inset 0 0 0 1.2px rgba(255, 245, 190, 0.95),
+                inset 0 0 1.8px rgba(40, 20, 2, 0.95);
+            z-index: 2;
+        }
+
+        /* Relief circular engravings flanking the center medallion */
+        body.final .ring::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at calc(50% - 9px) 50%, #fff1b8 0, #824709 1.5px, #f7c756 2.6px, transparent 3px),
+                radial-gradient(circle at calc(50% + 9px) 50%, #fff1b8 0, #824709 1.5px, #f7c756 2.6px, transparent 3px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ================================================================
+   UI
+   ================================================================ */
+        #title-block {
+            position: fixed;
+            left: 26px;
+            top: 20px;
+            z-index: 20;
+            max-width: 340px;
+            pointer-events: none;
+        }
+
+        .t-sup {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #orn {
+            position: relative;
+            width: 16px;
+            height: 16px;
+        }
+
+        #orn i {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 40deg, #6b4413, #e2b04a 30%, #ffe9a8 45%, #a06a1c 70%, #6b4413);
+            -webkit-mask: radial-gradient(closest-side, transparent 0 45%, #000 50% 88%, transparent 94%);
+            mask: radial-gradient(closest-side, transparent 0 45%, #000 50% 88%, transparent 94%);
+        }
+
+        #title-block #orn {
+            animation: orn-spin 7s linear infinite;
+        }
+
+        body.broken #orn {
+            animation: orn-chaos 1.15s ease-in-out infinite;
+        }
+
+        @keyframes orn-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes orn-chaos {
+
+            0%,
+            100% {
+                transform: rotate(14deg) translateX(1px);
+            }
+
+            30% {
+                transform: rotate(-22deg);
+            }
+
+            55% {
+                transform: rotate(30deg) translateY(-1px);
+            }
+
+            80% {
+                transform: rotate(-8deg);
+            }
+        }
+
+        #title-block h1 {
+            margin: 7px 0 6px;
+            font: 800 24px/1.12 'Cinzel', serif;
+            color: #efe3c0;
+            letter-spacing: .14em;
+        }
+
+        #title-block h1 em {
+            display: block;
+            font-style: normal;
+            font-size: 12.5px;
+            letter-spacing: .42em;
+            color: #c8912f;
+            margin-bottom: 3px;
+        }
+
+        #title-block h1::after {
+            content: "";
+            display: block;
+            width: 46px;
+            height: 2px;
+            background: #8e2432;
+            margin-top: 7px;
+        }
+
+        #mission {
+            margin-top: 9px;
+            font: 500 13px/1.45 'Rajdhani';
+            color: #b9ab8a;
+        }
+
+        #objective {
+            margin-top: 7px;
+            font: 600 12.5px/1.4 'Rajdhani';
+            letter-spacing: .06em;
+            color: #e9bd5a;
+        }
+
+        /* panel */
+        #panel {
+            position: fixed;
+            right: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 22;
+            width: 354px;
+        }
+
+        #panel-box {
+            background: rgba(13, 15, 20, .88);
+            border: 1px solid rgba(233, 189, 90, .24);
+            border-left: 2px solid #c8912f;
+            border-radius: 4px;
+            padding: 14px 16px 16px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+        }
+
+        #panel-box.shake {
+            animation: pshake .4s ease;
+        }
+
+        @keyframes pshake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-7px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(3px);
+            }
+        }
+
+        .p-head {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-bottom: 9px;
+            margin-bottom: 11px;
+            border-bottom: 1px solid rgba(233, 189, 90, .15);
+        }
+
+        .p-head svg {
+            width: 15px;
+            height: 15px;
+            color: #e9bd5a;
+            flex: none;
+        }
+
+        .p-head b {
+            font: 700 13px 'Rajdhani';
+            letter-spacing: .2em;
+            color: #efe3c0;
+        }
+
+        .p-head .file {
+            margin-left: auto;
+            font: 400 10.5px 'IBM Plex Mono', monospace;
+            color: #7d8590;
+        }
+
+        .p-head .pcount {
+            margin-left: auto;
+            font: 700 14px 'Rajdhani';
+            color: #e9bd5a;
+            letter-spacing: .1em;
+        }
+
+        .code {
+            white-space: pre;
+            font: 400 11.5px/1.62 'IBM Plex Mono', monospace;
+            color: #aeb6c2;
+            background: rgba(0, 0, 0, .28);
+            padding: 10px 11px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, .04);
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .c-kw {
+            color: #e9bd5a;
+        }
+
+        .c-sel {
+            color: #f0e2bd;
+        }
+
+        .c-fn {
+            color: #d9a43a;
+        }
+
+        .c-num {
+            color: #c98b6b;
+        }
+
+        .c-com {
+            color: #5d6570;
+        }
+
+        #name-edit {
+            font: inherit;
+            background: rgba(142, 36, 50, .14);
+            color: #f2b23c;
+            border: 1px dashed rgba(233, 189, 90, .45);
+            border-radius: 3px;
+            padding: 0 3px;
+            width: 10ch;
+            text-align: center;
+            outline: none;
+        }
+
+        #name-edit:focus {
+            border-color: #f7d878;
+            background: rgba(233, 189, 90, .1);
+        }
+
+        #name-edit:disabled {
+            border-style: solid;
+            border-color: rgba(140, 200, 150, .5);
+            color: #9fd8a4;
+            background: rgba(80, 160, 90, .08);
+        }
+
+        .p-status {
+            font: 500 12px/1.5 'Rajdhani';
+            letter-spacing: .04em;
+            color: #b9ab8a;
+            min-height: 36px;
+            margin: 8px 0 10px;
+        }
+
+        .p-status.ok {
+            color: #e9bd5a;
+        }
+
+        .p-status.err {
+            color: #e07a6a;
+        }
+
+        .btnrow {
+            display: flex;
+            gap: 9px;
+        }
+
+        #apply-btn {
+            flex: 1;
+            background: #c8912f;
+            color: #17110a;
+            border: none;
+            font: 700 13px 'Rajdhani';
+            letter-spacing: .2em;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: .15s;
+        }
+
+        #apply-btn:hover {
+            background: #e9bd5a;
+        }
+
+        #apply-btn:disabled {
+            background: #5a4a26;
+            color: #2a2416;
+            cursor: default;
+        }
+
+        #hint-btn {
+            background: transparent;
+            border: 1px solid rgba(233, 189, 90, .35);
+            color: #c9b98e;
+            font: 600 12px 'Rajdhani';
+            letter-spacing: .14em;
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        #hint-btn:hover {
+            border-color: #e9bd5a;
+            color: #f7d878;
+        }
+
+        #hint-btn:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        #bypass-btn {
+            background: rgba(233, 189, 90, .1);
+            border: 1px solid rgba(233, 189, 90, .38);
+            color: #f7d878;
+            font: 700 12px 'Rajdhani';
+            letter-spacing: .15em;
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: .15s;
+        }
+
+        #bypass-btn:hover {
+            background: rgba(233, 189, 90, .24);
+            border-color: #f7d878;
+            color: #fff;
+        }
+
+        #bypass-btn:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .pattern-skip-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        #skip-pattern-btn {
+            background: transparent;
+            border: 1px dashed rgba(233, 189, 90, .32);
+            color: #a89f8a;
+            font: 600 11px 'Rajdhani';
+            letter-spacing: .14em;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: .15s;
+        }
+
+        #skip-pattern-btn:hover {
+            border-color: #e9bd5a;
+            color: #e9bd5a;
+            background: rgba(233, 189, 90, .08);
+        }
+
+        #skip-pattern-btn:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        #d-hint {
+            margin-top: 9px;
+            font: 500 11.5px/1.5 'Rajdhani';
+            color: #c9a86a;
+        }
+
+        /* pattern challenge */
+        #seqRow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin: 4px 0 12px;
+            min-height: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tok {
+            font: 700 12px 'Rajdhani';
+            letter-spacing: .16em;
+            color: #8d8672;
+            border: 1px solid #33373f;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: .25s;
+        }
+
+        .tok.hit {
+            color: #17110a;
+            background: #e9bd5a;
+            border-color: #f7d878;
+            box-shadow: 0 0 14px rgba(233, 189, 90, .4);
+        }
+
+        .seq-arrow {
+            width: 13px;
+            height: 13px;
+            color: #7d8590;
+            flex: none;
+        }
+
+        .grp-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gbtn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 4px;
+            background: #15181f;
+            border: 1px solid rgba(233, 189, 90, .3);
+            color: #e6d9b8;
+            font: 600 13px 'Rajdhani';
+            letter-spacing: .12em;
+            cursor: pointer;
+            transition: .18s;
+            border-radius: 3px;
+        }
+
+        .gbtn:hover:not(:disabled) {
+            border-color: rgba(247, 216, 120, .75);
+            background: #1a1e27;
+            transform: translateY(-1px);
+        }
+
+        .gbtn:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .gbtn .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--dc);
+            box-shadow: 0 0 8px var(--dc);
+            flex: none;
+        }
+
+        .gbtn[data-g="outer"] {
+            --dc: #c8912f;
+        }
+
+        .gbtn[data-g="middle"] {
+            --dc: #e9bd5a;
+        }
+
+        .gbtn[data-g="inner"] {
+            --dc: #f9e29a;
+        }
+
+        .gbtn kbd {
+            font: 500 10px 'IBM Plex Mono', monospace;
+            color: #8d8672;
+            border: 1px solid #33373f;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        /* restart */
+        #restart {
+            position: fixed;
+            right: 20px;
+            bottom: 18px;
+            z-index: 25;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(16, 18, 24, .8);
+            border: 1px solid rgba(233, 189, 90, .3);
+            color: #d9cba6;
+            font: 600 12px 'Rajdhani';
+            letter-spacing: .18em;
+            padding: 9px 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: .18s;
+        }
+
+        #restart:hover {
+            border-color: rgba(247, 216, 120, .8);
+            color: #f7d878;
+        }
+
+        #restart svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* center flash */
+        #flash {
+            position: fixed;
+            left: 50%;
+            top: 38%;
+            transform: translate(-50%, -50%);
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0;
+            text-align: center;
+        }
+
+        #flash span {
+            font: 800 clamp(21px, 4.4vw, 44px)/1.15 'Cinzel', serif;
+            letter-spacing: .18em;
+            color: #f7d878;
+            text-shadow: 0 2px 24px rgba(0, 0, 0, .85), 0 0 46px rgba(214, 164, 64, .3);
+            white-space: nowrap;
+        }
+
+        #flash.show {
+            animation: flashIn 2.3s ease forwards;
+        }
+
+        @keyframes flashIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(.92);
+            }
+
+            12% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.01);
+            }
+
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+
+        /* ---------------- mission description panel & continue button ---------------- */
+        #mission-panel {
+            position: absolute;
+            left: 50%;
+            bottom: calc(clamp(16px, 3vh, 36px) + env(safe-area-inset-bottom, 0px));
+            transform: translate(-50%, 0);
+            width: min(900px, calc(100% - 32px));
+            z-index: 24;
+            padding: clamp(12px, 1.8vw, 16px) clamp(16px, 2.8vw, 28px);
+            background: rgba(13, 15, 20, 0.88);
+            border: 1px solid rgba(233, 189, 90, 0.28);
+            border-top: 1px solid rgba(247, 216, 120, 0.55);
+            border-radius: 6px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 24px rgba(214, 164, 64, 0.12), inset 0 1px 0 rgba(255, 235, 175, 0.15);
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        #mission-panel .mission-title {
+            font: 700 clamp(15px, 1.8vw, 18.5px)/1.2 'Cinzel', serif;
+            letter-spacing: 0.18em;
+            color: #f7d878;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8), 0 0 16px rgba(233, 189, 90, 0.35);
+            margin-bottom: 6px;
+        }
+
+        #mission-panel .mission-desc {
+            font: 600 clamp(12.5px, 1.3vw, 14.5px)/1.45 'Rajdhani', sans-serif;
+            letter-spacing: 0.04em;
+            color: #e8dcc0;
+            margin: 0 auto;
+            max-width: 820px;
+            text-wrap: balance;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Entrance animation: smoothly descends into bottom-screen position */
+        #mission-panel.panel-entering {
+            animation: missionPanelDescend 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes missionPanelDescend {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -24px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* Exit animation: smoothly continues downward while fading out */
+        #mission-panel.panel-exiting {
+            animation: missionPanelExit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes missionPanelExit {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, 28px);
+            }
+        }
+
+        #continue-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(clamp(16px, 3vh, 36px) + 98px + env(safe-area-inset-bottom, 0px));
+            z-index: 25;
+            background: linear-gradient(135deg, #c8912f 0%, #8e5e18 100%);
+            border: 1px solid rgba(247, 216, 120, 0.65);
+            border-radius: 4px;
+            color: #0d0f14;
+            font: 700 13px 'Rajdhani', sans-serif;
+            letter-spacing: 0.22em;
+            padding: 8px 26px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 16px rgba(233, 189, 90, 0.3);
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s, opacity 0.4s ease;
+            animation: continueBtnDescend 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation-delay: 0.12s;
+        }
+
+        @keyframes continueBtnDescend {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        #continue-btn:hover {
+            background: linear-gradient(135deg, #f7d878 0%, #c8912f 100%);
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 22px rgba(247, 216, 120, 0.6);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        #continue-btn:active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #continue-btn.btn-exiting {
+            opacity: 0 !important;
+            transform: translateX(-50%) translateY(20px) !important;
+            pointer-events: none !important;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            #mission-panel,
+            #mission-panel.panel-entering,
+            #mission-panel.panel-exiting,
+            #continue-btn,
+            #continue-btn.btn-exiting {
+                animation: none !important;
+                transition: none !important;
+                transform: translate(-50%, 0) !important;
+            }
+        }
+
+        /* ---------------- 3 screen zones (left / middle / right) ---------------- */
+        #screen-zones {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+        }
+
+        .screen-zone {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .screen-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255, 224, 90, 0.45) 0%, rgba(255, 170, 30, 0.18) 50%, transparent 80%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .screen-zone::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255, 235, 120, 0.38) 0%, rgba(255, 190, 50, 0.12) 45%, transparent 85%);
+            filter: blur(12px);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .screen-zone.glow-active {
+            opacity: 1;
+        }
+
+        .screen-zone.glow-active::before,
+        .screen-zone.glow-active::after {
+            opacity: 1;
+            animation: zoneSurge 0.65s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+
+        @keyframes zoneSurge {
+            0% { transform: scaleY(0.92); opacity: 0.2; }
+            40% { transform: scaleY(1.05); opacity: 1; filter: brightness(1.4); }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+
+        /* ---------------- 3 oriental lanterns (left, middle, right) ---------------- */
+        #lanterns-container {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .lantern-wrapper {
+            position: absolute;
+            width: 105px;
+            height: 175px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.5s ease;
+        }
+
+        .lantern-left {
+            left: 16%;
+            top: 14%;
+            transform: translate(-50%, 0);
+        }
+
+        .lantern-middle {
+            left: 50%;
+            top: 6%;
+            transform: translate(-50%, 0);
+        }
+
+        .lantern-right {
+            left: 84%;
+            top: 14%;
+            transform: translate(-50%, 0);
+        }
+
+        .lantern-inner {
+            width: 100%;
+            height: 100%;
+            animation: lanternFloat 5s ease-in-out infinite alternate;
+        }
+
+        .lantern-left .lantern-inner { animation-delay: -1.2s; }
+        .lantern-middle .lantern-inner { animation-delay: -2.8s; }
+        .lantern-right .lantern-inner { animation-delay: -0.4s; }
+
+        @keyframes lanternFloat {
+            0% { transform: translateY(0px) rotate(-1.5deg); }
+            100% { transform: translateY(10px) rotate(1.5deg); }
+        }
+
+        .lantern-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 180, 50, 0.35));
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+
+        .lantern-wrapper.glow {
+            transform: translate(-50%, 0) scale(1.18);
+        }
+
+        .lantern-wrapper.glow .lantern-svg {
+            filter: drop-shadow(0 0 25px rgba(255, 230, 80, 1)) drop-shadow(0 0 55px rgba(255, 160, 30, 0.85)) brightness(1.45);
+        }
+
+        .lantern-wrapper.blasted {
+            animation: lanternBlast 0.85s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
+        }
+
+        @keyframes lanternBlast {
+            0% {
+                transform: translate(-50%, 0) scale(1);
+                filter: brightness(1);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(-50%, 0) scale(1.6);
+                filter: brightness(3.5) drop-shadow(0 0 45px #ffe460);
+                opacity: 1;
+            }
+            60% {
+                transform: translate(-50%, 0) scale(2.1) rotate(18deg);
+                filter: brightness(5) drop-shadow(0 0 70px #ff8800);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -30px) scale(0.05) rotate(45deg);
+                filter: brightness(6);
+                opacity: 0;
+            }
+        }
+
+        /* ---------------- magical light bulb ---------------- */
+        #magical-bulb-wrap {
+            position: fixed;
+            left: 50%;
+            top: 22%;
+            transform: translate(-50%, -50%);
+            z-index: 12;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        #magical-bulb-wrap.descending {
+            animation: bulbDescend 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+        }
+
+        @keyframes bulbDescend {
+            0% { transform: translate(-50%, -140px) scale(0.3); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .magical-bulb {
+            width: 135px;
+            height: 195px;
+            overflow: visible;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 60, 0.75)) drop-shadow(0 0 45px rgba(255, 140, 20, 0.45));
+            animation: bulbHover 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes bulbHover {
+            0% { transform: translateY(-6px) scale(0.98); }
+            100% { transform: translateY(6px) scale(1.02); }
+        }
+
+        .bulb-energy-ring {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 220, 100, 0.65);
+            box-shadow: 0 0 25px rgba(255, 190, 50, 0.5), inset 0 0 25px rgba(255, 190, 50, 0.4);
+            animation: bulbRingRotate 6s linear infinite;
+        }
+
+        @keyframes bulbRingRotate {
+            0% { transform: rotate(0deg) scale(0.96); }
+            50% { transform: rotate(180deg) scale(1.06); }
+            100% { transform: rotate(360deg) scale(0.96); }
+        }
+
+        /* ---------------- screen shakes ---------------- */
+        @keyframes stageTremor {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(3px, -2px); }
+            60% { transform: translate(-2px, -3px); }
+            80% { transform: translate(2px, 3px); }
+        }
+        @keyframes stageViolent {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            15% { transform: translate(-8px, 6px) rotate(-0.6deg); }
+            30% { transform: translate(7px, -7px) rotate(0.5deg); }
+            45% { transform: translate(-6px, -5px) rotate(-0.4deg); }
+            60% { transform: translate(6px, 6px) rotate(0.4deg); }
+            75% { transform: translate(-4px, 3px) rotate(-0.2deg); }
+            90% { transform: translate(4px, -3px) rotate(0.2deg); }
+        }
+        #stage.shake-tremor { animation: stageTremor 0.3s ease-in-out infinite; }
+        #stage.shake-violent { animation: stageViolent 0.55s ease-in-out; }
+
+        /* ---------------- magical bulb overload state ---------------- */
+        #magical-bulb-wrap.overloading {
+            animation: bulbOverload 0.22s ease-in-out infinite alternate !important;
+        }
+        @keyframes bulbOverload {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(-3deg); filter: brightness(2) drop-shadow(0 0 30px #ffe600); }
+            100% { transform: translate(-50%, -50%) scale(1.24) rotate(3deg); filter: brightness(4) drop-shadow(0 0 85px #ff7b00) drop-shadow(0 0 130px #ffffff); }
+        }
+
+        /* ---------------- blinding nova flash ---------------- */
+        #nova-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 45;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 22%, #ffffff 0%, rgba(255, 240, 180, 0.95) 25%, rgba(255, 170, 50, 0.45) 55%, transparent 85%);
+            opacity: 0;
+            transition: opacity 0.08s ease-out;
+        }
+        #nova-flash.active {
+            animation: novaFlashPulse 0.75s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        }
+        @keyframes novaFlashPulse {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* ---------------- electric chi lightning svg overlay ---------------- */
+        #chi-lightning {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 14;
+            pointer-events: none;
+        }
+        .lightning-bolt {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 8px #ffe66d) drop-shadow(0 0 18px #ff9f1c);
+            animation: boltFlicker 0.16s ease-in-out infinite alternate;
+        }
+        @keyframes boltFlicker {
+            0% { opacity: 0.8; stroke-width: 3px; }
+            100% { opacity: 1; stroke-width: 5.5px; }
+        }
+
+        /* ---------------- flying crystalline glass shards ---------------- */
+        #glass-shards-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 15;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .glass-shard {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 220, 100, 0.75) 50%, rgba(2, 62, 138, 0.5) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 14px rgba(255, 220, 80, 0.8), 0 0 30px rgba(255, 120, 20, 0.5);
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        /* ---------------- expanding shockwave rings ---------------- */
+        #lantern-shocks-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 8;
+            pointer-events: none;
+        }
+        .detonation-shock {
+            position: absolute;
+            border-radius: 50%;
+            border: 3.5px solid rgba(255, 235, 120, 0.95);
+            box-shadow: 0 0 35px rgba(255, 190, 40, 0.9), inset 0 0 25px rgba(255, 130, 20, 0.6);
+            transform: translate(-50%, -50%);
+            animation: shockwaveExpand 0.75s cubic-bezier(0.12, 0.85, 0.25, 1) forwards;
+        }
+        @keyframes shockwaveExpand {
+            0% { width: 10px; height: 10px; opacity: 1; }
+            100% { width: 560px; height: 560px; opacity: 0; border-width: 1px; }
+        }
+
+        /* ---------------- Golden Great Protector Dragon Spirit (Real Asset + SVG Animations) ---------------- */
+        #dragon-spirit {
+            position: absolute;
+            left: 49%;
+            top: 44%;
+            width: 680px;
+            height: 820px;
+            transform: translate(-50%, -50%) scale(0.65);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1.4s ease, transform 1.4s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+        }
+        #dragon-spirit.manifested {
+            opacity: 0.95;
+            transform: translate(-50%, -50%) scale(1.02);
+            animation: dragonFloat 6s ease-in-out infinite alternate;
+        }
+        @keyframes dragonFloat {
+            0% { transform: translate(-50%, -50%) scale(1.01) translateY(0) rotate(-0.5deg); }
+            100% { transform: translate(-50%, -50%) scale(1.04) translateY(-10px) rotate(0.8deg); }
+        }
+
+        .dragon-img-asset {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(0 0 28px rgba(255, 195, 60, 0.75)) drop-shadow(0 0 70px rgba(255, 140, 20, 0.45)) brightness(1.1);
+            animation: dragonAssetBreathe 5s ease-in-out infinite alternate;
+        }
+        @keyframes dragonAssetBreathe {
+            0% {
+                filter: drop-shadow(0 0 25px rgba(255, 195, 60, 0.7)) drop-shadow(0 0 60px rgba(255, 120, 10, 0.4)) brightness(1.08);
+            }
+            100% {
+                filter: drop-shadow(0 0 45px rgba(255, 215, 80, 0.95)) drop-shadow(0 0 85px rgba(255, 140, 20, 0.6)) brightness(1.18);
+            }
+        }
+
+        /* SVG layer used strictly for dynamic animation overlays */
+        .dragon-fx-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .dragon-aura-ring.r1 {
+            animation: auraPulse 4s ease-in-out infinite alternate;
+            transform-origin: 340px 360px;
+        }
+        .dragon-aura-ring.r2 {
+            animation: auraSpinCw 22s linear infinite;
+            transform-origin: 340px 360px;
+        }
+        .dragon-aura-ring.r3 {
+            animation: auraSpinCcw 32s linear infinite;
+            transform-origin: 340px 360px;
+        }
+        @keyframes auraPulse {
+            0% { transform: scale(0.96); opacity: 0.6; }
+            100% { transform: scale(1.06); opacity: 0.9; }
+        }
+        @keyframes auraSpinCw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes auraSpinCcw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        .dragon-eye-flare {
+            animation: eyeFlarePulse 1.8s ease-in-out infinite alternate;
+        }
+        @keyframes eyeFlarePulse {
+            0% { transform: scale(0.85); opacity: 0.7; }
+            100% { transform: scale(1.4); opacity: 1; filter: drop-shadow(0 0 12px #ffffff); }
+        }
+
+        .eye-ray {
+            animation: rayRotate 4s linear infinite;
+            transform-origin: 0 0;
+        }
+        @keyframes rayRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .whisker-arc {
+            animation: whiskerFlicker 0.25s ease-in-out infinite alternate;
+        }
+        @keyframes whiskerFlicker {
+            0% { opacity: 0.4; stroke-width: 1.5px; }
+            100% { opacity: 0.95; stroke-width: 3px; filter: drop-shadow(0 0 6px #ffe66d); }
+        }
+
+        .chi-spark {
+            animation: sparkFloat 2.4s ease-in-out infinite alternate;
+        }
+        .chi-spark.s1 { animation-delay: 0.1s; }
+        .chi-spark.s2 { animation-delay: 0.5s; }
+        .chi-spark.s3 { animation-delay: 0.9s; }
+        .chi-spark.s4 { animation-delay: 1.3s; }
+        .chi-spark.s5 { animation-delay: 1.7s; }
+        .chi-spark.s6 { animation-delay: 2.1s; }
+        .chi-spark.s7 { animation-delay: 0.7s; }
+
+        @keyframes sparkFloat {
+            0% { transform: translate(0, 0) scale(0.7); opacity: 0.3; }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px #ffffff); }
+            100% { transform: translate(6px, -14px) scale(1.3); opacity: 0.8; }
+        }
+
+        /* ---------------- God Mode Chi Projectile Blast on Click ---------------- */
+        .chi-blast-beam {
+            position: fixed;
+            height: 6px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1), #ffe66d, #ff9f1c);
+            box-shadow: 0 0 20px #ffe66d, 0 0 45px #ff6600;
+            transform-origin: left center;
+            pointer-events: none;
+            z-index: 30;
+            animation: blastBeamTravel 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+        }
+        @keyframes blastBeamTravel {
+            0% { transform: scaleX(0.1); opacity: 1; }
+            60% { transform: scaleX(1); opacity: 1; }
+            100% { transform: scaleX(1.1); opacity: 0; }
+        }
+        .chi-impact-spark {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 31;
+            transform: translate(-50%, -50%);
+            border: 2px solid #fff;
+            background: radial-gradient(circle, #ffffff, #ffd700, transparent);
+            box-shadow: 0 0 25px #ff9f1c;
+            animation: sparkBurst 0.5s ease-out forwards;
+        }
+        @keyframes sparkBurst {
+            0% { width: 4px; height: 4px; opacity: 1; }
+            100% { width: 140px; height: 140px; opacity: 0; }
+        }
+
+        /* ---------------- bottom sequence dock ---------------- */
+        #sequence-dock {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 48px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            background: rgba(10, 13, 18, 0.92);
+            border: 1px solid rgba(233, 189, 90, 0.35);
+            border-radius: 8px;
+            padding: 12px 18px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 24px rgba(233, 189, 90, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+            max-width: 620px;
+            width: calc(100% - 24px);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .dock-header {
+            text-align: center;
+        }
+
+        .dock-tag {
+            font: 700 10px 'IBM Plex Mono', monospace;
+            color: #e9bd5a;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .dock-title {
+            font: 700 15px 'Cinzel', serif;
+            letter-spacing: 0.1em;
+            color: #fff4d4;
+            margin: 2px 0 2px;
+        }
+
+        .dock-hint {
+            font: 500 12px 'Rajdhani', sans-serif;
+            color: #bfcad6;
+        }
+
+        .seq-indicators {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(4px, 1vw, 7px);
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 2px 0;
+        }
+
+        .seq-slot {
+            width: clamp(52px, 8.5vw, 68px);
+            height: 34px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(233, 189, 90, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .seq-slot .slot-num {
+            font: 600 8px 'IBM Plex Mono', monospace;
+            color: #7d8590;
+            letter-spacing: 0.05em;
+        }
+
+        .seq-slot .slot-val {
+            font: 700 11px 'Rajdhani', sans-serif;
+            color: #aeb6c2;
+            letter-spacing: 0.05em;
+        }
+
+        .seq-slot.active {
+            border-color: #ffd700;
+            background: rgba(233, 189, 90, 0.18);
+            box-shadow: 0 0 12px rgba(255, 215, 60, 0.45);
+        }
+
+        .seq-slot.active .slot-val {
+            color: #ffe89e;
+        }
+
+        .seq-slot.error {
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.2);
+            box-shadow: 0 0 12px rgba(255, 71, 87, 0.5);
+        }
+
+        .seq-arrow-icon {
+            color: #e9bd5a;
+            font-size: 11px;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+
+        .dock-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .dock-btn {
+            background: linear-gradient(180deg, rgba(30, 36, 46, 0.95), rgba(16, 20, 27, 0.95));
+            border: 1px solid rgba(233, 189, 90, 0.35);
+            border-radius: 4px;
+            padding: 8px 16px;
+            color: #efe3c0;
+            font: 700 13px 'Rajdhani', sans-serif;
+            letter-spacing: 0.12em;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.22s ease;
+        }
+
+        .dock-btn:hover:not(:disabled) {
+            border-color: #ffe15f;
+            color: #fff9e6;
+            background: linear-gradient(180deg, rgba(45, 52, 65, 0.98), rgba(24, 29, 39, 0.98));
+            box-shadow: 0 0 16px rgba(255, 220, 90, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .dock-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .dock-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .dock-btn kbd {
+            font: 600 10px 'IBM Plex Mono', monospace;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 2px 5px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d6b265;
+        }
+
+        .reset-btn {
+            border-color: rgba(220, 100, 80, 0.4);
+            color: #f7a399;
+        }
+
+        .reset-btn:hover:not(:disabled) {
+            border-color: #ff6b6b;
+            color: #ffe3e0;
+            box-shadow: 0 0 16px rgba(255, 107, 107, 0.4);
+        }
+
+        .reset-btn kbd {
+            color: #f7a399;
+        }
+
+        @media (max-width: 1100px) {
+            #restart {
+                top: 18px;
+                bottom: auto;
+                right: 20px;
+            }
+        }
+
+        @media (max-width:760px) {
+            #figure-wrap {
+                left: 50%;
+                top: 41%;
+            }
+
+            #restart {
+                top: 12px;
+                bottom: auto;
+                right: 12px;
+                padding: 7px 11px;
+                font-size: 11px;
+            }
+
+            body:not(.mission-dismissed) #panel {
+                bottom: calc(clamp(16px, 3vh, 36px) + 160px + env(safe-area-inset-bottom, 0px));
+                transition: bottom 0.4s ease;
+            }
+
+            body.mission-dismissed #panel {
+                bottom: 10px;
+                transition: bottom 0.4s ease;
+            }
+
+            #panel {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                transform: none;
+            }
+
+            #panel-box {
+                max-height: 44vh;
+                overflow: auto;
+            }
+
+            #title-block {
+                left: 14px;
+                top: 10px;
+                max-width: calc(100vw - 120px);
+            }
+
+            #title-block h1 {
+                font-size: 17px;
+            }
+
+            #mission {
+                font-size: 11px;
+                max-width: 56vw;
+            }
+
+            #objective {
+                font-size: 11px;
+                max-width: 56vw;
+            }
+
+            #mission-panel {
+                padding: 10px 14px;
+                width: calc(100% - 20px);
+            }
+
+            #mission-panel .mission-title {
+                font-size: 14.5px;
+                margin-bottom: 4px;
+            }
+
+            #mission-panel .mission-desc {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+        }
+    </style>
+</head>
+
+<body class="broken blue-rings">
+
+    <div id="stage">
+        <!-- 3 screen zones: Left, Middle, Right -->
+        <div id="screen-zones">
+            <div class="screen-zone zone-left" id="zone-left"></div>
+            <div class="screen-zone zone-middle" id="zone-middle"></div>
+            <div class="screen-zone zone-right" id="zone-right"></div>
+        </div>
+
+        <!-- 3 sacred oriental lanterns -->
+        <div id="lanterns-container">
+            <div class="lantern-wrapper lantern-left" id="lantern-left">
+                <div class="lantern-inner">
+                    <svg class="lantern-svg" viewBox="0 0 100 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="roofGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#4a2c11"/>
+                                <stop offset="50%" stop-color="#8a5a22"/>
+                                <stop offset="100%" stop-color="#241407"/>
+                            </linearGradient>
+                            <linearGradient id="goldGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffeaa7"/>
+                                <stop offset="50%" stop-color="#d4af37"/>
+                                <stop offset="100%" stop-color="#8c6d1f"/>
+                            </linearGradient>
+                            <radialGradient id="silkGlow1" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#fff8db" stop-opacity="0.95"/>
+                                <stop offset="30%" stop-color="#ffb703" stop-opacity="0.85"/>
+                                <stop offset="70%" stop-color="#d63031" stop-opacity="0.65"/>
+                                <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0.9"/>
+                            </radialGradient>
+                            <radialGradient id="flameCore1" cx="50%" cy="45%" r="40%">
+                                <stop offset="0%" stop-color="#ffffff"/>
+                                <stop offset="35%" stop-color="#ffe66d"/>
+                                <stop offset="70%" stop-color="#ff9f1c"/>
+                                <stop offset="100%" stop-color="#ff4500" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <line x1="50" y1="0" x2="50" y2="22" stroke="url(#goldGrad1)" stroke-width="2.5"/>
+                        <circle cx="50" cy="22" r="4.5" fill="none" stroke="url(#goldGrad1)" stroke-width="2"/>
+                        <path d="M50 20 L53 26 L47 26 Z" fill="url(#goldGrad1)"/>
+                        <path d="M18 36 C32 30, 68 30, 82 36 C78 28, 62 26, 50 26 C38 26, 22 28, 18 36 Z" fill="url(#roofGrad1)" stroke="url(#goldGrad1)" stroke-width="1.5"/>
+                        <path d="M14 36 Q18 34, 25 36" stroke="url(#goldGrad1)" stroke-width="2" fill="none"/>
+                        <path d="M86 36 Q82 34, 75 36" stroke="url(#goldGrad1)" stroke-width="2" fill="none"/>
+                        <path d="M26 36 C16 60, 16 95, 26 120 L74 120 C84 95, 84 60, 74 36 Z" fill="url(#silkGlow1)"/>
+                        <ellipse cx="50" cy="78" rx="16" ry="24" fill="url(#flameCore1)" opacity="0.9"/>
+                        <path d="M50 36 L50 120" stroke="url(#goldGrad1)" stroke-width="1.5" stroke-opacity="0.7"/>
+                        <path d="M38 36 C32 60, 32 95, 38 120" stroke="url(#goldGrad1)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <path d="M62 36 C68 60, 68 95, 62 120" stroke="url(#goldGrad1)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <ellipse cx="50" cy="78" rx="28" ry="10" fill="none" stroke="url(#goldGrad1)" stroke-width="1" stroke-opacity="0.4"/>
+                        <path d="M24 120 C36 124, 64 124, 76 120 L72 128 C62 131, 38 131, 28 128 Z" fill="url(#roofGrad1)" stroke="url(#goldGrad1)" stroke-width="1.5"/>
+                        <circle cx="50" cy="133" r="4" fill="url(#goldGrad1)"/>
+                        <line x1="48" y1="137" x2="47" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <line x1="50" y1="137" x2="50" y2="170" stroke="#f39c12" stroke-width="2.5"/>
+                        <line x1="52" y1="137" x2="53" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <circle cx="50" cy="148" r="3" fill="url(#goldGrad1)"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="lantern-wrapper lantern-middle" id="lantern-middle">
+                <div class="lantern-inner">
+                    <svg class="lantern-svg" viewBox="0 0 100 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="roofGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#4a2c11"/>
+                                <stop offset="50%" stop-color="#8a5a22"/>
+                                <stop offset="100%" stop-color="#241407"/>
+                            </linearGradient>
+                            <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffeaa7"/>
+                                <stop offset="50%" stop-color="#d4af37"/>
+                                <stop offset="100%" stop-color="#8c6d1f"/>
+                            </linearGradient>
+                            <radialGradient id="silkGlow2" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#fff8db" stop-opacity="0.95"/>
+                                <stop offset="30%" stop-color="#ffb703" stop-opacity="0.85"/>
+                                <stop offset="70%" stop-color="#d63031" stop-opacity="0.65"/>
+                                <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0.9"/>
+                            </radialGradient>
+                            <radialGradient id="flameCore2" cx="50%" cy="45%" r="40%">
+                                <stop offset="0%" stop-color="#ffffff"/>
+                                <stop offset="35%" stop-color="#ffe66d"/>
+                                <stop offset="70%" stop-color="#ff9f1c"/>
+                                <stop offset="100%" stop-color="#ff4500" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <line x1="50" y1="0" x2="50" y2="22" stroke="url(#goldGrad2)" stroke-width="2.5"/>
+                        <circle cx="50" cy="22" r="4.5" fill="none" stroke="url(#goldGrad2)" stroke-width="2"/>
+                        <path d="M50 20 L53 26 L47 26 Z" fill="url(#goldGrad2)"/>
+                        <path d="M18 36 C32 30, 68 30, 82 36 C78 28, 62 26, 50 26 C38 26, 22 28, 18 36 Z" fill="url(#roofGrad2)" stroke="url(#goldGrad2)" stroke-width="1.5"/>
+                        <path d="M14 36 Q18 34, 25 36" stroke="url(#goldGrad2)" stroke-width="2" fill="none"/>
+                        <path d="M86 36 Q82 34, 75 36" stroke="url(#goldGrad2)" stroke-width="2" fill="none"/>
+                        <path d="M26 36 C16 60, 16 95, 26 120 L74 120 C84 95, 84 60, 74 36 Z" fill="url(#silkGlow2)"/>
+                        <ellipse cx="50" cy="78" rx="16" ry="24" fill="url(#flameCore2)" opacity="0.9"/>
+                        <path d="M50 36 L50 120" stroke="url(#goldGrad2)" stroke-width="1.5" stroke-opacity="0.7"/>
+                        <path d="M38 36 C32 60, 32 95, 38 120" stroke="url(#goldGrad2)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <path d="M62 36 C68 60, 68 95, 62 120" stroke="url(#goldGrad2)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <ellipse cx="50" cy="78" rx="28" ry="10" fill="none" stroke="url(#goldGrad2)" stroke-width="1" stroke-opacity="0.4"/>
+                        <path d="M24 120 C36 124, 64 124, 76 120 L72 128 C62 131, 38 131, 28 128 Z" fill="url(#roofGrad2)" stroke="url(#goldGrad2)" stroke-width="1.5"/>
+                        <circle cx="50" cy="133" r="4" fill="url(#goldGrad2)"/>
+                        <line x1="48" y1="137" x2="47" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <line x1="50" y1="137" x2="50" y2="170" stroke="#f39c12" stroke-width="2.5"/>
+                        <line x1="52" y1="137" x2="53" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <circle cx="50" cy="148" r="3" fill="url(#goldGrad2)"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="lantern-wrapper lantern-right" id="lantern-right">
+                <div class="lantern-inner">
+                    <svg class="lantern-svg" viewBox="0 0 100 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="roofGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#4a2c11"/>
+                                <stop offset="50%" stop-color="#8a5a22"/>
+                                <stop offset="100%" stop-color="#241407"/>
+                            </linearGradient>
+                            <linearGradient id="goldGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffeaa7"/>
+                                <stop offset="50%" stop-color="#d4af37"/>
+                                <stop offset="100%" stop-color="#8c6d1f"/>
+                            </linearGradient>
+                            <radialGradient id="silkGlow3" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#fff8db" stop-opacity="0.95"/>
+                                <stop offset="30%" stop-color="#ffb703" stop-opacity="0.85"/>
+                                <stop offset="70%" stop-color="#d63031" stop-opacity="0.65"/>
+                                <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0.9"/>
+                            </radialGradient>
+                            <radialGradient id="flameCore3" cx="50%" cy="45%" r="40%">
+                                <stop offset="0%" stop-color="#ffffff"/>
+                                <stop offset="35%" stop-color="#ffe66d"/>
+                                <stop offset="70%" stop-color="#ff9f1c"/>
+                                <stop offset="100%" stop-color="#ff4500" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <line x1="50" y1="0" x2="50" y2="22" stroke="url(#goldGrad3)" stroke-width="2.5"/>
+                        <circle cx="50" cy="22" r="4.5" fill="none" stroke="url(#goldGrad3)" stroke-width="2"/>
+                        <path d="M50 20 L53 26 L47 26 Z" fill="url(#goldGrad3)"/>
+                        <path d="M18 36 C32 30, 68 30, 82 36 C78 28, 62 26, 50 26 C38 26, 22 28, 18 36 Z" fill="url(#roofGrad3)" stroke="url(#goldGrad3)" stroke-width="1.5"/>
+                        <path d="M14 36 Q18 34, 25 36" stroke="url(#goldGrad3)" stroke-width="2" fill="none"/>
+                        <path d="M86 36 Q82 34, 75 36" stroke="url(#goldGrad3)" stroke-width="2" fill="none"/>
+                        <path d="M26 36 C16 60, 16 95, 26 120 L74 120 C84 95, 84 60, 74 36 Z" fill="url(#silkGlow3)"/>
+                        <ellipse cx="50" cy="78" rx="16" ry="24" fill="url(#flameCore3)" opacity="0.9"/>
+                        <path d="M50 36 L50 120" stroke="url(#goldGrad3)" stroke-width="1.5" stroke-opacity="0.7"/>
+                        <path d="M38 36 C32 60, 32 95, 38 120" stroke="url(#goldGrad3)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <path d="M62 36 C68 60, 68 95, 62 120" stroke="url(#goldGrad3)" stroke-width="1.2" stroke-opacity="0.6"/>
+                        <ellipse cx="50" cy="78" rx="28" ry="10" fill="none" stroke="url(#goldGrad3)" stroke-width="1" stroke-opacity="0.4"/>
+                        <path d="M24 120 C36 124, 64 124, 76 120 L72 128 C62 131, 38 131, 28 128 Z" fill="url(#roofGrad3)" stroke="url(#goldGrad3)" stroke-width="1.5"/>
+                        <circle cx="50" cy="133" r="4" fill="url(#goldGrad3)"/>
+                        <line x1="48" y1="137" x2="47" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <line x1="50" y1="137" x2="50" y2="170" stroke="#f39c12" stroke-width="2.5"/>
+                        <line x1="52" y1="137" x2="53" y2="168" stroke="#d63031" stroke-width="2"/>
+                        <circle cx="50" cy="148" r="3" fill="url(#goldGrad3)"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Magical Light Bulb (ancient relic dragon orb) -->
+        <div id="magical-bulb-wrap" class="magical-bulb-wrap" hidden>
+            <div class="bulb-energy-ring"></div>
+            <svg class="magical-bulb" id="magical-bulb" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="bulbGlass" cx="45%" cy="40%" r="55%">
+                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                        <stop offset="25%" stop-color="#fff0aa" stop-opacity="0.65"/>
+                        <stop offset="60%" stop-color="#ffb703" stop-opacity="0.4"/>
+                        <stop offset="85%" stop-color="#023e8a" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#03045e" stop-opacity="0.6"/>
+                    </radialGradient>
+                    <radialGradient id="bulbCoreGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#ffffff"/>
+                        <stop offset="40%" stop-color="#ffe600"/>
+                        <stop offset="75%" stop-color="#ff8500"/>
+                        <stop offset="100%" stop-color="#ff4800" stop-opacity="0"/>
+                    </radialGradient>
+                    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f5d77f"/>
+                        <stop offset="50%" stop-color="#b8860b"/>
+                        <stop offset="100%" stop-color="#4a3505"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="60" cy="14" r="7" fill="none" stroke="url(#bronzeGrad)" stroke-width="3"/>
+                <path d="M52 20 L68 20 L64 32 L56 32 Z" fill="url(#bronzeGrad)"/>
+                <path d="M56 32 C38 36, 18 56, 18 86 C18 112, 34 128, 48 138 L72 138 C86 128, 102 112, 102 86 C102 56, 82 36, 64 32 Z" fill="url(#bulbGlass)" stroke="url(#bronzeGrad)" stroke-width="2.5"/>
+                <path d="M50 134 Q45 95, 60 80 T70 56 Q60 48, 50 64 T60 95 Q65 115, 68 134" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <ellipse cx="60" cy="80" rx="20" ry="24" fill="url(#bulbCoreGlow)" opacity="0.95"/>
+                <path d="M30 60 C30 48, 42 38, 54 36" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-opacity="0.6" fill="none"/>
+                <path d="M46 138 L74 138 L78 152 L42 152 Z" fill="url(#bronzeGrad)"/>
+                <path d="M36 152 C44 148, 76 148, 84 152 L80 165 C68 168, 52 168, 40 165 Z" fill="url(#bronzeGrad)" stroke="#ffd700" stroke-width="1.5"/>
+                <path d="M36 146 Q30 142, 28 134 Q34 136, 40 144" fill="url(#bronzeGrad)"/>
+                <path d="M84 146 Q90 142, 92 134 Q86 136, 80 144" fill="url(#bronzeGrad)"/>
+            </svg>
+        </div>
+
+        <!-- Blinding Nova Flash overlay -->
+        <div id="nova-flash"></div>
+
+        <!-- Electric Chi Lightning SVG overlay -->
+        <svg id="chi-lightning" class="chi-lightning-svg"></svg>
+
+        <!-- Dynamic glass shards container -->
+        <div id="glass-shards-wrap"></div>
+
+        <!-- Detonation shockwaves container -->
+        <div id="lantern-shocks-wrap"></div>
+
+        <div id="figure-wrap">
+            <div class="ambient"></div>
+            <div class="ground g1"></div>
+            <div class="ground g2"></div>
+
+            <!-- Golden Great Protector Dragon Spirit (Real Asset + SVG Animations) -->
+            <div id="dragon-spirit" class="dragon-spirit">
+                <img id="dragon-img" class="dragon-img-asset" src="assets/great_protector.png" alt="The Great Protector" />
+                <!-- SVG layer used strictly for dynamic animation overlays -->
+                <svg class="dragon-fx-svg" viewBox="0 0 680 820" preserveAspectRatio="none">
+                    <defs>
+                        <radialGradient id="dragonEyeFlare" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="25%" stop-color="#ffe66d"/>
+                            <stop offset="70%" stop-color="#ff9f1c" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#ff4500" stop-opacity="0"/>
+                        </radialGradient>
+                        <radialGradient id="dragonAuraPulse" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#fff8db" stop-opacity="0.6"/>
+                            <stop offset="40%" stop-color="#ffd700" stop-opacity="0.3"/>
+                            <stop offset="75%" stop-color="#ff8800" stop-opacity="0.12"/>
+                            <stop offset="100%" stop-color="#ff4500" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+
+                    <!-- Sacred dragon aura backplate -->
+                    <circle class="dragon-aura-ring r1" cx="340" cy="360" r="260" fill="url(#dragonAuraPulse)"/>
+                    <circle class="dragon-aura-ring r2" cx="340" cy="360" r="320" fill="none" stroke="rgba(255, 215, 60, 0.4)" stroke-width="2" stroke-dasharray="16 12"/>
+                    <circle class="dragon-aura-ring r3" cx="340" cy="360" r="370" fill="none" stroke="rgba(255, 170, 30, 0.25)" stroke-width="1.5" stroke-dasharray="8 18"/>
+
+                    <!-- Animated Chi Spark Streams along dragon spine -->
+                    <g class="dragon-chi-sparks">
+                        <circle cx="430" cy="80" r="3.5" fill="#ffffff" class="chi-spark s1"/>
+                        <circle cx="455" cy="55" r="4" fill="#ffe66d" class="chi-spark s2"/>
+                        <circle cx="400" cy="140" r="3" fill="#ffd700" class="chi-spark s3"/>
+                        <circle cx="360" cy="220" r="4.5" fill="#ffffff" class="chi-spark s4"/>
+                        <circle cx="270" cy="230" r="3" fill="#ffe66d" class="chi-spark s5"/>
+                        <circle cx="230" cy="310" r="4" fill="#ffd700" class="chi-spark s6"/>
+                        <circle cx="160" cy="620" r="3.5" fill="#ffffff" class="chi-spark s7"/>
+                    </g>
+
+                    <!-- Blazing Dragon Eye Chi Flare Overlay at the head -->
+                    <g class="dragon-head-fx" transform="translate(415, 34)">
+                        <circle cx="0" cy="0" r="14" fill="url(#dragonEyeFlare)" class="dragon-eye-flare"/>
+                        <line x1="-16" y1="0" x2="16" y2="0" stroke="#ffffff" stroke-width="2" class="eye-ray"/>
+                        <line x1="0" y1="-16" x2="0" y2="16" stroke="#ffffff" stroke-width="2" class="eye-ray"/>
+                        <!-- Mystical Whisker Chi Tendril -->
+                        <path d="M-5 12 Q-25 35 -65 45 Q-35 42 0 20" stroke="rgba(255, 230, 100, 0.75)" stroke-width="2" fill="none" class="whisker-arc"/>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Ethereal mountain mist/cloud behind Shang-Chi -->
+            <div class="ground-mist-back"></div>
+
+            <!-- Shang-Chi — cinematic character sprite with chi energy overlays and dynamic breathing -->
+            <div id="hero" class="hero-character">
+                <img id="hero-shadow" class="hero-layer" src="assets/contact_shadow.png" alt="" />
+                <div class="hero-body-wrap">
+                    <img id="hero-img" class="hero-layer" src="assets/shangchi_base.png" alt="Shang-Chi" />
+                    <img id="hero-glow" class="hero-layer glow-layer" src="assets/shangchi_glow.png" alt="" />
+                </div>
+            </div>
+
+            <!-- Foreground ground cloud blanket concealing the legs/crop boundary -->
+            <div class="ground-mist-front">
+                <div class="mist-cloud mc-1"></div>
+                <div class="mist-cloud mc-2"></div>
+                <div class="mist-cloud mc-3"></div>
+            </div>
+
+            <!-- Radiant Arm Chi Fire Aura backplates directly behind each forearm -->
+            <div class="arm-chi-fire" id="armChiL" style="left:155px; top:350px;"></div>
+            <div class="arm-chi-fire" id="armChiR" style="left:373px; top:350px;"></div>
+
+            <div class="arm-anchor" id="anchorL" style="left:155px; top:350px;"></div>
+            <div class="arm-anchor" id="anchorR" style="left:373px; top:350px;"></div>
+            <div id="shock"></div>
+        </div>
+
+        <!-- Sequence 2 Memory Control Dock: Left, Middle, Right, Reset (6 Path Sequence) -->
+        <div id="sequence-dock" class="sequence-dock">
+            <div class="dock-header">
+                <span class="dock-tag">CHI RESONANCE TRIAL — 6 PATHS</span>
+                <h3 class="dock-title">ECHO THE SACRED LANTERNS</h3>
+                <p class="dock-hint" id="dock-hint">Watch the 6-step golden lantern surge, then echo the sequence below</p>
+            </div>
+            <div class="seq-indicators" id="seq-indicators">
+                <div class="seq-slot" data-step="0"><span class="slot-num">STEP 1</span><span class="slot-val">—</span></div>
+                <div class="seq-arrow-icon">&rarr;</div>
+                <div class="seq-slot" data-step="1"><span class="slot-num">STEP 2</span><span class="slot-val">—</span></div>
+                <div class="seq-arrow-icon">&rarr;</div>
+                <div class="seq-slot" data-step="2"><span class="slot-num">STEP 3</span><span class="slot-val">—</span></div>
+                <div class="seq-arrow-icon">&rarr;</div>
+                <div class="seq-slot" data-step="3"><span class="slot-num">STEP 4</span><span class="slot-val">—</span></div>
+                <div class="seq-arrow-icon">&rarr;</div>
+                <div class="seq-slot" data-step="4"><span class="slot-num">STEP 5</span><span class="slot-val">—</span></div>
+                <div class="seq-arrow-icon">&rarr;</div>
+                <div class="seq-slot" data-step="5"><span class="slot-num">STEP 6</span><span class="slot-val">—</span></div>
+            </div>
+            <div class="dock-buttons">
+                <button type="button" class="dock-btn zone-btn" data-zone="left" id="btn-left">
+                    <span class="btn-icon">🏮</span>
+                    <span class="btn-label">LEFT</span>
+                    <kbd>1</kbd>
+                </button>
+                <button type="button" class="dock-btn zone-btn" data-zone="middle" id="btn-middle">
+                    <span class="btn-icon">🏮</span>
+                    <span class="btn-label">MIDDLE</span>
+                    <kbd>2</kbd>
+                </button>
+                <button type="button" class="dock-btn zone-btn" data-zone="right" id="btn-right">
+                    <span class="btn-icon">🏮</span>
+                    <span class="btn-label">RIGHT</span>
+                    <kbd>3</kbd>
+                </button>
+                <button type="button" class="dock-btn reset-btn" id="btn-reset">
+                    <span class="btn-icon">↺</span>
+                    <span class="btn-label">RESET</span>
+                    <kbd>R</kbd>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cinematic Mission Description Panel -->
+        <section id="mission-panel" class="mission-panel panel-entering" aria-label="Mission Briefing">
+            <h2 class="mission-title">THE PATH TO THE TEN RINGS</h2>
+            <p class="mission-desc">Observe the 6 sacred golden lantern surges across Left, Middle, and Right to harmonize the Ten Rings. Then attain full power by breaking the ward on the ancient Magical Light Bulb!</p>
+        </section>
+
+        <!-- Continue Button -->
+        <button id="continue-btn" type="button" class="continue-btn" aria-label="Continue to game" data-action="continue">CONTINUE</button>
+    </div>
+
+    <div id="motes"></div>
+    <div id="vignette"></div>
+
+    <header id="title-block">
+        <div class="t-sup">
+            <div id="orn"><i></i></div>
+        </div>
+        <h1><em>SHANG-CHI</em>BROKEN HARMONY</h1>
+        <p id="mission">The Ten Rings resonate with the sacred lanterns. Echo their golden resonance to begin alignment.</p>
+        <p id="objective">OBJECTIVE — Observe the 6-step golden lantern surge and command the rings to echo the harmony.</p>
+    </header>
+
+    <section id="panel" hidden>
+        <div id="panel-box">
+
+            <div id="debug-mode">
+                <div class="p-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round">
+                        <circle cx="12" cy="13" r="5.2" />
+                        <path
+                            d="M12 7.8V5.5M8.5 9.5 6.8 7.8M15.5 9.5l1.7-1.7M6.8 13H4.4M19.6 13h-2.4M8.5 16.5l-1.7 1.7M15.5 16.5l1.7 1.7" />
+                    </svg>
+                    <b>MAGICAL BULB SHATTER DEFECT</b><span class="file">#bulb-css</span>
+                </div>
+                <div style="padding:12px; font-size:13px; color:#d6e6f4; line-height:1.6;">
+                    <p style="margin:0 0 8px 0; color:#ff9d3c; font-weight:bold;">⚡ DESTROY THE MAGICAL LIGHT BULB</p>
+                    <p style="margin:0 0 8px 0;">To unlock full power, shatter the ancient Magical Light Bulb. The shatter engine fails because <code>.magical-bulb.destroying</code> references <code>bulbShatter</code> instead of matching <code>@keyframes bulb-shatter</code>.</p>
+                    <ol style="margin:0 0 8px 0; padding-left:18px; line-height:1.6;">
+                        <li>Open DevTools: press <kbd>F12</kbd> or right-click &rarr; <em>Inspect</em>.</li>
+                        <li>In the <strong>Styles</strong> panel or <strong>Console</strong>, update <code>animation-name</code> on <code>.magical-bulb.destroying</code> to <code>bulb-shatter</code>:
+                            <pre style="background:#09121d; padding:6px 10px; border-radius:4px; color:#5cf5a6; font-size:12px; margin-top:4px; overflow-x:auto;">document.getElementById('bulb-css').textContent = document.getElementById('bulb-css').textContent.replace('bulbShatter', 'bulb-shatter');</pre>
+                        </li>
+                    </ol>
+                </div>
+                <div id="d-status" class="p-status err">⚡ Awaiting CSS correction via Developer Tools…</div>
+                <div class="btnrow" style="margin-top:10px;">
+                    <button id="bypass-btn" type="button" style="border-color:#5cf5a6; color:#5cf5a6;">⚡ TEST BYPASS (AUTO-FIX)</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <button id="restart" type="button" aria-label="Restart game">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M4 10a8 8 0 1 1 2.3 6.3" />
+            <path d="M4 5v5h5" />
+        </svg>
+        RESTART
+    </button>
+
+    <div id="flash"><span id="flash-text"></span></div>
+
+    <script>
+        'use strict';
+        const $ = s => document.querySelector(s);
+        const $$ = s => [...document.querySelectorAll(s)];
+        const body = document.body;
+
+        /* ---------------- synthesized audio (no assets) ---------------- */
+        let AC = null;
+        function audio() {
+            try {
+                if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+                if (AC.state === 'suspended') AC.resume();
+            } catch (e) { AC = null; } return AC;
+        }
+        function tone(f0, f1, dur, type, vol, when) {
+            const a = audio(); if (!a) return; when = when || 0;
+            const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+            o.type = type || 'sine'; o.frequency.setValueAtTime(f0, t);
+            if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+            g.gain.setValueAtTime(.0001, t);
+            g.gain.exponentialRampToValueAtTime(vol || .05, t + .02);
+            g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+            o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .06);
+        }
+        const sfx = {
+            ping(g) {
+                const f = { outer: 520, middle: 742, inner: 1058, left: 440, right: 880 }[g] || 600;
+                tone(f, f * .985, .34, 'sine', .05); tone(f * 2.02, f * 2.01, .16, 'sine', .018);
+            },
+            lanternPulse(zone) {
+                const freq = { left: 440, middle: 659, right: 880 }[zone] || 600;
+                tone(freq, freq * 1.01, 0.45, 'sine', 0.08);
+                tone(freq * 1.5, freq * 1.49, 0.35, 'triangle', 0.04, 0.02);
+            },
+            bulbBlast() {
+                tone(95, 70, 1.8, 'sawtooth', 0.12);
+                tone(180, 140, 1.4, 'triangle', 0.09, 0.04);
+                [523, 659, 784, 1047, 1318].forEach((f, i) => tone(f, f * 1.25, 0.5, 'sine', 0.06, i * 0.06));
+            },
+            chargeOverload() {
+                tone(55, 240, 0.85, 'sawtooth', 0.14);
+                tone(110, 480, 0.85, 'triangle', 0.09, 0.02);
+            },
+            thunderBoom() {
+                tone(50, 28, 1.6, 'sawtooth', 0.22);
+                tone(90, 40, 1.2, 'triangle', 0.16, 0.04);
+            },
+            glassShatter() {
+                [1400, 1950, 2600, 3400, 4500].forEach((f, i) => tone(f, f * 0.85, 0.35, 'sine', 0.04, i * 0.04));
+            },
+            ballisticLock(k) {
+                const baseF = 420 + k * 85;
+                tone(baseF, baseF * 0.96, 0.45, 'triangle', 0.09);
+                tone(baseF * 2.2, baseF * 2.1, 0.2, 'sine', 0.05);
+            },
+            dragonChi() {
+                [220, 277, 330, 440, 554, 659].forEach((f, i) => tone(f, f, 1.4, 'sine', 0.05, i * 0.07));
+            },
+            err() { tone(150, 88, .26, 'sawtooth', .04); },
+            fix() { [523, 659, 784, 1047].forEach((f, i) => tone(f, f, .5, 'sine', .055, i * .085)); },
+            stage() { tone(659, 659, .4, 'sine', .05); tone(988, 988, .55, 'sine', .038, .12); },
+            gong() { tone(131, 127, 2.8, 'sine', .1); tone(197, 193, 2.3, 'sine', .06, .03); tone(262, 258, 1.9, 'triangle', .035, .05); }
+        };
+        document.addEventListener('pointerdown', () => audio());
+
+        /* ---------------- cinematic VFX helpers ---------------- */
+        function drawChiLightning(fromX, fromY, targets) {
+            const svg = $('#chi-lightning');
+            if (!svg) return;
+            svg.innerHTML = '';
+            targets.forEach((tgt, tIdx) => {
+                const points = [{ x: fromX, y: fromY }];
+                const steps = 12;
+                for (let s = 1; s < steps; s++) {
+                    const ratio = s / steps;
+                    const bx = fromX + (tgt.x - fromX) * ratio;
+                    const by = fromY + (tgt.y - fromY) * ratio;
+                    const normalDist = Math.sin(ratio * Math.PI) * 45;
+                    const jx = (Math.random() - 0.5) * normalDist;
+                    const jy = (Math.random() - 0.5) * normalDist;
+                    points.push({ x: bx + jx, y: by + jy });
+                }
+                points.push({ x: tgt.x, y: tgt.y });
+                const d = 'M' + points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'lightning-bolt');
+                path.setAttribute('stroke', tIdx % 2 === 0 ? '#ffe66d' : '#ff9f1c');
+                svg.appendChild(path);
+            });
+        }
+
+        function clearChiLightning() {
+            const svg = $('#chi-lightning');
+            if (svg) svg.innerHTML = '';
+        }
+
+        function spawnGlassShards(cx, cy, count = 26) {
+            const wrap = $('#glass-shards-wrap');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            const shards = [];
+            const polys = [
+                'polygon(50% 0%, 100% 70%, 70% 100%, 0% 80%)',
+                'polygon(20% 0%, 100% 20%, 80% 100%, 0% 80%)',
+                'polygon(0% 25%, 50% 0%, 100% 40%, 80% 100%, 20% 90%)',
+                'polygon(35% 0%, 90% 15%, 100% 85%, 25% 100%, 0% 50%)'
+            ];
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'glass-shard';
+                const w = 12 + Math.random() * 20;
+                const h = 14 + Math.random() * 24;
+                el.style.width = `${w.toFixed(1)}px`;
+                el.style.height = `${h.toFixed(1)}px`;
+                el.style.clipPath = polys[i % polys.length];
+                wrap.appendChild(el);
+
+                const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+                const speed = 260 + Math.random() * 480;
+                shards.push({
+                    el, x: cx, y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 80,
+                    rot: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 640
+                });
+            }
+
+            const start = performance.now();
+            function animateShards(now) {
+                const dt = (now - start) / 1000;
+                let anyAlive = false;
+                shards.forEach(s => {
+                    const curX = s.x + s.vx * dt;
+                    const curY = s.y + s.vy * dt + 0.5 * 650 * dt * dt;
+                    const curRot = s.rot + s.rotSpeed * dt;
+                    const curOp = Math.max(0, 1 - dt / 1.35);
+                    s.el.style.transform = `translate(${curX.toFixed(1)}px, ${curY.toFixed(1)}px) rotate(${curRot.toFixed(1)}deg)`;
+                    s.el.style.opacity = curOp.toFixed(2);
+                    if (curOp > 0) anyAlive = true;
+                });
+                if (anyAlive && dt < 1.4) {
+                    requestAnimationFrame(animateShards);
+                } else {
+                    wrap.innerHTML = '';
+                }
+            }
+            requestAnimationFrame(animateShards);
+        }
+
+        function triggerDetonationShock(x, y) {
+            const wrap = $('#lantern-shocks-wrap');
+            if (!wrap) return;
+            const shock = document.createElement('div');
+            shock.className = 'detonation-shock';
+            shock.style.left = `${x}px`;
+            shock.style.top = `${y}px`;
+            wrap.appendChild(shock);
+            setTimeout(() => shock.remove(), 800);
+        }
+
+        /* ---------------- the ten rings: per-ring configuration ----------------
+           Each ring: own orbit radius, period, phase, plane squash, plane angle,
+           size, tilt, sheen speed/direction, group tag, scatter spot.           */
+        const FIST = { L: { x: 155, y: 350 }, R: { x: 373, y: 350 } };
+        const CFG = [
+            { a: 'L', g: 'inner', d: 46, r: 32, ph: 15, t: 3.8, dl: -1.2, sq: .44, rho: -6, tilt: 10, spin: 7.5, sd: 1 },
+            { a: 'L', g: 'middle', d: 56, r: 52, ph: 95, t: 5.4, dl: -3.1, sq: .60, rho: 4, tilt: -8, spin: 9.2, sd: -1 },
+            { a: 'L', g: 'middle', d: 62, r: 70, ph: 200, t: 7.1, dl: -5.4, sq: .36, rho: -14, tilt: 20, spin: 11, sd: 1 },
+            { a: 'L', g: 'outer', d: 70, r: 88, ph: 285, t: 8.9, dl: -2.2, sq: .54, rho: 12, tilt: -12, spin: 8.4, sd: -1 },
+            { a: 'L', g: 'outer', d: 78, r: 104, ph: 345, t: 11.5, dl: -7.7, sq: .32, rho: -4, tilt: 6, spin: 12.5, sd: 1 },
+            { a: 'R', g: 'inner', d: 46, r: 32, ph: 140, t: 3.8, dl: -2.6, sq: .44, rho: 6, tilt: -10, spin: 8.1, sd: -1 },
+            { a: 'R', g: 'middle', d: 56, r: 52, ph: 230, t: 5.4, dl: -0.4, sq: .60, rho: -4, tilt: 8, spin: 10, sd: 1 },
+            { a: 'R', g: 'middle', d: 62, r: 70, ph: 20, t: 7.1, dl: -4.3, sq: .36, rho: 14, tilt: -20, spin: 9.6, sd: -1 },
+            { a: 'R', g: 'outer', d: 70, r: 88, ph: 105, t: 8.9, dl: -6.1, sq: .54, rho: -12, tilt: 12, spin: 11.8, sd: 1 },
+            { a: 'R', g: 'outer', d: 78, r: 104, ph: 165, t: 11.5, dl: -3.5, sq: .32, rho: 4, tilt: -6, spin: 8.8, sd: -1 },
+        ];
+        const BZ = [6, 4, 6, 4, 6, 4, 6, 4, 6, 4];
+        const FR = { inner: 68, middle: 96, outer: 126 };   /* final halo radii */
+        const FSQ = { inner: .50, middle: .55, outer: .60 }; /* final plane squash */
+
+        const rings = [];
+        function buildRings() {
+            const anch = { L: $('#anchorL'), R: $('#anchorR') };
+            CFG.forEach((c, i) => {
+                const u = document.createElement('div'); u.className = 'ring-unit';
+                const p = document.createElement('div'); p.className = 'ring-plane';
+                const gth = document.createElement('div'); gth.className = 'ring-gather';
+                const rg = document.createElement('div'); rg.className = 'ring';
+                const b = document.createElement('div'); b.className = 'r-body';
+                const t = document.createElement('div'); t.className = 'r-tilt';
+                const dp = document.createElement('div'); dp.className = 'r-depth';
+                const mt = document.createElement('div'); mt.className = 'r-metal';
+                const gl = document.createElement('div'); gl.className = 'r-gloss';
+                t.append(dp, mt, gl); b.append(t); rg.append(b); gth.append(rg); p.append(gth); u.append(p);
+                anch[c.a].append(u);
+                u.dataset.g = c.g; u.dataset.i = i;
+                b.style.cssText = `--d:${c.d}px;width:${c.d}px;height:${c.d}px;`;
+                mt.style.animation = `sheen ${c.spin}s linear infinite`;
+                mt.style.animationDirection = c.sd > 0 ? 'normal' : 'reverse';
+                rings.push({
+                    cfg: c, i, unit: u, plane: p, ring: rg,
+                    ax: FIST[c.a].x, ay: FIST[c.a].y, idx: i % 5,
+                    ph: c.ph, t: c.t, dl: c.dl,
+                    fa: (c.a === 'L' ? 165 : 345) + (i % 5) * 36,
+                    fr: FR[c.g], fsq: FSQ[c.g],
+                    rhoF: (c.a === 'L' ? 165 : 345) + (i % 5) * 36 + 90 + ((i % 2) ? 8 : -8),
+                    chaos: {
+                        ampX: 28 + (i * 11) % 48,
+                        ampY: 22 + (i * 9) % 38,
+                        speedX: 0.72 + ((i * 3) % 7) * 0.15,
+                        speedY: 0.65 + ((i * 5) % 8) * 0.14,
+                        phaseX: (i * 1.37),
+                        phaseY: (i * 2.19),
+                        baseRot: (i * 36) % 360,
+                        rotSpeed: ((i % 2 === 0 ? 1 : -1) * (18 + (i * 7) % 25)),
+                        wobbleSpeed: 1.1 + (i % 3) * 0.35,
+                        tiltAmp: 14 + (i % 4) * 6
+                    }
+                });
+            });
+        }
+
+        let isRingsFlyingToZone = false;
+        let chaoticRAF = null;
+
+        function chaoticRingTick(now) {
+            if ((phase === 'briefing' || phase === 'memory') && !isRingsFlyingToZone) {
+                const t = now * 0.001;
+                rings.forEach((r, idx) => {
+                    const ch = r.chaos;
+                    const dx = Math.sin(t * ch.speedX + ch.phaseX) * ch.ampX + Math.cos(t * 0.5 + idx) * 14;
+                    const dy = Math.cos(t * ch.speedY + ch.phaseY) * ch.ampY + Math.sin(t * 0.6 + idx) * 10 - 15;
+                    const rot = (ch.baseRot + t * ch.rotSpeed) % 360;
+                    const tilt = Math.sin(t * ch.wobbleSpeed + idx) * ch.tiltAmp;
+                    r.unit.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${rot.toFixed(1)}deg)`;
+                    r.plane.style.transform = `scaleY(${r.cfg.sq}) rotateX(${tilt.toFixed(1)}deg)`;
+                });
+            }
+            if (phase !== 'final') {
+                chaoticRAF = requestAnimationFrame(chaoticRingTick);
+            }
+        }
+
+        /* Initial chaotic ring floating in Blue */
+        function resetWorld() {
+            body.className = 'broken blue-rings';
+            body.classList.remove('gold-rings', 'final', 'fixed');
+            isRingsFlyingToZone = false;
+            if (chaoticRAF) cancelAnimationFrame(chaoticRAF);
+
+            const dragonSpirit = $('#dragon-spirit');
+            if (dragonSpirit) dragonSpirit.classList.remove('manifested');
+
+            rings.forEach((r, i) => {
+                const c = r.cfg;
+                r.ph = c.ph; r.t = c.t; r.dl = c.dl;
+                r.unit.style.transition = 'none'; r.plane.style.transition = 'none';
+                r.ring.style.width = `${c.d}px`;
+                r.ring.style.height = `${c.d}px`;
+                r.ring.style.margin = '';
+                r.unit.style.zIndex = BZ[i];
+                r.ring.style.animation = 'none';
+            });
+            void $('#stage').offsetWidth;
+            rings.forEach(r => { r.unit.style.transition = ''; r.plane.style.transition = ''; });
+            chaoticRAF = requestAnimationFrame(chaoticRingTick);
+        }
+
+        /* ---------------- formations (morphed smoothly via slot transitions) ---------------- */
+        function stageTransform(r, k) {
+            const m = r.cfg.a === 'R' ? -1 : 1;
+            const lad = [0, 16, 32, 48, 62][r.idx];
+            const dx = m * .14 * lad, dy = -.99 * lad, rho = r.cfg.rho;
+            if (k === 0) return `rotate(${rho}deg) translate(${dx}px,${dy}px)`;
+            if (k === 1) return `rotate(${rho + m * 5}deg) translate(${dx * 1.6}px,${dy * 1.6 - 24}px)`;
+            if (k === 2) return `rotate(${rho + m * 10}deg) translate(${dx * 2.2 + m * 10}px,${dy * 2.2 - 50}px) scale(1.05)`;
+            const a = r.fa * Math.PI / 180;
+            const cx = 260 + Math.cos(a) * r.fr - r.ax;
+            const cy = 215 + Math.sin(a) * r.fr - r.ay;
+            return `rotate(${r.rhoF}deg) translate(${cx.toFixed(1)}px,${cy.toFixed(1)}px) scale(1.03)`;
+        }
+        function stageSq(r, k) {
+            if (k === 3) return r.fsq;
+            return [1, 1.12, .85][k] * r.cfg.sq;
+        }
+        function applyFormation(k) {
+            rings.forEach(r => {
+                r.unit.style.transform = stageTransform(r, k);
+                r.plane.style.transform = `scaleY(${stageSq(r, k).toFixed(3)})`;
+            });
+        }
+
+        /* ---------------- depth-aware layering: rings dip behind the body ---------------- */
+        let fixedAt = 0, lastZ = 0;
+        function zTick() {
+            requestAnimationFrame(zTick);
+            if (!body.classList.contains('fixed') || phase === 'final') return;
+            const now = performance.now(); if (now - lastZ < 60) return; lastZ = now;
+            const el = (now - fixedAt) / 1000;
+            for (const r of rings) {
+                const p = ((el - r.dl) / r.t) % 1;
+                const A = (r.ph + 360 * p) * Math.PI / 180;
+                r.unit.style.zIndex = Math.sin(A) > 0 ? 6 : 4;
+            }
+        }
+
+        /* ---------------- state machine ---------------- */
+        const MISSION_MEMORY = 'The Ten Rings resonate with the sacred lanterns. Echo their golden resonance across 6 steps to begin alignment.';
+        const OBJECTIVE_MEMORY = 'OBJECTIVE — Observe the 6-step golden lantern surge and command the rings to echo the harmony.';
+        const MISSION_BULB = 'The ancient Magical Light Bulb has locked the sacred lanterns and trapped the true dragon chi. Fix the CSS defect to destroy it and attain full power!';
+        const OBJECTIVE_BULB = 'OBJECTIVE — Destroy the Magical Light Bulb: Correct animation-name on .magical-bulb.destroying in #bulb-css';
+
+        const BUGGY_BULB_CSS = `/* magical light bulb shatter engine — core */
+@keyframes bulb-shatter {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 15px rgba(255, 220, 90, 0.9));
+    }
+    40% {
+        transform: scale(1.35) rotate(15deg);
+        opacity: 1;
+        filter: brightness(2.8) drop-shadow(0 0 50px rgba(255, 160, 40, 1));
+    }
+    100% {
+        transform: scale(0) rotate(90deg);
+        opacity: 0;
+        filter: brightness(5);
+    }
+}
+
+.magical-bulb.destroying {
+    animation: bulbShatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}`;
+
+        let phase = 'briefing'; // 'briefing' -> 'memory' -> 'bulb_challenge' -> 'shatter' -> 'final'
+        let targetSeq = ['left', 'right', 'middle', 'left', 'middle', 'right'];
+        let userSeq = [];
+        let isPlayingSequence = false;
+        let shangchiPoll = null;
+        let blastPulse = 0;
+        let finalRAF = 0;
+
+        const dStatus = $('#d-status');
+
+        function setStatus(el, txt, ok) { if (el) { el.textContent = txt; el.className = 'p-status ' + (ok ? 'ok' : 'err'); } }
+        function shock() { const s = $('#shock'); s.classList.remove('go'); void s.offsetWidth; s.classList.add('go'); }
+        function flash(txt) { $('#flash-text').textContent = txt; const f = $('#flash'); f.classList.remove('show'); void f.offsetWidth; f.classList.add('show'); }
+
+        /* ---------------- Sequence 2: 6-Path Lantern Memory Game ---------------- */
+        function generateSequence() {
+            const zones = ['left', 'middle', 'right'];
+            const seq = [];
+            for (let i = 0; i < 6; i++) {
+                let z;
+                do {
+                    z = zones[Math.floor(Math.random() * zones.length)];
+                } while (i > 0 && z === seq[i - 1]);
+                seq.push(z);
+            }
+            return seq;
+        }
+
+        function setButtonsDisabled(disabled) {
+            $$('.dock-btn').forEach(b => b.disabled = disabled);
+        }
+
+        function updateSlotIndicators() {
+            const slots = $$('#seq-indicators .seq-slot');
+            slots.forEach((slot, idx) => {
+                const valEl = slot.querySelector('.slot-val');
+                if (idx < userSeq.length) {
+                    slot.classList.add('active');
+                    slot.classList.remove('error');
+                    if (valEl) valEl.textContent = userSeq[idx].toUpperCase();
+                } else {
+                    slot.classList.remove('active', 'error');
+                    if (valEl) valEl.textContent = '—';
+                }
+            });
+        }
+
+        function glowZoneAndLantern(zone, duration = 420) {
+            const zEl = $(`#zone-${zone}`);
+            const lEl = $(`#lantern-${zone}`);
+            if (zEl) zEl.classList.add('glow-active');
+            if (lEl) lEl.classList.add('glow');
+            sfx.lanternPulse(zone);
+
+            setTimeout(() => {
+                if (zEl) zEl.classList.remove('glow-active');
+                if (lEl) lEl.classList.remove('glow');
+            }, duration);
+        }
+
+        function playMemorySequence() {
+            isPlayingSequence = true;
+            setButtonsDisabled(true);
+            userSeq = [];
+            updateSlotIndicators();
+
+            const hint = $('#dock-hint');
+            if (hint) hint.textContent = 'OBSERVE THE 6 SACRED LANTERN SURGES...';
+
+            targetSeq.forEach((zone, index) => {
+                setTimeout(() => {
+                    glowZoneAndLantern(zone, 420);
+                }, index * 520 + 350);
+            });
+
+            setTimeout(() => {
+                isPlayingSequence = false;
+                setButtonsDisabled(false);
+                if (hint) hint.textContent = 'RESONATE: Press LEFT, MIDDLE, or RIGHT in the 6-step sequence';
+            }, targetSeq.length * 520 + 550);
+        }
+
+        function flowRingsToZone(zone) {
+            isRingsFlyingToZone = true;
+            const offsets = {
+                left:   { dx: -280, dy: -180, rot: -28, scale: 1.15 },
+                middle: { dx: 0,    dy: -270, rot: 0,   scale: 1.25 },
+                right:  { dx: 280,  dy: -180, rot: 28,  scale: 1.15 }
+            }[zone] || { dx: 0, dy: 0, rot: 0, scale: 1 };
+
+            rings.forEach((r, idx) => {
+                const stagger = (idx % 5) * 0.03;
+                r.unit.style.transition = `transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) ${stagger}s`;
+                const spreadX = (idx - 4.5) * 14;
+                const spreadY = Math.sin(idx * 1.2) * 18;
+                r.unit.style.transform = `translate(${offsets.dx + spreadX}px, ${offsets.dy + spreadY}px) rotate(${offsets.rot + idx * 5}deg) scale(${offsets.scale})`;
+            });
+
+            setTimeout(() => {
+                rings.forEach((r, idx) => {
+                    const stagger = (idx % 5) * 0.025;
+                    r.unit.style.transition = `transform 0.5s cubic-bezier(0.25, 1, 0.5, 1) ${stagger}s`;
+                    r.unit.style.transform = stageTransform(r, 0);
+                });
+                setTimeout(() => {
+                    rings.forEach(r => { r.unit.style.transition = ''; });
+                    isRingsFlyingToZone = false;
+                }, 600);
+            }, 500);
+        }
+
+        function onZoneClick(zone) {
+            if (phase !== 'memory' || isPlayingSequence) return;
+
+            // Rings fly to targeted zone
+            flowRingsToZone(zone);
+            glowZoneAndLantern(zone, 400);
+
+            userSeq.push(zone);
+            updateSlotIndicators();
+
+            if (userSeq.length === targetSeq.length) {
+                const matches = userSeq.every((z, i) => z === targetSeq[i]);
+                if (matches) {
+                    setButtonsDisabled(true);
+                    sfx.fix();
+                    shock();
+                    flash('HARMONY RESONATED — FULL POWER AWAITS!');
+                    const hint = $('#dock-hint');
+                    if (hint) hint.textContent = '✓ 6 PATHS ALIGNED! ATTAINING FULL POWER...';
+                    setTimeout(() => {
+                        advanceToBulbChallenge();
+                    }, 1200);
+                } else {
+                    sfx.err();
+                    $$('#seq-indicators .seq-slot').forEach(s => s.classList.add('error'));
+                    const hint = $('#dock-hint');
+                    if (hint) hint.textContent = 'RESONANCE BROKEN — CLICK RESET TO RETRY';
+                    const dock = $('#sequence-dock');
+                    if (dock) {
+                        dock.classList.remove('shake');
+                        void dock.offsetWidth;
+                        dock.classList.add('shake');
+                    }
+                }
+            }
+        }
+
+        function resetMemoryInput() {
+            if (phase !== 'memory' || isPlayingSequence) return;
+            userSeq = [];
+            updateSlotIndicators();
+            playMemorySequence();
+        }
+
+        /* ---------------- Sequence 2 Part B: Magical Light Bulb & Full Power ---------------- */
+        function advanceToBulbChallenge() {
+            phase = 'bulb_challenge';
+
+            // Hide memory sequence dock
+            const dock = $('#sequence-dock');
+            if (dock) dock.hidden = true;
+
+            // Spawn Magical Light Bulb
+            const bulbWrap = $('#magical-bulb-wrap');
+            if (bulbWrap) {
+                bulbWrap.hidden = false;
+                bulbWrap.classList.add('descending');
+            }
+
+            // Show Diagnostic HUD
+            const panel = $('#panel');
+            if (panel) panel.hidden = false;
+            const debugMode = $('#debug-mode');
+            if (debugMode) debugMode.hidden = false;
+
+            setStatus(dStatus, '⚡ Awaiting CSS correction via Developer Tools…', false);
+            const bBtn = $('#bypass-btn');
+            if (bBtn) bBtn.disabled = false;
+
+            // Update briefing text
+            $('#mission').textContent = MISSION_BULB;
+            $('#objective').textContent = OBJECTIVE_BULB;
+
+            shock();
+            flash('MAGICAL LIGHT BULB MANIFESTED');
+            sfx.gong();
+
+            startBulbPoll();
+        }
+
+        function startBulbPoll() {
+            if (shangchiPoll) clearInterval(shangchiPoll);
+            console.log('%cMAGICAL BULB CSS BUG: @keyframes "bulb-shatter" does not match animation: bulbShatter on .magical-bulb! Fix via:\n  document.getElementById("bulb-css").textContent = document.getElementById("bulb-css").textContent.replace("bulbShatter", "bulb-shatter");', 'color:#ff9d3c; font-weight:bold;');
+            shangchiPoll = setInterval(() => {
+                if (phase !== 'bulb_challenge') return;
+                const bulbEl = document.querySelector('.magical-bulb');
+                const animName = bulbEl ? getComputedStyle(bulbEl).animationName : '';
+                const styleText = $('#bulb-css')?.textContent || '';
+                if (animName === 'bulb-shatter' || (styleText && /animation\s*:\s*bulb-shatter\b/i.test(styleText))) {
+                    if (shangchiPoll) { clearInterval(shangchiPoll); shangchiPoll = null; }
+                    succeedBulbFix();
+                }
+            }, 200);
+        }
+
+        function bypassBulbBug() {
+            if (phase !== 'bulb_challenge') return;
+            if (shangchiPoll) { clearInterval(shangchiPoll); shangchiPoll = null; }
+            const bulbStyle = $('#bulb-css');
+            if (bulbStyle) {
+                bulbStyle.textContent = bulbStyle.textContent.replace('bulbShatter', 'bulb-shatter');
+            }
+            const b = $('#bypass-btn');
+            if (b) b.disabled = true;
+            succeedBulbFix();
+        }
+
+        /* ---------------- EPIC AFTER-BUG CINEMATIC DETONATION ---------------- */
+        function succeedBulbFix() {
+            phase = 'shatter';
+            if (shangchiPoll) { clearInterval(shangchiPoll); shangchiPoll = null; }
+
+            setStatus(dStatus, '✓ BUG FIXED — MAGICAL LIGHT BULB OVERLOADED!', true);
+            const bBtn = $('#bypass-btn');
+            if (bBtn) bBtn.disabled = true;
+
+            const stageEl = $('#stage');
+            const bulbWrap = $('#magical-bulb-wrap');
+            const bulb = $('#magical-bulb');
+            const seqDock = $('#sequence-dock');
+            if (seqDock) seqDock.hidden = true;
+
+            // Beat 1 (t = 0.0s): Overload energy surge & electric chi lightning
+            if (bulbWrap) bulbWrap.classList.add('overloading');
+            if (stageEl) stageEl.classList.add('shake-tremor');
+            sfx.chargeOverload();
+            shock();
+            flash('MAGICAL LIGHT BULB OVERCHARGING!');
+
+            // Connect bulb to Left, Middle, and Right lanterns via chi lightning
+            const bulbRect = bulbWrap ? bulbWrap.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight * 0.22 };
+            const bX = bulbRect.left + (bulbRect.width || 0) * 0.5;
+            const bY = bulbRect.top + (bulbRect.height || 0) * 0.5;
+
+            const lLeftRect = $('#lantern-left')?.getBoundingClientRect();
+            const lMidRect = $('#lantern-middle')?.getBoundingClientRect();
+            const lRightRect = $('#lantern-right')?.getBoundingClientRect();
+
+            const targets = [
+                { x: lLeftRect ? lLeftRect.left + lLeftRect.width * 0.5 : innerWidth * 0.16, y: lLeftRect ? lLeftRect.top + lLeftRect.height * 0.5 : innerHeight * 0.2 },
+                { x: lMidRect ? lMidRect.left + lMidRect.width * 0.5 : innerWidth * 0.5, y: lMidRect ? lMidRect.top + lMidRect.height * 0.5 : innerHeight * 0.12 },
+                { x: lRightRect ? lRightRect.left + lRightRect.width * 0.5 : innerWidth * 0.84, y: lRightRect ? lRightRect.top + lRightRect.height * 0.5 : innerHeight * 0.2 }
+            ];
+
+            let lightningInterval = setInterval(() => {
+                drawChiLightning(bX, bY, targets);
+            }, 80);
+
+            // Beat 2 (t = 0.85s): Blinding Nova Shatter & Glass Debris Burst
+            setTimeout(() => {
+                clearInterval(lightningInterval);
+                clearChiLightning();
+
+                if (stageEl) {
+                    stageEl.classList.remove('shake-tremor');
+                    stageEl.classList.add('shake-violent');
+                    setTimeout(() => stageEl.classList.remove('shake-violent'), 600);
+                }
+
+                const nova = $('#nova-flash');
+                if (nova) {
+                    nova.classList.remove('active');
+                    void nova.offsetWidth;
+                    nova.classList.add('active');
+                }
+
+                if (bulb) bulb.classList.add('destroying');
+                sfx.thunderBoom();
+                sfx.glassShatter();
+                triggerDetonationShock(bX, bY);
+                spawnGlassShards(bX, bY, 28);
+                flash('ANCIENT RELIC SHATTERED — DRAGON CHI LIBERATED!');
+
+                setTimeout(() => {
+                    if (bulbWrap) bulbWrap.hidden = true;
+                }, 750);
+            }, 850);
+
+            // Beat 3 (t = 1.1s - 1.7s): Staggered Chain-Reaction Lantern Detonations
+            setTimeout(() => {
+                // Left lantern blasts
+                const lLeft = $('#lantern-left');
+                if (lLeft) lLeft.classList.add('blasted');
+                triggerDetonationShock(targets[0].x, targets[0].y);
+                sfx.ping('left');
+                shock();
+            }, 1100);
+
+            setTimeout(() => {
+                // Right lantern blasts
+                const lRight = $('#lantern-right');
+                if (lRight) lRight.classList.add('blasted');
+                triggerDetonationShock(targets[2].x, targets[2].y);
+                sfx.ping('right');
+                shock();
+            }, 1380);
+
+            setTimeout(() => {
+                // Middle lantern blasts
+                const lMid = $('#lantern-middle');
+                if (lMid) lMid.classList.add('blasted');
+                triggerDetonationShock(targets[1].x, targets[1].y);
+                sfx.gong();
+                shock();
+                flash('SACRED LANTERNS DETONATED — FULL POWER UNLEASHED!');
+            }, 1650);
+
+            // Beat 4 (t = 1.95s): Golden Dragon Spirit Manifestation & Blue -> Gold Ring Shift
+            setTimeout(() => {
+                const dragonSpirit = $('#dragon-spirit');
+                if (dragonSpirit) dragonSpirit.classList.add('manifested');
+                sfx.dragonChi();
+
+                // Turn rings from blue to fiery gold!
+                body.classList.remove('broken', 'blue-rings');
+                body.classList.add('fixed', 'final', 'gold-rings');
+
+                // Swirl rings in an expansive halo before ballistic lock
+                rings.forEach((r, idx) => {
+                    const angle = (idx / 10) * Math.PI * 2;
+                    const rDist = 240 + (idx % 3) * 30;
+                    r.unit.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+                    r.unit.style.transform = `translate(${Math.cos(angle) * rDist}px, ${Math.sin(angle) * rDist - 20}px) rotate(${angle * 180 / Math.PI}deg) scale(1.2)`;
+                });
+            }, 1950);
+
+            // Beat 5 (t = 2.75s): High-Speed Ballistic Ring Lock-on Sequence
+            setTimeout(() => {
+                goFinal();
+            }, 2750);
+        }
+
+        /* ---------------- final stage: 5 Left / 5 Right Forearm Splines ---------------- */
+        function finalTick() {
+            if (phase !== 'final') return;
+            finalRAF = requestAnimationFrame(finalTick);
+
+            blastPulse *= 0.88;
+
+            const leftArmSpline = [
+                { x: -2.2, y:  44.0, rot: -6.5, w: 33.0, h: 14.4 },
+                { x: -3.0, y:  22.0, rot: -6.2, w: 36.5, h: 14.8 },
+                { x: -1.0, y:   0.0, rot: -5.8, w: 40.0, h: 15.2 },
+                { x:  0.6, y: -22.0, rot: -5.3, w: 43.5, h: 15.6 },
+                { x:  4.1, y: -44.0, rot: -4.8, w: 47.0, h: 16.0 }
+            ];
+
+            const rightArmSpline = [
+                { x: -1.8, y:  44.0, rot:  6.5, w: 33.0, h: 14.4 },
+                { x:  3.3, y:  22.0, rot:  6.2, w: 36.5, h: 14.8 },
+                { x:  1.4, y:   0.0, rot:  5.8, w: 40.0, h: 15.2 },
+                { x: -1.8, y: -22.0, rot:  5.3, w: 43.5, h: 15.6 },
+                { x: -6.2, y: -44.0, rot:  4.8, w: 47.0, h: 16.0 }
+            ];
+
+            rings.forEach(r => {
+                const isLeft = r.cfg.a === 'L';
+                const k = r.i % 5;
+                const spline = isLeft ? leftArmSpline[k] : rightArmSpline[k];
+                const x = spline.x;
+                const y = spline.y;
+                const rot = spline.rot;
+                const w = spline.w * (1 + blastPulse * 0.08);
+                const h = spline.h * (1 + blastPulse * 0.08);
+
+                r.unit.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${rot.toFixed(1)}deg)`;
+                r.plane.style.transform = 'none';
+                r.unit.style.zIndex = 12 - k;
+                r.ring.style.width = `${w.toFixed(1)}px`;
+                r.ring.style.height = `${h.toFixed(1)}px`;
+                r.ring.style.margin = `${(-h / 2).toFixed(1)}px 0 0 ${(-w / 2).toFixed(1)}px`;
+            });
+        }
+
+        function goFinal() {
+            phase = 'converge';
+            cancelAnimationFrame(finalRAF);
+
+            flash('BALLISTIC LOCK — TEN RINGS CONVERGING');
+
+            const leftArmSpline = [
+                { x: -2.2, y:  44.0, rot: -6.5, w: 33.0, h: 14.4 },
+                { x: -3.0, y:  22.0, rot: -6.2, w: 36.5, h: 14.8 },
+                { x: -1.0, y:   0.0, rot: -5.8, w: 40.0, h: 15.2 },
+                { x:  0.6, y: -22.0, rot: -5.3, w: 43.5, h: 15.6 },
+                { x:  4.1, y: -44.0, rot: -4.8, w: 47.0, h: 16.0 }
+            ];
+
+            const rightArmSpline = [
+                { x: -1.8, y:  44.0, rot:  6.5, w: 33.0, h: 14.4 },
+                { x:  3.3, y:  22.0, rot:  6.2, w: 36.5, h: 14.8 },
+                { x:  1.4, y:   0.0, rot:  5.8, w: 40.0, h: 15.2 },
+                { x: -1.8, y: -22.0, rot:  5.3, w: 43.5, h: 15.6 },
+                { x: -6.2, y: -44.0, rot:  4.8, w: 47.0, h: 16.0 }
+            ];
+
+            rings.forEach(r => {
+                const uTr = getComputedStyle(r.unit).transform;
+                const pTr = getComputedStyle(r.plane).transform;
+                r.unit.style.transition = 'none';
+                r.plane.style.transition = 'none';
+                r.ring.style.animation = 'none';
+                if (uTr && uTr !== 'none') r.unit.style.transform = uTr;
+                if (pTr && pTr !== 'none') r.plane.style.transform = pTr;
+            });
+
+            void $('#stage').offsetWidth;
+
+            body.classList.add('final');
+            $('#objective').textContent = 'HARMONIZING — Ballistic ring lock-on sequence in progress...';
+
+            // High-speed ballistic impact per ring pair
+            rings.forEach(r => {
+                const isLeft = r.cfg.a === 'L';
+                const k = r.i % 5;
+                const spline = isLeft ? leftArmSpline[k] : rightArmSpline[k];
+                const delay = k * 0.18 + (isLeft ? 0 : 0.08);
+
+                r.unit.style.transition = `transform 0.72s cubic-bezier(0.12, 0.95, 0.25, 1.25) ${delay.toFixed(2)}s`;
+                r.plane.style.transition = `transform 0.72s cubic-bezier(0.12, 0.95, 0.25, 1.25) ${delay.toFixed(2)}s`;
+                r.ring.style.transition = `width 0.72s cubic-bezier(0.12, 0.95, 0.25, 1.25) ${delay.toFixed(2)}s, height 0.72s cubic-bezier(0.12, 0.95, 0.25, 1.25) ${delay.toFixed(2)}s, margin 0.72s cubic-bezier(0.12, 0.95, 0.25, 1.25) ${delay.toFixed(2)}s`;
+
+                r.unit.style.zIndex = 12 - k;
+                r.unit.style.transform = `translate(${spline.x.toFixed(1)}px,${spline.y.toFixed(1)}px) rotate(${spline.rot.toFixed(1)}deg)`;
+                r.plane.style.transform = 'none';
+                r.ring.style.width = `${spline.w.toFixed(1)}px`;
+                r.ring.style.height = `${spline.h.toFixed(1)}px`;
+                r.ring.style.margin = `${(-spline.h / 2).toFixed(1)}px 0 0 ${(-spline.w / 2).toFixed(1)}px`;
+
+                setTimeout(() => {
+                    sfx.ballisticLock(k);
+                    const armAnchor = isLeft ? $('#armChiL') : $('#armChiR');
+                    if (armAnchor) {
+                        armAnchor.classList.remove('flare');
+                        void armAnchor.offsetWidth;
+                        armAnchor.classList.add('flare');
+                    }
+                }, (delay + 0.48) * 1000);
+            });
+
+            setTimeout(() => {
+                phase = 'final';
+                shock();
+                flash('TEN RINGS MASTERED — DRAGON GOD MODE');
+                sfx.gong();
+                blastPulse = 1.0;
+                const panel = $('#panel');
+                if (panel) panel.hidden = true;
+                $('#objective').textContent = 'OBJECTIVE COMPLETE — Ten Rings Mastered: 5 on left arm, 5 on right arm.';
+                $('#mission').textContent = 'The Ten Rings burn with glorious dragon chi. Click or tap anywhere to unleash Chi Blasts!';
+
+                rings.forEach(r => {
+                    r.unit.style.transition = '';
+                    r.plane.style.transition = '';
+                    r.ring.style.transition = '';
+                });
+
+                finalTick();
+            }, 1800);
+        }
+
+        /* ---------------- restart: full reset to Sequence 1 ---------------- */
+        function restart() {
+            cancelAnimationFrame(finalRAF);
+            blastPulse = 0;
+            if (shangchiPoll) clearInterval(shangchiPoll);
+
+            // Restore buggy CSS
+            $('#bulb-css').textContent = BUGGY_BULB_CSS;
+
+            // Reset bulb and lanterns
+            const bulbWrap = $('#magical-bulb-wrap');
+            if (bulbWrap) {
+                bulbWrap.hidden = true;
+                bulbWrap.classList.remove('descending', 'overloading');
+            }
+            const bulb = $('#magical-bulb');
+            if (bulb) bulb.classList.remove('destroying');
+
+            $('#lantern-left')?.classList.remove('blasted', 'glow');
+            $('#lantern-middle')?.classList.remove('blasted', 'glow');
+            $('#lantern-right')?.classList.remove('blasted', 'glow');
+
+            $('#zone-left')?.classList.remove('glow-active');
+            $('#zone-middle')?.classList.remove('glow-active');
+            $('#zone-right')?.classList.remove('glow-active');
+
+            clearChiLightning();
+            const shardsWrap = $('#glass-shards-wrap');
+            if (shardsWrap) shardsWrap.innerHTML = '';
+            const shocksWrap = $('#lantern-shocks-wrap');
+            if (shocksWrap) shocksWrap.innerHTML = '';
+
+            // Reset panels and dock
+            $('#panel').hidden = true;
+            $('#debug-mode').hidden = true;
+            $('#sequence-dock').hidden = false;
+
+            targetSeq = generateSequence();
+            userSeq = [];
+            updateSlotIndicators();
+
+            $('#mission').textContent = MISSION_MEMORY;
+            $('#objective').textContent = OBJECTIVE_MEMORY;
+            $('#flash').classList.remove('show');
+
+            resetWorld();
+            showMissionPanel();
+        }
+
+        /* ---------------- mission panel lifecycle ---------------- */
+        let isDismissingMission = false, missionDismissed = false;
+
+        function fitMissionUI() {
+            const panel = $('#mission-panel');
+            const btn = $('#continue-btn');
+            if (!panel || !btn || panel.style.display === 'none' || missionDismissed) return;
+            const h = panel.offsetHeight;
+            if (h > 0) {
+                btn.style.bottom = `calc(clamp(16px, 3vh, 36px) + ${h + 10}px + env(safe-area-inset-bottom, 0px))`;
+            }
+        }
+
+        function dismissMissionPanel() {
+            if (isDismissingMission || missionDismissed) return;
+            const panel = $('#mission-panel');
+            const btn = $('#continue-btn');
+            if (!panel) return;
+
+            isDismissingMission = true;
+            missionDismissed = true;
+
+            panel.classList.remove('panel-entering');
+            panel.classList.add('panel-exiting');
+
+            if (btn) {
+                btn.classList.add('btn-exiting');
+                btn.style.pointerEvents = 'none';
+            }
+
+            const onComplete = () => {
+                panel.removeEventListener('animationend', onComplete);
+                panel.style.display = 'none';
+                panel.style.pointerEvents = 'none';
+                if (btn) {
+                    btn.style.display = 'none';
+                    btn.style.pointerEvents = 'none';
+                }
+                body.classList.add('mission-dismissed');
+                isDismissingMission = false;
+
+                // Begin Sequence 2 Memory Game
+                phase = 'memory';
+                setTimeout(() => {
+                    playMemorySequence();
+                }, 400);
+            };
+
+            panel.addEventListener('animationend', onComplete, { once: true });
+            setTimeout(onComplete, 550);
+        }
+
+        function showMissionPanel() {
+            isDismissingMission = false;
+            missionDismissed = false;
+            phase = 'briefing';
+            body.classList.remove('mission-dismissed');
+            const panel = $('#mission-panel');
+            const btn = $('#continue-btn');
+            if (panel) {
+                panel.style.display = '';
+                panel.style.pointerEvents = 'auto';
+                panel.classList.remove('panel-exiting');
+                panel.classList.add('panel-entering');
+            }
+            if (btn) {
+                btn.style.display = '';
+                btn.style.pointerEvents = 'auto';
+                btn.classList.remove('btn-exiting');
+            }
+            requestAnimationFrame(fitMissionUI);
+        }
+
+        /* ---------------- Grand Master Chi Blasting (directional) ---------------- */
+        function fireChiBlast(clientX, clientY) {
+            if (phase !== 'final') return;
+            blastPulse = 1.0;
+            sfx.gong();
+            shock();
+            flash('CHI DRAGON BLAST!');
+
+            const stageEl = $('#stage');
+            if (stageEl) {
+                stageEl.classList.remove('shake-tremor', 'shake-violent');
+                void stageEl.offsetWidth;
+                stageEl.classList.add('shake-tremor');
+                setTimeout(() => stageEl.classList.remove('shake-tremor'), 320);
+            }
+
+            // Hero flinch & flare
+            const wrap = $('.hero-body-wrap');
+            if (wrap) {
+                wrap.classList.remove('blast');
+                void wrap.offsetWidth;
+                wrap.classList.add('blast');
+            }
+            const glow = $('#hero-glow');
+            if (glow) {
+                glow.classList.remove('flare');
+                void glow.offsetWidth;
+                glow.classList.add('flare');
+            }
+            const aL = $('#armChiL'), aR = $('#armChiR');
+            if (aL && aR) {
+                aL.classList.remove('flare'); aR.classList.remove('flare');
+                void aL.offsetWidth;
+                aL.classList.add('flare'); aR.classList.add('flare');
+            }
+
+            // Directional projectile beam from hero center to click
+            const heroRect = $('#hero')?.getBoundingClientRect();
+            const originX = heroRect ? heroRect.left + heroRect.width * 0.5 : window.innerWidth * 0.5;
+            const originY = heroRect ? heroRect.top + heroRect.height * 0.58 : window.innerHeight * 0.5;
+
+            const dx = clientX - originX;
+            const dy = clientY - originY;
+            const dist = Math.max(20, Math.hypot(dx, dy));
+            const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            const beam = document.createElement('div');
+            beam.className = 'chi-blast-beam';
+            beam.style.left = `${originX}px`;
+            beam.style.top = `${originY}px`;
+            beam.style.width = `${dist}px`;
+            beam.style.transform = `rotate(${angleDeg}deg)`;
+            document.body.appendChild(beam);
+            setTimeout(() => beam.remove(), 450);
+
+            // Impact spark at target location
+            const spark = document.createElement('div');
+            spark.className = 'chi-impact-spark';
+            spark.style.left = `${clientX}px`;
+            spark.style.top = `${clientY}px`;
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 500);
+        }
+
+        /* ---------------- responsive fit ---------------- */
+        function fit() {
+            const vw = innerWidth, vh = innerHeight, mobile = vw < 761;
+            const s = Math.min(vw * .94 / 520, (mobile ? vh * .46 : vh * .72) / 560, 1.18);
+            $('#figure-wrap').style.transform = `translate(-50%,-50%) scale(${s.toFixed(3)})`;
+            fitMissionUI();
+        }
+
+        /* ---------------- wiring ---------------- */
+        $('#bypass-btn')?.addEventListener('click', bypassBulbBug);
+        $('#continue-btn')?.addEventListener('click', dismissMissionPanel);
+        $('#btn-left')?.addEventListener('click', () => onZoneClick('left'));
+        $('#btn-middle')?.addEventListener('click', () => onZoneClick('middle'));
+        $('#btn-right')?.addEventListener('click', () => onZoneClick('right'));
+        $('#btn-reset')?.addEventListener('click', resetMemoryInput);
+        $('#restart')?.addEventListener('click', restart);
+
+        document.addEventListener('keydown', e => {
+            if (phase === 'briefing') {
+                if (e.key === ' ' || e.key === 'Enter') dismissMissionPanel();
+                return;
+            }
+            if (phase === 'memory') {
+                if (e.key === '1' || e.key === 'ArrowLeft') onZoneClick('left');
+                else if (e.key === '2' || e.key === 'ArrowUp') onZoneClick('middle');
+                else if (e.key === '3' || e.key === 'ArrowRight') onZoneClick('right');
+                else if (e.key.toLowerCase() === 'r') resetMemoryInput();
+            }
+        });
+
+        $('#stage')?.addEventListener('click', (e) => {
+            if (phase === 'final') {
+                fireChiBlast(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('resize', fit);
+
+        /* ---------------- boot ---------------- */
+        (function motes() {
+            const box = $('#motes');
+            for (let i = 0; i < 14; i++) {
+                const m = document.createElement('i');
+                m.style.cssText = `left:${(Math.random() * 100).toFixed(1)}%;` +
+                    `animation-duration:${(9 + Math.random() * 9).toFixed(1)}s;` +
+                    `animation-delay:-${(Math.random() * 14).toFixed(1)}s;`;
+                box.append(m);
+            }
+        })();
+        buildRings();
+        resetWorld();
+        fit();
+        targetSeq = generateSequence();
+        window.restartShangchi = restart;
+        window.getPhase = () => phase;
+        window.advanceToBulb = advanceToBulbChallenge;
+        window.bypassBulb = bypassBulbBug;
+        window.getTargetSeq = () => targetSeq;
+    </script>
+</body>
+
+</html>

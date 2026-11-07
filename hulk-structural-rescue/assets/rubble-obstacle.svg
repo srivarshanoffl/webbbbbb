@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 280" fill="none">
+  <defs>
+    <linearGradient id="slab" x1="105" y1="26" x2="455" y2="248" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d3c7ad"/><stop offset=".22" stop-color="#8e8c7d"/><stop offset=".56" stop-color="#565e5b"/><stop offset="1" stop-color="#27373c"/>
+    </linearGradient>
+    <linearGradient id="rock" x1="375" y1="63" x2="650" y2="245" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#aaa28f"/><stop offset=".43" stop-color="#646c68"/><stop offset="1" stop-color="#303e41"/>
+    </linearGradient>
+    <linearGradient id="face" x1="295" y1="155" x2="443" y2="262" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#777d74"/><stop offset="1" stop-color="#323f3e"/>
+    </linearGradient>
+    <filter id="shadow" x="15" y="8" width="690" height="280" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+  <ellipse cx="355" cy="246" rx="305" ry="25" fill="#030b0f" opacity=".72" filter="url(#shadow)"/>
+  <!-- Collapsed concrete core -->
+  <path d="m56 181 24-62 60-18 39-55 102 14 44 36 82-18 58 44 89-7 40 54-26 57-63 21-89-13-85 22-86-13-92 13-63-20-54 5-42-31Z" fill="url(#slab)" stroke="#1c2a2d" stroke-width="7" stroke-linejoin="round"/>
+  <path d="m80 177 34-48 31 15 37-45 47 7 26-35 55 16 23 29 58-17 40 39 56-7 38 35-23 39-60 10-58-17-51 18-59-18-62 20-53-19-45 10-35-28Z" fill="#b1aa96" opacity=".43"/>
+  <path d="m71 182 92-16 34 28 51-12 50 34 57-23 40 18 47-24 75 19-20 35-63 17-88-12-85 23-83-12-90 13-58-19-55 3-38-30Z" fill="url(#face)" stroke="#263638" stroke-width="5" stroke-linejoin="round"/>
+  <!-- Broken blocks -->
+  <path d="m65 143 19-47 63-15 34 23-10 45-45 20-48-8Z" fill="#929184" stroke="#273538" stroke-width="6" stroke-linejoin="round"/>
+  <path d="m166 96 38-56 62 9 25 39-28 31-55-7Z" fill="#aaa28e" stroke="#273538" stroke-width="6" stroke-linejoin="round"/>
+  <path d="m275 102 29-44 74-19 36 36-7 41-56 21-43-14Z" fill="#747d77" stroke="#273538" stroke-width="6" stroke-linejoin="round"/>
+  <path d="m397 118 41-48 65 7 44 39-11 44-60 17-48-24Z" fill="#858779" stroke="#273538" stroke-width="6" stroke-linejoin="round"/>
+  <path d="m530 150 31-38 65 9 32 43-18 39-51 15-44-27Z" fill="url(#rock)" stroke="#273538" stroke-width="6" stroke-linejoin="round"/>
+  <path d="m106 174 25-16 29 12 26 36-18 22-44-3-27-23Z" fill="#626d68" stroke="#273538" stroke-width="5"/>
+  <path d="m465 194 29-23 36 13 24 29-19 24-48-3-29-17Z" fill="#555f5b" stroke="#273538" stroke-width="5"/>
+  <!-- Cracks and exposed reinforcement -->
+  <path d="m163 95-17 19 13 14-24 22m129-54-19 20 10 16-26 19m103-57-10 24 19 13-24 24m138-26-16 16 12 17-24 19m105-44-20 13 9 18-19 21" stroke="#263438" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+  <path d="m238 224 89 16m-92-8-2 17m34-14-2 17m34-13-2 17m-105-16 75 14" stroke="#a54f40" stroke-width="7" stroke-linecap="round"/>
+  <path d="m414 204 68 12m-65-4-2 16m29-12-2 17m27-14-2 16m-74-17 57 11" stroke="#a54f40" stroke-width="6" stroke-linecap="round"/>
+  <!-- Dust chips -->
+  <path d="m42 219 24-12 20 23-28 10Zm572-9 24-14 23 21-31 11ZM321 47l13-19 18 8-7 19Z" fill="#c1b9a3" stroke="#273538" stroke-width="4"/>
+</svg>

@@ -1,0 +1,29 @@
+CITY BACKGROUND
+- Generated for this project with OpenAI image generation on 2026-11-07.
+- File: city-route.png
+
+CIVILIAN GROUP
+- Generated for this project with OpenAI image generation on 2026-11-07.
+- File: civilians.png
+- A recovery-state variant based on the project-generated civilian group was generated for this project with OpenAI image generation on 2026-11-07.
+- File: civilians-fallen.png
+
+THREAT OBSTACLE
+- Generated for this project with OpenAI image generation on 2026-11-07.
+- File: debris-obstacle.png — fractured concrete with exposed rebar and flying fragments.
+
+CAPTAIN AMERICA CUTOUT
+- File: captain-america.png
+- Source page: https://purepng.com/photo/26260/render-captain-america
+- Listed by the source page as 1679 × 1713 pixels.
+- Direct image: https://purepng.com/public/uploads/large/purepng.com-captain-americacaptain-americacaptainamericafictional-charactercomic-booksmarvel-comicsupersoldierthe-warcostumesteve-rogers-1701528527735oyn2e.png
+- The source page states that the image is free for commercial use with no attribution. This records the source site's claim only; it is not an independent license verification and does not grant rights to Marvel characters, trademarks, or other protected material.
+- Used locally in a fan-game prototype. Review rights and licensing before public or commercial distribution.
+
+SHIELD
+- Original SVG created for this project.
+
+LEGACY SPRITE ARCHIVE
+- Earlier prototype sprite set: https://zachd.com/mvc2/resources/mvc2/Sprites_RGB/Sprites_Captain%20America.rar
+- Earlier sprite index: https://zachd.com/mvc2/resources/mvc2/images_charactersprites.html
+- Retained in the project folder as legacy material; the game now uses the PurePNG cutout.

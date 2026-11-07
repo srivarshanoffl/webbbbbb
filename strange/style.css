@@ -1,0 +1,1556 @@
+/* ============================================================
+   DOCTOR STRANGE: THE THREE LOST RELICS
+   Massive Cinematic VFX & Spectacular Marvel Experience
+   ============================================================ */
+
+:root {
+  --bg-dark: #020408;
+  --gold-primary: #f5c452;
+  --gold-glow: rgba(245, 196, 82, 0.85);
+  --green-time: #00ff88;
+  --green-glow: rgba(0, 255, 136, 0.9);
+  --purple-cosmic: #c540ff;
+  --purple-glow: rgba(197, 64, 255, 0.85);
+  --cyan-mystic: #3df0d5;
+  --red-rift: #ff2a5f;
+  
+  --font-title: 'Cinzel', serif, -apple-system, BlinkMacSystemFont;
+  --font-hud: 'Rajdhani', sans-serif, -apple-system, BlinkMacSystemFont;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-dark);
+  overflow: hidden;
+  font-family: var(--font-hud);
+  color: #ffffff;
+}
+
+/* 16:9 CINEMATIC VIEWPORT CONTAINER */
+#game-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #080d1a 0%, #010205 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+#game-viewport {
+  width: 100%;
+  max-width: 177.78vh; /* 16:9 Aspect Ratio */
+  height: 100%;
+  max-height: 56.25vw;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.98), 0 0 30px rgba(0, 255, 136, 0.25);
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: #000;
+  transition: transform 0.05s linear;
+}
+
+#game-viewport.screen-shake {
+  animation: viewportShake 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+}
+
+@keyframes viewportShake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(3px, -2px); }
+  75% { transform: translate(-2px, -3px); }
+  100% { transform: translate(2px, 3px); }
+}
+
+/* ------------------------------------------------------------
+   PARALLAX BACKGROUNDS & TRANSITIONS
+   ------------------------------------------------------------ */
+#bg-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bg-sublayer {
+  position: absolute;
+  inset: -2%;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+#bg-far {
+  opacity: 1;
+  background-image: url('assets/backgrounds/sanctum_chamber.jpg');
+}
+
+#bg-restored {
+  opacity: 0;
+  background-image: url('assets/backgrounds/sanctum_restored.jpg');
+}
+
+#reality-rift-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 65% 45%, rgba(255, 42, 95, 0.4) 0%, transparent 75%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+/* ------------------------------------------------------------
+   PARTICLE & FX CANVAS (Full resolution)
+   ------------------------------------------------------------ */
+#fx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------
+   2.5D STAGE: STRANGE & RELICS
+   ------------------------------------------------------------ */
+#stage-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* DOCTOR STRANGE CHARACTER RIG */
+#strange-rig {
+  position: absolute;
+  left: 4%;
+  bottom: 0%;
+  width: 360px;
+  height: 570px;
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+  will-change: transform;
+  z-index: 15;
+}
+
+.strange-shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 10%;
+  width: 80%;
+  height: 38px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, transparent 70%);
+  filter: blur(8px);
+  transform: rotateX(75deg);
+}
+
+.strange-sprite {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+}
+
+.idle-sprite {
+  background-image: url('assets/characters/doctor_strange_casting_cutout.png');
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
+  animation: strangeIdleBreathe 3.6s ease-in-out infinite alternate;
+}
+
+@keyframes strangeIdleBreathe {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-6px) scale(1.008); }
+}
+
+/* EYE OF AGAMOTTO AMULET GLOW ON CHEST */
+.chest-eye-glow {
+  position: absolute;
+  left: 56%;
+  top: 28%;
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, var(--green-time) 55%, transparent 80%);
+  opacity: 0.8;
+  filter: blur(4px) drop-shadow(0 0 25px var(--green-time));
+  pointer-events: none;
+  z-index: 6;
+  transition: all 0.3s ease;
+}
+
+#strange-rig.casting .chest-eye-glow,
+#strange-rig.window-open .chest-eye-glow {
+  opacity: 1;
+  filter: blur(5px) drop-shadow(0 0 45px var(--green-time));
+  transform: translate(-50%, -50%) scale(2.4);
+  animation: eyeChestPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes eyeChestPulse {
+  0% { transform: translate(-50%, -50%) scale(2.2); opacity: 0.85; }
+  100% { transform: translate(-50%, -50%) scale(2.8); opacity: 1; }
+}
+
+/* DISTINCT SPELLS MAPPED TO THE CHARACTER'S TWO HAND POSES */
+.tao-mandala {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 8;
+  opacity: 0.65;
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+/* RAISED HAND: warm eldritch ring, placed over the visible raised palm */
+.tao-mandala.left-hand {
+  background-image: url('assets/effects/eldritch_mandala.png');
+  left: 65%;
+  top: 6.5%;
+  width: 170px;
+  height: 170px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: mandalaSpinIdle 12s linear infinite;
+  filter: drop-shadow(0 0 22px rgba(255, 165, 60, 0.9)) drop-shadow(0 0 48px rgba(255, 112, 34, 0.55));
+}
+
+/* FORWARD HAND: green time Tao mandala, centered on the outstretched palm */
+.tao-mandala.right-hand {
+  background-image: url('assets/effects/tao_mandala_green.png');
+  left: 32%;
+  top: 36%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: mandalaSpinReverseIdle 10s linear infinite;
+  filter: drop-shadow(0 0 25px var(--green-time)) drop-shadow(0 0 50px rgba(0, 255, 136, 0.65));
+  display: none; /* The selected cutout already includes this palm's orange spell. */
+}
+
+/* ACTIVE CASTING / TIMELINE SCRUBBING */
+#strange-rig.casting .tao-mandala,
+#strange-rig.window-open .tao-mandala {
+  opacity: 1.0;
+}
+
+#strange-rig.casting .tao-mandala.left-hand,
+#strange-rig.window-open .tao-mandala.left-hand {
+  filter: drop-shadow(0 0 36px rgba(255, 174, 67, 0.95)) drop-shadow(0 0 76px rgba(255, 112, 34, 0.85));
+}
+
+#strange-rig.casting .tao-mandala.right-hand,
+#strange-rig.window-open .tao-mandala.right-hand {
+  filter: drop-shadow(0 0 40px var(--green-time)) drop-shadow(0 0 80px rgba(0, 255, 136, 0.95)) drop-shadow(0 0 120px rgba(61, 240, 213, 0.7));
+}
+
+#strange-rig.casting .tao-mandala.left-hand {
+  animation: mandalaSpinFast 3.0s linear infinite;
+}
+
+#strange-rig.casting .tao-mandala.right-hand {
+  animation: mandalaSpinReverseFast 2.4s linear infinite;
+}
+
+#strange-rig.window-open .tao-mandala {
+  animation: mandalaPulseResonance 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes mandalaSpinIdle {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.95); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) scale(0.95); }
+}
+
+@keyframes mandalaSpinReverseIdle {
+  0% { transform: translate(-50%, -50%) rotate(360deg) scale(0.9); }
+  100% { transform: translate(-50%, -50%) rotate(0deg) scale(0.9); }
+}
+
+@keyframes mandalaSpinFast {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1.15); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) scale(1.15); }
+}
+
+@keyframes mandalaSpinReverseFast {
+  0% { transform: translate(-50%, -50%) rotate(360deg) scale(1.12); }
+  100% { transform: translate(-50%, -50%) rotate(0deg) scale(1.12); }
+}
+
+@keyframes mandalaPulseResonance {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1.1); filter: drop-shadow(0 0 30px var(--green-time)); }
+  100% { transform: translate(-50%, -50%) rotate(40deg) scale(1.25); filter: drop-shadow(0 0 60px #fff) drop-shadow(0 0 100px var(--green-time)); }
+}
+
+/* ------------------------------------------------------------
+   RELIC STAGE & SOLID STONE ALTAR PEDESTAL (GRAND SCALE)
+   ------------------------------------------------------------ */
+#relic-stage {
+  position: absolute;
+  right: 10%;
+  bottom: 7%;
+  width: 520px;
+  height: 560px;
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+#relic-pedestal {
+  position: absolute;
+  bottom: 0;
+  width: 480px;
+  height: 140px;
+  pointer-events: none;
+}
+
+.pedestal-stone-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/effects/altar_pedestal_stone.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.95));
+}
+
+.pedestal-glow {
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  width: 70%;
+  height: 45px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.35) 0%, transparent 75%);
+  filter: blur(10px);
+}
+
+/* RELIC ASSEMBLY CONTAINERS */
+.relic-assembly {
+  position: absolute;
+  bottom: 55px; /* Sits directly on top of the stone pedestal table */
+  width: 440px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  transform-style: preserve-3d;
+}
+
+.relic-assembly.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------
+   RELIC 1: GRAND ANCIENT VASE (320x480 Scale Ming Porcelain Shards)
+   ------------------------------------------------------------ */
+.vase-shards-container {
+  position: absolute;
+  width: 320px;
+  height: 480px;
+  bottom: 5px;
+  transform-style: preserve-3d;
+}
+
+.vase-shard-piece {
+  position: absolute;
+  inset: 0;
+  width: 320px;
+  height: 480px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.08s linear, opacity 0.08s linear;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 15px rgba(0, 255, 136, 0.35));
+  pointer-events: none !important;
+}
+
+/* ------------------------------------------------------------
+   RELIC 2: GRAND MAGICAL CLOCK (380x380 Astronomical Face & Cogs)
+   ------------------------------------------------------------ */
+.clock-housing {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  bottom: 15px;
+  border-radius: 50%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(245, 196, 82, 0.3);
+  pointer-events: none !important;
+}
+
+.clock-face-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/relics/clock_grand_face.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 30px rgba(245, 196, 82, 0.45));
+}
+
+.clock-hands {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.clock-hand {
+  position: absolute;
+  bottom: 50%;
+  left: calc(50% - 3.5px);
+  width: 7px;
+  background: linear-gradient(to top, #ffd700, #fff);
+  border-radius: 4px;
+  transform-origin: bottom center;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.95);
+  z-index: 10;
+}
+
+.hour-hand {
+  height: 105px;
+}
+
+.minute-hand {
+  height: 150px;
+  width: 5px;
+  left: calc(50% - 2.5px);
+}
+
+.clock-gears-container {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  bottom: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.clock-cog-piece {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 15px rgba(245, 196, 82, 0.35));
+  will-change: transform;
+  pointer-events: none !important;
+}
+
+/* ------------------------------------------------------------
+   RELIC 3: GRAND COSMIC ORB (Thick Crystal Prism Shell)
+   ------------------------------------------------------------ */
+.orb-inner-singularity {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(197, 64, 255, 0.55) 0%, rgba(61, 240, 213, 0.35) 45%, transparent 75%);
+  filter: blur(14px);
+  pointer-events: none;
+  animation: singularityPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes singularityPulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.orb-facets-container {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.orb-facet-piece {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 20px rgba(197, 64, 255, 0.6));
+  pointer-events: none !important;
+}
+
+/* ------------------------------------------------------------
+   COLLECTIBLE MAGICAL ELEMENTS (GRAND SCALE & MASSIVE BLOOM)
+   ------------------------------------------------------------ */
+.collectible-element {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.collectible-element.in-window {
+  opacity: 1;
+  pointer-events: auto !important;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.collectible-element.collected {
+  pointer-events: none !important;
+  animation: elementAbsorbed 1.0s forwards cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+@keyframes elementAbsorbed {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-280px, 10px) scale(1.7);
+    opacity: 0.95;
+    filter: brightness(3.0) drop-shadow(0 0 60px #fff);
+  }
+  100% {
+    transform: translate(-420px, 30px) scale(0.1);
+    opacity: 0;
+  }
+}
+
+/* TIME CRYSTAL (GREEN) */
+.time-crystal .crystal-core {
+  width: 120px;
+  height: 120px;
+  background-image: url('assets/relics/crystal_time.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 35px var(--green-time));
+  animation: elementFloatBob 2.8s ease-in-out infinite alternate;
+}
+
+.time-crystal .crystal-aura {
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(0, 255, 136, 0.5) 0%, transparent 75%);
+  animation: pulseAura 1.6s ease-in-out infinite alternate;
+}
+
+/* ETERNITY GEAR (GOLD) */
+.eternity-gear .gear-core {
+  width: 130px;
+  height: 130px;
+  background-image: url('assets/relics/gear_eternity.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 40px var(--gold-primary));
+  animation: gearSpinIdle 7s linear infinite;
+}
+
+@keyframes gearSpinIdle {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.eternity-gear .gear-aura {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(245, 196, 82, 0.55) 0%, transparent 75%);
+  animation: pulseAura 1.6s ease-in-out infinite alternate;
+}
+
+/* COSMIC CORE (PURPLE) */
+.cosmic-core .core-nucleus {
+  width: 130px;
+  height: 130px;
+  background-image: url('assets/relics/core_cosmic.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 45px var(--purple-cosmic));
+  animation: elementFloatBob 2.5s ease-in-out infinite alternate;
+}
+
+.cosmic-core .core-aura {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(197, 64, 255, 0.55) 0%, rgba(61, 240, 213, 0.3) 50%, transparent 80%);
+  animation: pulseAura 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes elementFloatBob {
+  0% { transform: translateY(-8px) scale(1); }
+  100% { transform: translateY(8px) scale(1.08); }
+}
+
+@keyframes pulseAura {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.25); opacity: 1; }
+}
+
+/* COLLECT RETICLE TARGET PROMPT */
+.collect-reticle {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(3, 5, 14, 0.94);
+  padding: 6px 18px;
+  border-radius: 24px;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 25px rgba(245, 196, 82, 0.6);
+  font-family: var(--font-hud);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold-primary);
+  white-space: nowrap;
+  animation: reticlePulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes reticlePulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 15px rgba(245, 196, 82, 0.4); }
+  100% { transform: scale(1.05); box-shadow: 0 0 35px rgba(245, 196, 82, 0.85); }
+}
+
+.reticle-bolt {
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------
+   FINALE ALTAR CONVERGENCE (MASSIVE SCALE 460px)
+   ------------------------------------------------------------ */
+#relic-finale-altar {
+  width: 460px;
+  height: 460px;
+  bottom: 25px;
+}
+
+.altar-tri-seal {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  background-image: url('assets/effects/tao_mandala_grand.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 45px var(--green-glow));
+  animation: altarSpin 20s linear infinite;
+}
+
+@keyframes altarSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.altar-socket {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2.5px dashed rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.socket-crystal {
+  top: 12px;
+  left: calc(50% - 45px);
+}
+
+.socket-gear {
+  bottom: 45px;
+  left: 30px;
+}
+
+.socket-core {
+  bottom: 45px;
+  right: 30px;
+}
+
+.altar-socket.filled {
+  border-style: solid;
+  transform: scale(1.22);
+}
+
+.altar-socket.filled.socket-crystal {
+  background-image: url('assets/relics/crystal_time.svg');
+  border-color: var(--green-time);
+  box-shadow: 0 0 55px var(--green-glow);
+}
+
+.altar-socket.filled.socket-gear {
+  background-image: url('assets/relics/gear_eternity.svg');
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 55px var(--gold-glow);
+}
+
+.altar-socket.filled.socket-core {
+  background-image: url('assets/relics/core_cosmic.svg');
+  border-color: var(--purple-cosmic);
+  box-shadow: 0 0 55px var(--purple-glow);
+}
+
+.barrier-generator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(0, 255, 136, 0.9) 30%, rgba(245, 196, 82, 0.65) 55%, rgba(197, 64, 255, 0.45) 75%, transparent 100%);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 25;
+}
+
+.barrier-generator.expanding {
+  opacity: 1;
+  animation: shieldExpand 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+}
+
+@keyframes shieldExpand {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(380); opacity: 0.95; }
+  100% { transform: translate(-50%, -50%) scale(450); opacity: 0; }
+}
+
+/* ------------------------------------------------------------
+   PERSISTENT HUD LAYER
+   ------------------------------------------------------------ */
+#hud-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 24px;
+  pointer-events: none;
+}
+
+.bug-window-toggle {
+  position: absolute;
+  top: 100px;
+  right: 24px;
+  z-index: 55;
+  padding: 9px 16px;
+  border: 1px solid rgba(245, 196, 82, 0.7);
+  border-radius: 999px;
+  background: rgba(4, 8, 18, 0.88);
+  color: #f5c452;
+  font: 700 12px var(--font-hud);
+  letter-spacing: 2px;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 0 18px rgba(245, 196, 82, 0.18);
+}
+
+.bug-window-toggle:hover,
+.bug-window-toggle:focus-visible {
+  background: rgba(245, 196, 82, 0.16);
+  outline: 2px solid rgba(245, 196, 82, 0.65);
+  outline-offset: 2px;
+}
+
+.bug-window {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 3, 7, 0.72);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.bug-window.open {
+  display: flex;
+}
+
+.bug-window-card {
+  padding: 24px;
+  border: 1px solid rgba(245, 196, 82, 0.8);
+  border-radius: 18px;
+  background: radial-gradient(circle at center, rgba(18, 28, 48, 0.98), rgba(4, 7, 16, 0.98));
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 28px rgba(245, 196, 82, 0.22);
+}
+
+/* TOP HUD BAR */
+#hud-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.eye-icon-mini {
+  width: 44px;
+  height: 44px;
+  background-image: url('assets/effects/eye_of_agamotto.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+
+.brand-text h1 {
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+}
+
+.marvel-tag {
+  display: inline-block;
+  background-color: #e23636;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.sub-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+}
+
+/* TRACKER SLOTS (0/3 to 3/3) */
+.tracker-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(4, 7, 16, 0.88);
+  border: 1px solid rgba(245, 196, 82, 0.35);
+  padding: 8px 18px;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
+}
+
+.tracker-slots {
+  display: flex;
+  gap: 14px;
+}
+
+.relic-slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.slot-icon {
+  width: 34px;
+  height: 34px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: grayscale(1) opacity(0.35);
+  transition: all 0.3s ease;
+}
+
+.icon-crystal { background-image: url('assets/relics/crystal_time.svg'); }
+.icon-gear { background-image: url('assets/relics/gear_eternity.svg'); }
+.icon-core { background-image: url('assets/relics/core_cosmic.svg'); }
+
+.slot-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ccc;
+}
+
+.slot-status {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #777;
+}
+
+/* SECURED SLOTS */
+.relic-slot[data-status="secured"] {
+  background: rgba(245, 196, 82, 0.14);
+  border-color: var(--gold-primary);
+}
+
+.relic-slot[data-status="secured"].slot-crystal-secured {
+  border-color: var(--green-time);
+  background: rgba(0, 255, 136, 0.16);
+}
+
+.relic-slot[data-status="secured"].slot-gear-secured {
+  border-color: var(--gold-primary);
+  background: rgba(245, 196, 82, 0.16);
+}
+
+.relic-slot[data-status="secured"].slot-core-secured {
+  border-color: var(--purple-cosmic);
+  background: rgba(197, 64, 255, 0.2);
+}
+
+.relic-slot[data-status="secured"] .slot-icon {
+  filter: grayscale(0) opacity(1);
+}
+
+.relic-slot[data-status="secured"] .slot-status {
+  color: var(--green-time);
+  font-weight: 700;
+}
+
+.tracker-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 16px;
+}
+
+.prog-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #aaa;
+}
+
+.prog-counter {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold-primary);
+  text-shadow: 0 0 10px var(--gold-glow);
+}
+
+/* EXPOSURE ALERT (Positioned right above bottom scrubber, never blocking the stage) */
+#exposure-alert {
+  position: absolute;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(3, 5, 14, 0.95);
+  border: 1.5px solid var(--green-time);
+  padding: 6px 24px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 25px var(--green-glow);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  z-index: 40;
+}
+
+#exposure-alert.hidden {
+  opacity: 0;
+  transform: translate(-50%, 12px);
+}
+
+.alert-icon {
+  color: var(--green-time);
+  font-size: 14px;
+}
+
+.alert-text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--green-time);
+}
+
+/* BOTTOM HUD BAR */
+#hud-bottom {
+  display: grid;
+  grid-template-columns: 280px 1fr 340px;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  background: rgba(3, 5, 12, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.92);
+  pointer-events: auto;
+}
+
+/* TIME DIAL WIDGET */
+.time-dial-widget {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.eye-dial-frame {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-dial-outer-ring {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 2px dashed rgba(245, 196, 82, 0.45);
+  animation: dialSpin 12s linear infinite;
+}
+
+@keyframes dialSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.eye-dial-iris {
+  width: 26px;
+  height: 26px;
+  background: radial-gradient(circle at center, var(--green-time) 0%, rgba(0, 150, 80, 0.8) 60%, #000 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--green-time);
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.dial-mode-readout {
+  display: flex;
+  flex-direction: column;
+}
+
+.dial-caption {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #999;
+}
+
+.dial-state {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--green-time);
+  text-shadow: 0 0 10px var(--green-glow);
+}
+
+/* TIMELINE SCRUBBER TRACK */
+/* TIMELINE SCRUBBER TRACK (Hidden per user request: "dont show the bar") */
+.timeline-scrubber-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+}
+
+.scrubber-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #888;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrub-bound {
+  display: none !important;
+}
+
+.scrub-title {
+  color: var(--gold-primary);
+  font-size: 13px;
+  letter-spacing: 2px;
+  font-family: var(--font-hud);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-shadow: 0 0 15px rgba(245, 196, 82, 0.55);
+  text-transform: uppercase;
+}
+
+.scrubber-track {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+  overflow: visible;
+  cursor: pointer;
+  display: none !important;
+}
+
+.window-zone {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 38%;
+  width: 24%;
+  background: rgba(0, 255, 136, 0.28);
+  border-left: 2px solid var(--green-time);
+  border-right: 2px solid var(--green-time);
+  border-radius: 4px;
+  box-shadow: 0 0 15px var(--green-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.window-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--green-time);
+  text-shadow: 0 0 6px #000;
+  pointer-events: none;
+}
+
+.scrubber-head {
+  position: absolute;
+  top: -6px;
+  left: 100%;
+  width: 10px;
+  height: 26px;
+  background: #ffffff;
+  border-radius: 5px;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+  transform: translateX(-50%);
+  transition: left 0.05s linear;
+  will-change: left;
+}
+
+.head-pointer {
+  position: absolute;
+  bottom: -6px;
+  left: calc(50% - 4px);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #fff;
+}
+
+/* CONTROLS KEYPAD LEGEND */
+.controls-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.key-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease;
+}
+
+.key-indicator:hover kbd {
+  background: #2b3750;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(245, 196, 82, 0.4);
+}
+
+.key-indicator:active kbd {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.key-indicator kbd, .key-indicator .mouse-icon {
+  background: #1e2638;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.8);
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-family: var(--font-hud);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  transition: all 0.15s ease;
+}
+
+.key-indicator span {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.key-indicator.active kbd {
+  background: var(--green-time);
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 0 15px var(--green-time);
+  transform: translateY(2px);
+}
+
+/* ------------------------------------------------------------
+   CINEMATIC MODALS & STORY CARDS
+   ------------------------------------------------------------ */
+.modal-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(2, 3, 7, 0.88);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+
+.modal-layer.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.story-card {
+  width: 90%;
+  max-width: 680px;
+  background: radial-gradient(circle at center, #0d1222 0%, #05070e 100%);
+  border: 2px solid var(--gold-primary);
+  border-radius: 16px;
+  padding: 36px 44px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 30px var(--gold-glow);
+  position: relative;
+  text-align: center;
+}
+
+.speaker-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--green-time);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.story-card h2 {
+  font-family: var(--font-title);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 18px;
+  text-shadow: 0 0 15px rgba(245, 196, 82, 0.3);
+}
+
+.story-content p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #d0d6e6;
+  margin-bottom: 14px;
+}
+
+.highlight-text {
+  font-style: italic;
+  color: var(--gold-primary) !important;
+  font-size: 17px !important;
+}
+
+.tutorial-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tut-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  color: #e5ebf5;
+}
+
+.step-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  color: #000;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.key-label {
+  background: #1f273b;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #5a6e9a;
+  color: var(--green-time);
+}
+
+.card-actions {
+  margin-top: 24px;
+}
+
+.btn-mystic {
+  background: linear-gradient(135deg, #1b2640 0%, #0c1424 100%);
+  border: 2px solid var(--gold-primary);
+  color: #fff;
+  font-family: var(--font-hud);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  border-radius: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 25px rgba(245, 196, 82, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-mystic:hover {
+  background: var(--gold-primary);
+  color: #000;
+  box-shadow: 0 0 40px var(--gold-glow);
+  transform: scale(1.05);
+}
+
+.btn-kbd {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* RECOVERY TOAST */
+.toast-layer {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-layer.hidden {
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  pointer-events: none;
+}
+
+.toast-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(4, 8, 18, 0.95);
+  border: 2px solid var(--green-time);
+  padding: 12px 26px;
+  border-radius: 12px;
+  box-shadow: 0 0 35px var(--green-glow);
+  backdrop-filter: blur(10px);
+}
+
+.toast-gem-icon {
+  width: 44px;
+  height: 44px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.toast-text h3 {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.toast-sup {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--green-time);
+  font-weight: 700;
+}
+
+.toast-text p {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* VICTORY MODAL */
+.victory-card {
+  width: 90%;
+  max-width: 720px;
+  background: radial-gradient(circle at center, #111a33 0%, #030611 100%);
+  border: 3px solid var(--gold-primary);
+  border-radius: 20px;
+  padding: 44px 52px;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 50px var(--gold-glow);
+}
+
+.victory-symbol {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px auto;
+  background-image: url('assets/effects/eye_of_agamotto.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  border: 3px solid var(--green-time);
+  box-shadow: 0 0 35px var(--green-glow);
+  animation: eyeTriumphPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes eyeTriumphPulse {
+  0% { transform: scale(1); box-shadow: 0 0 25px var(--green-glow); }
+  100% { transform: scale(1.1); box-shadow: 0 0 50px var(--gold-glow); }
+}
+
+.victory-headline {
+  font-family: var(--font-title);
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--gold-primary);
+  text-shadow: 0 0 25px var(--gold-glow);
+}
+
+.victory-subheadline {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  margin-top: 6px;
+}
+
+.victory-divider {
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+  margin: 20px auto;
+}
+
+.victory-quote {
+  font-size: 16px;
+  font-style: italic;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 26px;
+}
+
+.recovered-elements-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.recovered-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.recovered-pill.green { border-color: var(--green-time); color: var(--green-time); }
+.recovered-pill.gold { border-color: var(--gold-primary); color: var(--gold-primary); }
+.recovered-pill.purple { border-color: var(--purple-cosmic); color: var(--purple-cosmic); }
+
+.pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}

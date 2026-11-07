@@ -1,0 +1,6 @@
+.git_bak
+**/.git_bak
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
