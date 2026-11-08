@@ -1135,7 +1135,7 @@
       vfxCtx.clearRect(0, 0, vfxCanvas.width, vfxCanvas.height);
 
       const lokiHandX = (lokiContainer ? lokiContainer.offsetLeft : 310) + 168;
-      const lokiHandY = 465;
+      const lokiHandY = 555;
 
       // 1. Full-Screen Flash Bleed
       if (flashAlpha > 0.005) {
@@ -1672,7 +1672,7 @@
     // ------------------------------------------------------------------------
     setTimeout(() => {
       const lokiHandX = lokiTargetLeft + 168;
-      const lokiHandY = 465;
+      const lokiHandY = 555;
       const startX = pedestalX;
       const startY = pedestalY - 45;
 

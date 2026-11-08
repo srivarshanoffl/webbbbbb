@@ -645,14 +645,10 @@ html, body {
 
 .loki-tesseract-dock {
   position: absolute;
-  top: 165px;
-  left: 135px;
+  top: 295px;
+  left: 168px;
   width: 56px;
   height: 56px;
-  top: 245px;
-  left: 145px;
-  width: 62px;
-  height: 62px;
   opacity: 0;
   transform: scale(0.3);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1461,8 +1457,6 @@ html, body {
   border-color: var(--color-loki-green);
   box-shadow: 0 0 35px var(--color-loki-green);
 }
-  box-shadow: 0 0 25px var(--color-loki-green);
-}
 
 /* ==========================================================================
    PHASE 3: TVA DIAGNOSTICS & DEBUG INTERRUPT STYLING
@@ -1725,9 +1719,6 @@ html, body {
 .vault-cosmic-surge #bg-vault {
   filter: contrast(1.28) brightness(1.22) drop-shadow(0 0 45px rgba(0, 210, 255, 0.6));
   transition: filter 1.2s ease;
-}
-  color: var(--color-text-dim);
-  margin-top: 4px;
 }
 
 /* ==========================================================================
