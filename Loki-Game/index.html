@@ -27,7 +27,6 @@
         </div>
         <div id="barrier-shards" class="barrier-shards-container"></div>
         <div id="tesseract-cube">
-          <img src="assets/images/tesseract.jpg" alt="Tesseract" class="tesseract-img">
           <img src="assets/images/tesseract.png" alt="Tesseract" class="tesseract-img">
           <div class="tesseract-aura"></div>
           <div class="tesseract-rays"></div>
@@ -54,10 +53,10 @@
           <img id="loki-master" class="loki-master-art" src="assets/characters/loki-catch.png" alt="Loki in dark green Asgardian armor">
           <div class="loki-casting-runes" id="loki-runes"></div>
           <div class="loki-tesseract-dock" id="loki-held-cube">
-            <img src="assets/images/tesseract.jpg" alt="Captured Tesseract" class="docked-tesseract-img">
             <img src="assets/images/tesseract.png" alt="Captured Tesseract" class="docked-tesseract-img">
             <div class="tesseract-dock-pulse" id="tesseract-dock-pulse"></div>
           </div>
+          <div class="loki-specular-overlay" id="loki-specular-glow"></div>
         </div>
       </div>
 
@@ -66,6 +65,9 @@
         <div class="bridge-plasma-core"></div>
         <div class="bridge-arcs"></div>
       </div>
+
+      <!-- Dedicated High-Performance 60fps Cinematic VFX Canvas Layer -->
+      <canvas id="cinematic-vfx-canvas" width="1280" height="720"></canvas>
     </div>
 
     <!-- Cinematic Vault Infiltration Alarm System -->
@@ -322,38 +324,22 @@
         </div>
       </section>
 
-      <!-- PHASE 4: Tesseract Claim & Mission Victory -->
+      <!-- PHASE 4: Tesseract Claim Cinematic Focus (Pure spectacle, no intrusive victory layout) -->
       <section id="phase-finale" class="phase-layer">
         <div id="finale-overlay">
-          <div id="victory-card" class="victory-panel hidden">
-            <div class="victory-seal">
-              <div class="asgardian-rune">ᛚᛟᚲᛁ</div>
-            </div>
-            <h1 class="victory-title">MISSION SUCCESSFUL</h1>
-            <p class="victory-desc">THE TESSERACT IS NOW IN LOKI'S POSSESSION.</p>
-            <div class="victory-stats">
-              <div class="stat-box">
-                <span class="stat-num">10/10</span>
-                <span class="stat-lbl">MIRRORS SYNCHRONIZED</span>
-              </div>
-              <div class="stat-box">
-                <span class="stat-num">DUAL</span>
-                <span class="stat-lbl">RELAYS CHARGED</span>
-              </div>
-              <div class="stat-box">
-                <span class="stat-num">TVA-404</span>
-                <span class="stat-lbl">PROTOCOL BYPASS</span>
-              </div>
-            </div>
-            <button id="btn-play-again" class="cyber-btn primary">
-              <span class="btn-glow"></span>
-              <span class="btn-text">REPLAY EXPERIENCE</span>
-            </button>
-          </div>
+          <!-- Discreet, non-intrusive replay control in bottom-right corner -->
+          <button id="btn-play-again" class="discreet-replay-btn" aria-label="Replay Cinematic Experience" title="Replay Experience">
+            <span class="replay-icon">↺</span>
+            <span class="replay-label">REPLAY</span>
+          </button>
         </div>
       </section>
 
     </div>
+
+    <!-- Anamorphic Cinematic Letterbox Bars -->
+    <div id="cinema-letterbox-top" class="cinema-letterbox top"></div>
+    <div id="cinema-letterbox-bottom" class="cinema-letterbox bottom"></div>
 
     <!-- Cinematic Subtitle / Loki Dialogue Banner -->
     <div id="dialogue-box" class="dialogue-hidden">

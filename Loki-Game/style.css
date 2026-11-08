@@ -584,26 +584,43 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 10%);
-  mask-image: linear-gradient(to top, transparent 0%, black 10%);
-  filter: drop-shadow(0 0 20px rgba(0, 255, 119, 0.45)) drop-shadow(0 15px 35px rgba(0,0,0,0.95));
+  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 72% 38%, black 45%, rgba(0, 0, 0, 0.7) 65%, transparent 90%);
+  mask-image: radial-gradient(ellipse 85% 80% at 72% 38%, black 45%, rgba(0, 0, 0, 0.7) 65%, transparent 90%);
   animation: lokiIdleBreath 4s ease-in-out infinite alternate;
   transition: filter 0.5s ease, transform 0.5s ease;
 }
 
 /* Loki dynamic reaction states */
 .loki-actor-casting .loki-master-art {
-  filter: drop-shadow(0 0 25px var(--color-loki-green)) drop-shadow(0 0 45px rgba(0,255,119,0.7));
+  filter: brightness(1.12) contrast(1.08);
   transform: translateY(-4px) scale(1.02);
 }
 
 .loki-actor-glitch .loki-master-art {
-  filter: drop-shadow(0 0 25px var(--color-alarm-red)) drop-shadow(0 0 45px rgba(255,34,68,0.7));
+  filter: brightness(1.1) contrast(1.14);
   animation: lokiGlitchJitter 0.15s infinite alternate;
 }
 
 .loki-actor-victory .loki-master-art {
-  filter: drop-shadow(0 0 35px var(--color-loki-green)) drop-shadow(0 0 50px var(--color-tesseract-blue));
+  filter: brightness(1.18) contrast(1.12);
+}
+
+/* Hide legacy DOM particles & aura in cinematic mode so canvas renders seamlessly */
+.cinematic-active .loki-magic-aura,
+.cinematic-active .loki-particles,
+.cinematic-active .loki-casting-runes,
+.cinematic-active .loki-specular-overlay,
+.cinematic-active #tesseract-cube,
+.cinematic-active .tesseract-pedestal #tesseract-cube,
+.cinematic-finished #tesseract-cube,
+.cinematic-active #green-magic-bridge,
+.cinematic-finished #green-magic-bridge,
+.cinematic-active #loki-held-cube,
+.cinematic-finished #loki-held-cube,
+.cinematic-active .loki-tesseract-dock,
+.cinematic-finished .loki-tesseract-dock {
+  display: none !important;
+  opacity: 0 !important;
 }
 
 .loki-casting-runes {
@@ -1559,106 +1576,156 @@ html, body {
 }
 
 /* ==========================================================================
-   PHASE 4: CLAIM TESSERACT & FINALE
+   PHASE 4: CLAIM TESSERACT & FINALE (CINEMATIC FOCUS - NO VICTORY POPUP)
    ========================================================================== */
 #phase-finale {
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 }
 
 #finale-overlay {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: flex-start;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: transparent !important;
+}
+
+/* Suppress all bulky victory panels completely */
+.victory-panel,
+#victory-card {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Discreet minimal replay pill in bottom-right corner */
+.discreet-replay-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  display: inline-flex;
   align-items: center;
-  padding-left: 80px;
-}
-
-.victory-panel {
-  background: rgba(7, 12, 22, 0.94);
-  border: 1px solid rgba(242, 201, 76, 0.6);
-  border-radius: 12px;
-  padding: 28px 48px;
-  max-width: 540px;
-  text-align: center;
-  box-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 50px rgba(242, 201, 76, 0.25);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: victoryZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  backdrop-filter: blur(12px);
-}
-
-.victory-panel.hidden {
-  display: none;
-}
-
-.victory-seal {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px solid var(--color-loki-gold);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 16px;
-  box-shadow: 0 0 20px rgba(242, 201, 76, 0.5);
-}
-
-.asgardian-rune {
-  font-size: 22px;
-  color: var(--color-loki-gold);
-}
-
-.victory-title {
-  font-family: var(--font-title);
-  font-size: 38px;
-  font-weight: 900;
-  letter-spacing: 8px;
-  color: #fff;
-  background: linear-gradient(180deg, #ffffff 30%, #e6be60 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
-}
-
-.victory-desc {
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(3, 6, 16, 0.75);
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  border-radius: 20px;
+  color: #e8f4fc;
   font-family: var(--font-tech);
-  font-size: 13px;
-  letter-spacing: 4px;
-  color: var(--color-tesseract-blue);
-  text-shadow: 0 0 12px var(--color-tesseract-blue);
-  margin-bottom: 28px;
-}
-
-.victory-stats {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 35px;
-}
-
-.stat-box {
-  background: rgba(16, 26, 44, 0.7);
-  border: 1px solid rgba(0, 210, 255, 0.25);
-  border-radius: 6px;
-  padding: 12px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat-num {
-  font-family: var(--font-tech);
-  font-size: 18px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--color-loki-green);
+  letter-spacing: 2px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 210, 255, 0.2);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 120;
 }
 
-.stat-lbl {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 2px;
+.cinematic-finished .discreet-replay-btn {
+  opacity: 0.85;
+  pointer-events: auto;
+}
+
+.discreet-replay-btn:hover {
+  opacity: 1;
+  background: rgba(0, 210, 255, 0.2);
+  border-color: #00ff77;
+  box-shadow: 0 0 25px rgba(0, 255, 119, 0.5), inset 0 0 15px rgba(0, 255, 119, 0.3);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.replay-icon {
+  font-size: 14px;
+  color: #00ff77;
+}
+
+/* Dedicated High-Performance 60fps Cinematic VFX Canvas */
+#cinematic-vfx-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 720px;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Anamorphic 2.39:1 Cinematic Letterbox Bars */
+.cinema-letterbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: #000000;
+  z-index: 90;
+  pointer-events: none;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinema-letterbox.top {
+  top: 0;
+  transform: translateY(-100%);
+}
+
+.cinema-letterbox.bottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+
+.cinematic-active .cinema-letterbox.top,
+.cinematic-active .cinema-letterbox.bottom {
+  transform: translateY(0);
+}
+
+/* Dynamic Specular Irradiance Overlay on Loki's Sprite */
+.loki-specular-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at 60% 65%, rgba(0, 225, 255, 0.7) 0%, rgba(0, 255, 119, 0.35) 35%, transparent 70%);
+  transition: opacity 0.6s ease;
+  z-index: 4;
+}
+
+.loki-specular-active .loki-specular-overlay {
+  opacity: 0.9;
+  animation: specularFlicker 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes specularFlicker {
+  0% { opacity: 0.7; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.8)); }
+  100% { opacity: 0.98; filter: drop-shadow(0 0 35px rgba(0, 255, 119, 0.95)); }
+}
+
+/* Camera Impulse & Screen Shake */
+@keyframes cameraImpulseShake {
+  0% { transform: scale(1.08) translate(0, 0); }
+  15% { transform: scale(1.1) translate(-10px, 7px); }
+  30% { transform: scale(1.09) translate(9px, -6px); }
+  45% { transform: scale(1.08) translate(-6px, -5px); }
+  60% { transform: scale(1.07) translate(5px, 4px); }
+  75% { transform: scale(1.06) translate(-3px, 2px); }
+  100% { transform: scale(1.05) translate(0, 0); }
+}
+
+.camera-shaking {
+  animation: cameraImpulseShake 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+}
+
+/* Vault Cosmic Awakening Circuit Surge */
+.vault-cosmic-surge #bg-vault {
+  filter: contrast(1.28) brightness(1.22) drop-shadow(0 0 45px rgba(0, 210, 255, 0.6));
+  transition: filter 1.2s ease;
+}
   color: var(--color-text-dim);
   margin-top: 4px;
 }
@@ -2038,23 +2105,6 @@ html, body {
 .loki-sprite-wrapper {
   width: 300px;
   height: 470px;
-}
-
-.loki-master-art {
-  transition: filter .5s ease, transform .5s ease, opacity .25s ease;
-  filter: brightness(1.1) contrast(1.08) drop-shadow(0 0 20px rgba(0, 255, 119, .38)) drop-shadow(0 14px 30px rgba(0,0,0,.6));
-}
-
-.loki-actor-casting .loki-master-art {
-  filter: brightness(1.14) contrast(1.1) drop-shadow(0 0 34px rgba(0, 255, 119, .84)) drop-shadow(0 0 68px rgba(0,210,255,.45));
-}
-
-.loki-actor-glitch .loki-master-art {
-  filter: brightness(1.1) contrast(1.14) drop-shadow(0 0 25px rgba(255, 34, 68, .85));
-}
-
-.loki-actor-victory .loki-master-art {
-  filter: brightness(1.18) contrast(1.12) drop-shadow(0 0 40px rgba(0, 255, 119, .85)) drop-shadow(0 0 74px rgba(0,210,255,.72));
 }
 
 .vault-lighting-overlay {

@@ -876,19 +876,729 @@
   }
 
   // ==========================================================================
-  // PHASE 4: GRAND FINALE - CLAIM THE TESSERACT
+  // PHASE 4: CINEMATIC GRAND FINALE - CLAIM THE TESSERACT
   // ==========================================================================
+  let cinematicVFXRunning = false;
+  let cinematicVFXAnimId = null;
+
+  // --------------------------------------------------------------------------
+  // High-Performance 60fps 4D Hypercube & Particle Physics VFX Engine
+  // --------------------------------------------------------------------------
+  const CinematicEngine = (() => {
+    const vfxCanvas = document.getElementById('cinematic-vfx-canvas');
+    const vfxCtx = vfxCanvas ? vfxCanvas.getContext('2d') : null;
+
+    // 4D Hypercube (Tesseract) Mathematical Model
+    const tesseractVertices = [];
+    for (let i = 0; i < 16; i++) {
+      tesseractVertices.push([
+        (i & 1 ? 1 : -1),
+        (i & 2 ? 1 : -1),
+        (i & 4 ? 1 : -1),
+        (i & 8 ? 1 : -1)
+      ]);
+    }
+
+    const tesseractEdges = [];
+    for (let i = 0; i < 16; i++) {
+      for (let j = i + 1; j < 16; j++) {
+        let diff = 0;
+        for (let k = 0; k < 4; k++) {
+          if (tesseractVertices[i][k] !== tesseractVertices[j][k]) diff++;
+        }
+        if (diff === 1) tesseractEdges.push([i, j]);
+      }
+    }
+
+    // 24 Hypercube square faces for volumetric translucent refraction
+    const tesseractFaces = [];
+    for (let i = 0; i < 16; i++) {
+      for (let j = i + 1; j < 16; j++) {
+        for (let k = j + 1; k < 16; k++) {
+          for (let l = k + 1; l < 16; l++) {
+            let sharedCoords = 0;
+            for (let c = 0; c < 4; c++) {
+              if (tesseractVertices[i][c] === tesseractVertices[j][c] &&
+                  tesseractVertices[j][c] === tesseractVertices[k][c] &&
+                  tesseractVertices[k][c] === tesseractVertices[l][c]) {
+                sharedCoords++;
+              }
+            }
+            if (sharedCoords === 2) {
+              tesseractFaces.push([i, j, l, k]);
+            }
+          }
+        }
+      }
+    }
+
+    // Orbiting cosmic stardust particles
+    const cosmicMotes = Array.from({ length: 48 }, (_, i) => ({
+      angle: (i / 48) * Math.PI * 2,
+      orbitR: 28 + (i % 6) * 9,
+      speed: 0.02 + (i % 5) * 0.008,
+      tilt: 0.35 + (i % 3) * 0.25,
+      yOffset: ((i % 7) - 3) * 5,
+      size: 1.2 + (i % 3) * 0.8,
+      alpha: 0.3 + (i % 4) * 0.22
+    }));
+
+    // Particle pools for explosion & shockwaves
+    let shards = [];
+    let shockwaves = [];
+    let sparks = [];
+    let tendrilParticles = [];
+    let distortionRings = [];
+
+    // State variables
+    let cubeX = 1091;
+    let cubeY = 428;
+    let cubeScale = 1.0;
+    let cubeVisible = false;
+    let tesseractAngles = { xw: 0, yz: 0, zw: 0 };
+    let runeAngle = 0;
+    let tendrilStrength = 0;
+    let flashAlpha = 0;
+    let caught = false;
+    let catchGlow = 0;
+
+    function reset() {
+      shards = [];
+      shockwaves = [];
+      sparks = [];
+      tendrilParticles = [];
+      distortionRings = [];
+      cubeX = 1091;
+      cubeY = 428;
+      cubeScale = 1.0;
+      cubeVisible = false;
+      tesseractAngles = { xw: 0, yz: 0, zw: 0 };
+      runeAngle = 0;
+      tendrilStrength = 0;
+      flashAlpha = 0;
+      caught = false;
+      catchGlow = 0;
+      if (vfxCtx && vfxCanvas) {
+        vfxCtx.clearRect(0, 0, vfxCanvas.width, vfxCanvas.height);
+      }
+    }
+
+    function triggerBarrierShatter(centerX, centerY) {
+      flashAlpha = 0.95;
+      shockwaves.push({
+        x: centerX,
+        y: centerY,
+        radius: 10,
+        maxRadius: 380,
+        speed: 16,
+        alpha: 1.0,
+        color: '#00e5ff'
+      });
+
+      // 160 Faceted Crystalline Glass Shards
+      const shardCount = 160;
+      for (let i = 0; i < shardCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 4 + Math.random() * 19;
+        const numPts = 3 + Math.floor(Math.random() * 3);
+        const polyPts = [];
+        const baseRadius = 4 + Math.random() * 14;
+        for (let p = 0; p < numPts; p++) {
+          const pAngle = (p / numPts) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+          const r = baseRadius * (0.6 + Math.random() * 0.8);
+          polyPts.push({ x: Math.cos(pAngle) * r, y: Math.sin(pAngle) * r });
+        }
+
+        shards.push({
+          x: centerX + (Math.random() - 0.5) * 20,
+          y: centerY + (Math.random() - 0.5) * 20,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - (1.5 + Math.random() * 3.5),
+          rot: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.28,
+          poly: polyPts,
+          alpha: 1.0,
+          life: 0,
+          maxLife: 55 + Math.random() * 45,
+          colorHue: 185 + Math.random() * 30
+        });
+      }
+
+      // Spark Burst
+      for (let s = 0; s < 60; s++) {
+        const sAngle = Math.random() * Math.PI * 2;
+        const sSpeed = 3 + Math.random() * 14;
+        sparks.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(sAngle) * sSpeed,
+          vy: Math.sin(sAngle) * sSpeed,
+          life: 0,
+          maxLife: 30 + Math.random() * 35,
+          alpha: 1.0,
+          color: s % 2 === 0 ? '#00e5ff' : '#00ff77',
+          size: 1.5 + Math.random() * 2
+        });
+      }
+    }
+
+    function triggerCatchBurst(handX, handY) {
+      caught = true;
+      catchGlow = 1.0;
+      flashAlpha = 0.85;
+
+      // Colossal full-screen supernova shockwave
+      shockwaves.push({
+        x: handX,
+        y: handY,
+        radius: 12,
+        maxRadius: 850,
+        speed: 28,
+        alpha: 1.0,
+        color: '#ffffff'
+      });
+      shockwaves.push({
+        x: handX,
+        y: handY,
+        radius: 8,
+        maxRadius: 720,
+        speed: 22,
+        alpha: 0.9,
+        color: '#00e5ff'
+      });
+      shockwaves.push({
+        x: handX,
+        y: handY,
+        radius: 4,
+        maxRadius: 600,
+        speed: 17,
+        alpha: 0.85,
+        color: '#00ff77'
+      });
+
+      // 80 High-Velocity Forward Kinetic Sparks
+      for (let s = 0; s < 80; s++) {
+        const sAngle = -Math.PI * 0.75 + Math.random() * Math.PI * 1.5;
+        const sSpeed = 6 + Math.random() * 22;
+        sparks.push({
+          x: handX,
+          y: handY,
+          vx: Math.cos(sAngle) * sSpeed,
+          vy: Math.sin(sAngle) * sSpeed,
+          life: 0,
+          maxLife: 40 + Math.random() * 45,
+          alpha: 1.0,
+          color: s % 3 === 0 ? '#ffffff' : (s % 3 === 1 ? '#00e5ff' : '#00ff77'),
+          size: 2 + Math.random() * 2.5
+        });
+      }
+    }
+
+    // 4D Rotation and Projection of Hypercube
+    function project4D(v, angles, size, cx, cy) {
+      let x = v[0], y = v[1], z = v[2], w = v[3];
+
+      // Rotate X-W plane
+      const c1 = Math.cos(angles.xw), s1 = Math.sin(angles.xw);
+      const x1 = x * c1 - w * s1;
+      const w1 = x * s1 + w * c1;
+
+      // Rotate Y-Z plane
+      const c2 = Math.cos(angles.yz), s2 = Math.sin(angles.yz);
+      const y2 = y * c2 - z * s2;
+      const z2 = y * s2 + z * c2;
+
+      // Rotate Z-W plane
+      const c3 = Math.cos(angles.zw), s3 = Math.sin(angles.zw);
+      const z3 = z2 * c3 - w1 * s3;
+      const w3 = z2 * s3 + w1 * c3;
+
+      // 4D to 3D perspective projection
+      const wDist = 2.4;
+      const scale4D = 1 / (wDist - w3);
+      const x3D = x1 * scale4D;
+      const y3D = y2 * scale4D;
+      const z3D = z3 * scale4D;
+
+      // 3D to 2D perspective projection
+      const zDist = 3.6;
+      const scale3D = (size * 105) / (zDist - z3D);
+      return {
+        x: cx + x3D * scale3D,
+        y: cy + y3D * scale3D,
+        depth: z3D + w3
+      };
+    }
+
+    function render(time) {
+      if (!vfxCtx || !vfxCanvas) return;
+      vfxCtx.clearRect(0, 0, vfxCanvas.width, vfxCanvas.height);
+
+      const lokiHandX = (lokiContainer ? lokiContainer.offsetLeft : 310) + 168;
+      const lokiHandY = 465;
+
+      // 1. Full-Screen Flash Bleed
+      if (flashAlpha > 0.005) {
+        vfxCtx.save();
+        vfxCtx.fillStyle = `rgba(200, 245, 255, ${flashAlpha})`;
+        vfxCtx.fillRect(0, 0, vfxCanvas.width, vfxCanvas.height);
+        vfxCtx.restore();
+        flashAlpha *= 0.88;
+      }
+
+      // 2. Crystalline Glass Shards Physics
+      for (let i = shards.length - 1; i >= 0; i--) {
+        const s = shards[i];
+        s.life++;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vy += 0.32; // Gravity
+        s.vx *= 0.985;
+        s.vy *= 0.985;
+        s.rot += s.vRot;
+        s.alpha = Math.max(0, 1 - (s.life / s.maxLife));
+
+        vfxCtx.save();
+        vfxCtx.translate(s.x, s.y);
+        vfxCtx.rotate(s.rot);
+        vfxCtx.beginPath();
+        if (s.poly && s.poly.length > 0) {
+          vfxCtx.moveTo(s.poly[0].x, s.poly[0].y);
+          for (let p = 1; p < s.poly.length; p++) {
+            vfxCtx.lineTo(s.poly[p].x, s.poly[p].y);
+          }
+          vfxCtx.closePath();
+          vfxCtx.fillStyle = `hsla(${s.colorHue}, 90%, 65%, ${s.alpha * 0.45})`;
+          vfxCtx.fill();
+          vfxCtx.lineWidth = 1.2;
+          vfxCtx.strokeStyle = `rgba(220, 255, 255, ${s.alpha * 0.95})`;
+          vfxCtx.stroke();
+        }
+        vfxCtx.restore();
+
+        // Shard Spark Trail
+        if (s.life % 4 === 0 && s.alpha > 0.3) {
+          sparks.push({
+            x: s.x,
+            y: s.y,
+            vx: (Math.random() - 0.5) * 1.5,
+            vy: (Math.random() - 0.5) * 1.5,
+            life: 0,
+            maxLife: 20,
+            alpha: s.alpha * 0.7,
+            color: '#00e5ff',
+            size: 1
+          });
+        }
+
+        if (s.life >= s.maxLife) {
+          shards.splice(i, 1);
+        }
+      }
+
+      // 3. Shockwave Rings
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.radius += sw.speed;
+        sw.alpha = Math.max(0, 1 - (sw.radius / sw.maxRadius));
+
+        vfxCtx.save();
+        vfxCtx.beginPath();
+        vfxCtx.ellipse(sw.x, sw.y, sw.radius, sw.radius * 0.58, 0, 0, Math.PI * 2);
+        vfxCtx.lineWidth = Math.max(1, (1 - (sw.radius / sw.maxRadius)) * 6.5);
+        vfxCtx.strokeStyle = sw.color;
+        vfxCtx.globalAlpha = sw.alpha;
+        vfxCtx.shadowColor = sw.color;
+        vfxCtx.shadowBlur = 24;
+        vfxCtx.stroke();
+        vfxCtx.restore();
+
+        if (sw.radius >= sw.maxRadius) {
+          shockwaves.splice(i, 1);
+        }
+      }
+
+      // 4. Kinetic Sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const sp = sparks[i];
+        sp.life++;
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vy += 0.08;
+        sp.vx *= 0.97;
+        sp.alpha = Math.max(0, 1 - (sp.life / sp.maxLife));
+
+        vfxCtx.save();
+        vfxCtx.fillStyle = sp.color;
+        vfxCtx.globalAlpha = sp.alpha;
+        vfxCtx.shadowColor = sp.color;
+        vfxCtx.shadowBlur = 8;
+        vfxCtx.fillRect(sp.x - sp.size / 2, sp.y - sp.size / 2, sp.size, sp.size);
+        vfxCtx.restore();
+
+        if (sp.life >= sp.maxLife) {
+          sparks.splice(i, 1);
+        }
+      }
+
+      // 5. Loki's Seidr Magic Tendrils & 3D Runic Arrays
+      if (tendrilStrength > 0.01) {
+        // A. 3D Rotating Asgardian Runic Circles around Loki's Hand
+        runeAngle += 0.035;
+        vfxCtx.save();
+        vfxCtx.translate(lokiHandX, lokiHandY);
+        vfxCtx.scale(1, 0.45); // 3D Perspective tilt
+        vfxCtx.rotate(runeAngle);
+
+        vfxCtx.beginPath();
+        vfxCtx.arc(0, 0, 52 * tendrilStrength, 0, Math.PI * 2);
+        vfxCtx.strokeStyle = 'rgba(0, 255, 119, 0.7)';
+        vfxCtx.lineWidth = 2.2;
+        vfxCtx.shadowColor = '#00ff77';
+        vfxCtx.shadowBlur = 18;
+        vfxCtx.stroke();
+
+        vfxCtx.beginPath();
+        vfxCtx.arc(0, 0, 36 * tendrilStrength, 0, Math.PI * 2);
+        vfxCtx.setLineDash([8, 6]);
+        vfxCtx.strokeStyle = 'rgba(242, 201, 76, 0.85)';
+        vfxCtx.lineWidth = 1.8;
+        vfxCtx.stroke();
+        vfxCtx.setLineDash([]);
+
+        // Runic Glyphs
+        const runes = ['ᛚ', 'ᛟ', 'ᚲ', 'ᛁ', 'ᚨ', 'ᛋ', 'ᚷ', 'ᚨ', 'ᚱ', 'ᛞ'];
+        vfxCtx.font = 'bold 13px Cinzel, serif';
+        vfxCtx.fillStyle = 'rgba(255, 230, 130, 0.9)';
+        for (let r = 0; r < runes.length; r++) {
+          const rA = (r / runes.length) * Math.PI * 2;
+          const rx = Math.cos(rA) * 44 * tendrilStrength;
+          const ry = Math.sin(rA) * 44 * tendrilStrength;
+          vfxCtx.fillText(runes[r], rx - 4, ry + 4);
+        }
+        vfxCtx.restore();
+
+        // B. Procedural Writhing Seidr Tendrils Connecting Hand to Cube
+        const numTendrils = 4;
+        const dx = cubeX - lokiHandX;
+        const dy = cubeY - lokiHandY;
+
+        for (let t = 0; t < numTendrils; t++) {
+          const wavePhase = time * 0.004 + t * 1.6;
+          const cp1x = lokiHandX + dx * 0.3 + Math.sin(wavePhase) * 45;
+          const cp1y = lokiHandY + dy * 0.3 - 40 + Math.cos(wavePhase * 1.2) * 35;
+          const cp2x = lokiHandX + dx * 0.7 + Math.cos(wavePhase * 0.8) * 40;
+          const cp2y = lokiHandY + dy * 0.7 - 20 + Math.sin(wavePhase * 1.5) * 30;
+
+          // Triple-Pass Glow
+          vfxCtx.save();
+          vfxCtx.beginPath();
+          vfxCtx.moveTo(lokiHandX, lokiHandY);
+          vfxCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, cubeX, cubeY);
+
+          // Wide outer emerald aura
+          vfxCtx.lineWidth = 16 * tendrilStrength;
+          vfxCtx.strokeStyle = 'rgba(0, 255, 119, 0.22)';
+          vfxCtx.shadowColor = '#00ff77';
+          vfxCtx.shadowBlur = 25;
+          vfxCtx.stroke();
+
+          // Electric cyan-green plasma ribbon
+          vfxCtx.lineWidth = 5 * tendrilStrength;
+          vfxCtx.strokeStyle = t % 2 === 0 ? 'rgba(0, 235, 255, 0.85)' : 'rgba(0, 255, 180, 0.85)';
+          vfxCtx.shadowColor = '#00e5ff';
+          vfxCtx.shadowBlur = 15;
+          vfxCtx.stroke();
+
+          // White-hot core
+          vfxCtx.lineWidth = 1.8 * tendrilStrength;
+          vfxCtx.strokeStyle = '#ffffff';
+          vfxCtx.stroke();
+          vfxCtx.restore();
+        }
+
+        // Particle stream along tendrils
+        if (Math.random() < 0.6) {
+          tendrilParticles.push({
+            p: 0,
+            speed: 0.02 + Math.random() * 0.02,
+            waveOff: (Math.random() - 0.5) * 20,
+            size: 1.5 + Math.random() * 2
+          });
+        }
+
+        for (let pIdx = tendrilParticles.length - 1; pIdx >= 0; pIdx--) {
+          const tp = tendrilParticles[pIdx];
+          tp.p += tp.speed;
+          if (tp.p >= 1) {
+            tendrilParticles.splice(pIdx, 1);
+            continue;
+          }
+          const tP = tp.p;
+          const pX = Math.pow(1 - tP, 3) * lokiHandX +
+                     3 * Math.pow(1 - tP, 2) * tP * (lokiHandX + dx * 0.3) +
+                     3 * (1 - tP) * Math.pow(tP, 2) * (lokiHandX + dx * 0.7) +
+                     Math.pow(tP, 3) * cubeX + tp.waveOff * Math.sin(tP * Math.PI);
+          const pY = Math.pow(1 - tP, 3) * lokiHandY +
+                     3 * Math.pow(1 - tP, 2) * tP * (lokiHandY + dy * 0.3 - 40) +
+                     3 * (1 - tP) * Math.pow(tP, 2) * (lokiHandY + dy * 0.7 - 20) +
+                     Math.pow(tP, 3) * cubeY;
+
+          vfxCtx.save();
+          vfxCtx.fillStyle = '#00ff77';
+          vfxCtx.shadowColor = '#00e5ff';
+          vfxCtx.shadowBlur = 10;
+          vfxCtx.beginPath();
+          vfxCtx.arc(pX, pY, tp.size, 0, Math.PI * 2);
+          vfxCtx.fill();
+          vfxCtx.restore();
+        }
+      }
+
+      // 6. Volumetric 4D Tesseract Rendering
+      if (cubeVisible) {
+        tesseractAngles.xw += 0.018;
+        tesseractAngles.yz += 0.024;
+        tesseractAngles.zw += 0.012;
+
+        const projected = tesseractVertices.map(v =>
+          project4D(v, tesseractAngles, cubeScale, cubeX, cubeY)
+        );
+
+        // A. 360-Degree Volumetric God Rays
+        vfxCtx.save();
+        const rayCount = 14;
+        const rayLen = (140 + Math.sin(time * 0.005) * 35) * cubeScale;
+        vfxCtx.globalCompositeOperation = 'screen';
+        for (let r = 0; r < rayCount; r++) {
+          const rAng = (r / rayCount) * Math.PI * 2 + time * 0.0012;
+          const rW = 0.09 + (r % 3) * 0.03;
+          vfxCtx.beginPath();
+          vfxCtx.moveTo(cubeX, cubeY);
+          vfxCtx.lineTo(cubeX + Math.cos(rAng - rW) * rayLen, cubeY + Math.sin(rAng - rW) * rayLen);
+          vfxCtx.lineTo(cubeX + Math.cos(rAng + rW) * rayLen, cubeY + Math.sin(rAng + rW) * rayLen);
+          vfxCtx.closePath();
+          const rayGrad = vfxCtx.createRadialGradient(cubeX, cubeY, 5, cubeX, cubeY, rayLen);
+          rayGrad.addColorStop(0, 'rgba(200, 245, 255, 0.45)');
+          rayGrad.addColorStop(0.35, 'rgba(0, 210, 255, 0.22)');
+          rayGrad.addColorStop(1, 'transparent');
+          vfxCtx.fillStyle = rayGrad;
+          vfxCtx.fill();
+        }
+        vfxCtx.restore();
+
+        // B. Translucent Refractive Facet Faces
+        vfxCtx.save();
+        vfxCtx.globalCompositeOperation = 'screen';
+        tesseractFaces.forEach((face, fIdx) => {
+          vfxCtx.beginPath();
+          vfxCtx.moveTo(projected[face[0]].x, projected[face[0]].y);
+          for (let pt = 1; pt < 4; pt++) {
+            vfxCtx.lineTo(projected[face[pt]].x, projected[face[pt]].y);
+          }
+          vfxCtx.closePath();
+          vfxCtx.fillStyle = fIdx % 2 === 0
+            ? 'rgba(0, 220, 255, 0.12)'
+            : 'rgba(0, 150, 255, 0.08)';
+          vfxCtx.fill();
+        });
+        vfxCtx.restore();
+
+        // C. Glowing 4D Hypercube Wireframe Edges
+        vfxCtx.save();
+        vfxCtx.lineWidth = 2.2 * cubeScale;
+        vfxCtx.strokeStyle = 'rgba(0, 235, 255, 0.95)';
+        vfxCtx.shadowColor = '#00e5ff';
+        vfxCtx.shadowBlur = 18;
+        tesseractEdges.forEach(edge => {
+          const p1 = projected[edge[0]];
+          const p2 = projected[edge[1]];
+          vfxCtx.beginPath();
+          vfxCtx.moveTo(p1.x, p1.y);
+          vfxCtx.lineTo(p2.x, p2.y);
+          vfxCtx.stroke();
+        });
+        vfxCtx.restore();
+
+        // D. Inner Space Stone Singularity Plasma Core
+        vfxCtx.save();
+        const coreR = (22 + Math.sin(time * 0.008) * 4) * cubeScale;
+        const coreGrad = vfxCtx.createRadialGradient(cubeX, cubeY, 0, cubeX, cubeY, coreR);
+        coreGrad.addColorStop(0, '#ffffff');
+        coreGrad.addColorStop(0.3, 'rgba(180, 245, 255, 0.95)');
+        coreGrad.addColorStop(0.65, 'rgba(0, 210, 255, 0.6)');
+        coreGrad.addColorStop(1, 'transparent');
+
+        vfxCtx.beginPath();
+        vfxCtx.arc(cubeX, cubeY, coreR, 0, Math.PI * 2);
+        vfxCtx.fillStyle = coreGrad;
+        vfxCtx.shadowColor = '#00e5ff';
+        vfxCtx.shadowBlur = 30;
+        vfxCtx.fill();
+
+        // 8-Point Caustic Star Flares
+        const starLen = (48 + Math.cos(time * 0.01) * 12) * cubeScale;
+        vfxCtx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        vfxCtx.lineWidth = 1.8 * cubeScale;
+        vfxCtx.shadowColor = '#ffffff';
+        vfxCtx.shadowBlur = 14;
+        vfxCtx.beginPath();
+        vfxCtx.moveTo(cubeX - starLen, cubeY);
+        vfxCtx.lineTo(cubeX + starLen, cubeY);
+        vfxCtx.moveTo(cubeX, cubeY - starLen);
+        vfxCtx.lineTo(cubeX, cubeY + starLen);
+        const diagLen = starLen * 0.6;
+        vfxCtx.moveTo(cubeX - diagLen, cubeY - diagLen);
+        vfxCtx.lineTo(cubeX + diagLen, cubeY + diagLen);
+        vfxCtx.moveTo(cubeX + diagLen, cubeY - diagLen);
+        vfxCtx.lineTo(cubeX - diagLen, cubeY + diagLen);
+        vfxCtx.stroke();
+        vfxCtx.restore();
+
+        // E. Orbiting Celestial Stardust Motes
+        vfxCtx.save();
+        cosmicMotes.forEach(m => {
+          m.angle += m.speed;
+          const mx = cubeX + Math.cos(m.angle) * m.orbitR * cubeScale;
+          const my = cubeY + Math.sin(m.angle) * m.orbitR * m.tilt * cubeScale + m.yOffset * cubeScale;
+
+          vfxCtx.fillStyle = '#e0f8ff';
+          vfxCtx.globalAlpha = m.alpha;
+          vfxCtx.shadowColor = '#00e5ff';
+          vfxCtx.shadowBlur = 6;
+          vfxCtx.beginPath();
+          vfxCtx.arc(mx, my, m.size * cubeScale, 0, Math.PI * 2);
+          vfxCtx.fill();
+        });
+        vfxCtx.restore();
+      }
+
+      // 7. Cataclysmic Catch Aura Resonance & Celestial Specular Glow
+      if (cubeVisible && cubeX < lokiHandX + 220) {
+        vfxCtx.save();
+        vfxCtx.globalCompositeOperation = 'screen';
+        const glowProximity = Math.max(0, 1 - (cubeX - lokiHandX) / 220);
+        const lokiGlowGrad = vfxCtx.createRadialGradient(lokiHandX - 25, lokiHandY - 60, 10, lokiHandX - 25, lokiHandY - 60, 150);
+        lokiGlowGrad.addColorStop(0, `rgba(0, 225, 255, ${0.45 * glowProximity})`);
+        lokiGlowGrad.addColorStop(0.5, `rgba(0, 255, 119, ${0.2 * glowProximity})`);
+        lokiGlowGrad.addColorStop(1, 'transparent');
+        vfxCtx.fillStyle = lokiGlowGrad;
+        vfxCtx.beginPath();
+        vfxCtx.arc(lokiHandX - 25, lokiHandY - 60, 150, 0, Math.PI * 2);
+        vfxCtx.fill();
+        vfxCtx.restore();
+      }
+
+      if (caught && catchGlow > 0.01) {
+        vfxCtx.save();
+        const auraR = 110 * catchGlow;
+        const cGrad = vfxCtx.createRadialGradient(lokiHandX, lokiHandY, 0, lokiHandX, lokiHandY, auraR);
+        cGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        cGrad.addColorStop(0.3, 'rgba(0, 225, 255, 0.65)');
+        cGrad.addColorStop(0.7, 'rgba(0, 255, 119, 0.35)');
+        cGrad.addColorStop(1, 'transparent');
+
+        vfxCtx.beginPath();
+        vfxCtx.arc(lokiHandX, lokiHandY, auraR, 0, Math.PI * 2);
+        vfxCtx.fillStyle = cGrad;
+        vfxCtx.fill();
+        vfxCtx.restore();
+      }
+    }
+
+    return {
+      reset,
+      render,
+      triggerBarrierShatter,
+      triggerCatchBurst,
+      setCubePos: (x, y, scale = 1.0) => {
+        cubeX = x;
+        cubeY = y;
+        cubeScale = scale;
+      },
+      setCubeVisible: (v) => { cubeVisible = v; },
+      setTendrilStrength: (s) => { tendrilStrength = s; },
+      getCubePos: () => ({ x: cubeX, y: cubeY })
+    };
+  })();
+
+  function startCinematicVFXLoop() {
+    if (cinematicVFXRunning) return;
+    cinematicVFXRunning = true;
+    function loop(time) {
+      if (!cinematicVFXRunning) return;
+      CinematicEngine.render(time);
+      cinematicVFXAnimId = requestAnimationFrame(loop);
+    }
+    cinematicVFXAnimId = requestAnimationFrame(loop);
+  }
+
+  function stopCinematicVFXLoop() {
+    cinematicVFXRunning = false;
+    if (cinematicVFXAnimId) {
+      cancelAnimationFrame(cinematicVFXAnimId);
+      cinematicVFXAnimId = null;
+    }
+    CinematicEngine.reset();
+  }
+
+  // --------------------------------------------------------------------------
+  // The Complete Marvel Cinematic Finale Sequence
+  // --------------------------------------------------------------------------
   function executeVaultRebootSequence() {
-    // 1. Vault restarts, all infiltration alarms completely cleared
+    // 1. Silent, pure visual sequence initialization
     dismissInfiltrationAlarms();
     phases.debug.classList.remove('active');
 
-    // Loki advances boldly towards the Tesseract!
-    if (lokiContainer) {
-      lokiContainer.style.left = '750px';
+    // Enable Widescreen 2.39:1 Anamorphic Cinema Bars
+    gameContainer.classList.add('cinematic-active');
+    gameContainer.classList.remove('cinematic-finished');
+
+    // Reset and launch 60fps VFX Engine
+    CinematicEngine.reset();
+    startCinematicVFXLoop();
+
+    // Hide old HTML cube and old green bridge; our canvas draws the authentic 4D hypercube
+    if (tesseractCube) {
+      tesseractCube.style.opacity = '0';
+      tesseractCube.style.display = 'none';
+    }
+    if (greenMagicBridge) {
+      greenMagicBridge.style.opacity = '0';
+      greenMagicBridge.style.display = 'none';
+    }
+    const lokiHeldCube = document.getElementById('loki-held-cube');
+    if (lokiHeldCube) {
+      lokiHeldCube.style.opacity = '0';
+      lokiHeldCube.style.display = 'none';
     }
 
-    // 2. Power conduit venting & Loki casting
+    // Pedestal coordinates in chamber for dramatic cinematic staging
+    const pedestalX = 880;
+    const pedestalY = 415;
+
+    // Glide the physical pedestal into the hero chamber focal point
+    const tesseractChamber = document.getElementById('tesseract-chamber');
+    if (tesseractChamber) {
+      tesseractChamber.style.transition = 'left 1.4s cubic-bezier(0.25, 1, 0.5, 1), top 1.4s ease';
+      tesseractChamber.style.left = `${pedestalX}px`;
+      tesseractChamber.style.top = `${pedestalY}px`;
+    }
+
+    // Loki advances smoothly into regal hero staging
+    const lokiTargetLeft = 310;
+    if (lokiContainer) {
+      lokiContainer.style.transition = 'left 1.8s cubic-bezier(0.25, 1, 0.5, 1)';
+      lokiContainer.style.left = `${lokiTargetLeft}px`;
+    }
+
+    // Camera Shot 1: Majestic Establishing Dolly-In
+    if (vaultScene) {
+      vaultScene.style.transition = 'transform 2.2s cubic-bezier(0.25, 1, 0.5, 1)';
+      vaultScene.style.transform = 'scale(1.06) translate(-25px, -12px)';
+    }
+
+    // Loki casting pose with dialogue
     setLokiState('loki-actor-casting');
     showDialogue("Alarms silenced. The vault belongs to me.");
 
@@ -898,69 +1608,147 @@
     if (conduitAlpha) conduitAlpha.classList.add('conduit-venting');
     if (conduitBeta) conduitBeta.classList.add('conduit-venting');
 
-    // 3. Shatter energy barrier dome with hexagonal fragments
+    // ------------------------------------------------------------------------
+    // Beat 2: Loki Channels Seidr Magic (t = 1.8s)
+    // ------------------------------------------------------------------------
     setTimeout(() => {
-      barrierDome.classList.remove('active');
-      barrierDome.classList.add('dissolved');
-      triggerBarrierShatter();
-    }, 1200);
+      // Fade in Seidr Tendrils & 3D Runic Circles
+      let str = 0;
+      const tendrilInterval = setInterval(() => {
+        str += 0.05;
+        CinematicEngine.setTendrilStrength(Math.min(1.0, str));
+        if (str >= 1.0) clearInterval(tendrilInterval);
+      }, 30);
 
-    // 4. Free the Tesseract and create mathematical vector magic bridge
+      // Camera Shot 2: Focused Channeling Zoom
+      if (vaultScene) {
+        vaultScene.style.transition = 'transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        vaultScene.style.transform = 'scale(1.12) translate(-60px, -18px)';
+      }
+    }, 1800);
+
+    // ------------------------------------------------------------------------
+    // Beat 3: The Crystalline Barrier Rupture (t = 3.2s)
+    // ------------------------------------------------------------------------
     setTimeout(() => {
-      tesseractCube.classList.add('scripted-motion', 'surging');
-      tesseractCube.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
-      tesseractCube.style.transform = 'translateY(-35px) scale(1.1)';
+      // Dissolve the DOM dome and explode 160+ crystalline glass shards on Canvas
+      if (barrierDome) {
+        barrierDome.classList.remove('active');
+        barrierDome.classList.add('dissolved');
+      }
 
-      const dock = document.getElementById('loki-held-cube');
-      const cubeRect = tesseractCube.getBoundingClientRect();
-      const dockRect = dock.getBoundingClientRect();
-      const containerRect = gameContainer.getBoundingClientRect();
+      CinematicEngine.triggerBarrierShatter(pedestalX, pedestalY);
 
-      const bridgeStartX = (dockRect.left + dockRect.width / 2) - containerRect.left;
-      const bridgeStartY = (dockRect.top + dockRect.height / 2) - containerRect.top;
-      const bridgeEndX = (cubeRect.left + cubeRect.width / 2) - containerRect.left;
-      const bridgeEndY = (cubeRect.top + cubeRect.height / 2) - containerRect.top;
-
-      const dist = Math.hypot(bridgeEndX - bridgeStartX, bridgeEndY - bridgeStartY);
-      const angle = Math.atan2(bridgeEndY - bridgeStartY, bridgeEndX - bridgeStartX) * 180 / Math.PI;
-
-      greenMagicBridge.style.left = `${bridgeStartX}px`;
-      greenMagicBridge.style.top = `${bridgeStartY}px`;
-      greenMagicBridge.style.width = `${dist}px`;
-      greenMagicBridge.style.transform = `rotate(${angle}deg)`;
-      greenMagicBridge.classList.add('active');
-    }, 2200);
-
-    // 5. Tesseract floats across chamber toward Loki's hand
-    setTimeout(() => {
-      const dock = document.getElementById('loki-held-cube');
-      const cubeRect = tesseractCube.getBoundingClientRect();
-      const dockRect = dock.getBoundingClientRect();
-      const dx = dockRect.left + dockRect.width / 2 - (cubeRect.left + cubeRect.width / 2);
-      const dy = dockRect.top + dockRect.height / 2 - (cubeRect.top + cubeRect.height / 2);
-      tesseractCube.classList.add('in-flight');
-      tesseractCube.style.transition = 'transform 2.6s cubic-bezier(0.25, 1, 0.5, 1)';
-      tesseractCube.style.transform = `translate(${dx}px, ${dy}px) scale(0.6)`;
+      // Camera Impulse Shake & Kinetic Kickback
+      if (vaultScene) {
+        vaultScene.classList.remove('camera-shaking');
+        void vaultScene.offsetWidth; // Force reflow
+        vaultScene.classList.add('camera-shaking');
+        setTimeout(() => {
+          vaultScene.classList.remove('camera-shaking');
+        }, 650);
+      }
     }, 3200);
 
-    // 6. Loki catches and docks the Tesseract in hand with radial shockwave
+    // ------------------------------------------------------------------------
+    // Beat 4: Zero-G Levitation of the 4D Tesseract (t = 4.2s)
+    // ------------------------------------------------------------------------
     setTimeout(() => {
-      greenMagicBridge.classList.remove('active');
-      tesseractCube.style.opacity = '0';
-      setLokiState('loki-actor-victory');
+      CinematicEngine.setCubeVisible(true);
+      CinematicEngine.setCubePos(pedestalX, pedestalY, 1.0);
 
-      const dockPulse = document.getElementById('tesseract-dock-pulse');
-      if (dockPulse) dockPulse.classList.add('pulsing');
+      // Smooth vertical zero-g lift from pedestal
+      let liftProgress = 0;
+      const liftInterval = setInterval(() => {
+        liftProgress += 0.04;
+        const curY = pedestalY - Math.sin(liftProgress * Math.PI * 0.5) * 45;
+        CinematicEngine.setCubePos(pedestalX, curY, 1.0 + liftProgress * 0.15);
+        if (liftProgress >= 1.0) clearInterval(liftInterval);
+      }, 25);
+    }, 4200);
 
-      showDialogue("And that... was easier than expected.", 5000);
-    }, 5800);
-
-    // 7. Show Asgardian Victory Overlay
+    // ------------------------------------------------------------------------
+    // Beat 5: Celestial Arc Flight across the Vault (t = 5.6s to 8.0s)
+    // ------------------------------------------------------------------------
     setTimeout(() => {
-      setPhase(STATES.COMPLETED);
-      const victoryCard = document.getElementById('victory-card');
-      victoryCard.classList.remove('hidden');
-    }, 7200);
+      const lokiHandX = lokiTargetLeft + 168;
+      const lokiHandY = 465;
+      const startX = pedestalX;
+      const startY = pedestalY - 45;
+
+      // Camera Shot 3: Tracking Flight
+      if (vaultScene) {
+        vaultScene.style.transition = 'transform 2.4s cubic-bezier(0.25, 1, 0.5, 1)';
+        vaultScene.style.transform = 'scale(1.15) translate(-110px, -22px)';
+      }
+
+      const flightDuration = 2200; // ms
+      let flightStart = null;
+
+      function animateFlight(now) {
+        if (!flightStart) flightStart = now;
+        const elapsed = now - flightStart;
+        const p = Math.min(1.0, elapsed / flightDuration);
+
+        // Cubic Bezier spline trajectory
+        const easeP = 0.5 - Math.cos(p * Math.PI) * 0.5; // Smooth S-curve
+        const cpX = (startX + lokiHandX) * 0.5;
+        const cpY = Math.min(startY, lokiHandY) - 50;
+
+        const curX = Math.pow(1 - easeP, 2) * startX + 2 * (1 - easeP) * easeP * cpX + Math.pow(easeP, 2) * lokiHandX;
+        const curY = Math.pow(1 - easeP, 2) * startY + 2 * (1 - easeP) * easeP * cpY + Math.pow(easeP, 2) * lokiHandY;
+        const curScale = 1.15 - easeP * 0.35; // Scales gracefully as it approaches hand
+
+        CinematicEngine.setCubePos(curX, curY, curScale);
+
+        // Specular glow on Loki increases as cube nears
+        if (p > 0.6) {
+          gameContainer.classList.add('loki-specular-active');
+        }
+
+        if (p < 1.0) {
+          requestAnimationFrame(animateFlight);
+        } else {
+          // ------------------------------------------------------------------
+          // Beat 6: The Catch — Cataclysmic Cosmic Supernova Burst (t = 8.0s)
+          // ------------------------------------------------------------------
+          CinematicEngine.setCubePos(lokiHandX, lokiHandY, 0.78);
+          CinematicEngine.setTendrilStrength(0);
+          CinematicEngine.triggerCatchBurst(lokiHandX, lokiHandY);
+
+          // Transition Loki to Victory Pose
+          setLokiState('loki-actor-victory');
+
+          // Camera Impulse Catch
+          if (vaultScene) {
+            vaultScene.classList.remove('camera-shaking');
+            void vaultScene.offsetWidth;
+            vaultScene.classList.add('camera-shaking');
+            setTimeout(() => {
+              vaultScene.classList.remove('camera-shaking');
+              vaultScene.style.transition = 'transform 2.5s cubic-bezier(0.16, 1, 0.3, 1)';
+              vaultScene.style.transform = 'scale(1.08) translate(-95px, -16px)';
+            }, 650);
+          }
+
+          // Chamber circuits cosmic surge
+          gameContainer.classList.add('vault-cosmic-surge');
+
+          // Subtitle dialogue
+          showDialogue("And that... was easier than expected.", 8000);
+
+          // ------------------------------------------------------------------
+          // Beat 7: Triumphant Stance (NO VICTORY LAYOUT)
+          // ------------------------------------------------------------------
+          setTimeout(() => {
+            setPhase(STATES.COMPLETED);
+            gameContainer.classList.add('cinematic-finished');
+          }, 1400);
+        }
+      }
+
+      requestAnimationFrame(animateFlight);
+    }, 5600);
   }
 
   // ==========================================================================
@@ -975,34 +1763,66 @@
     const btnPlayAgain = document.getElementById('btn-play-again');
     if (btnPlayAgain) {
       btnPlayAgain.onclick = () => {
+        // Stop VFX engine
+        stopCinematicVFXLoop();
+
+        // Reset camera and cinematic classes
+        gameContainer.classList.remove(
+          'cinematic-active',
+          'cinematic-finished',
+          'loki-specular-active',
+          'vault-cosmic-surge'
+        );
+        if (vaultScene) {
+          vaultScene.classList.remove('camera-shaking');
+          vaultScene.style.transition = 'none';
+          vaultScene.style.transform = 'translateZ(0px)';
+        }
+
         // Reset Loki to left staging
         if (lokiContainer) {
+          lokiContainer.style.transition = 'none';
           lokiContainer.style.left = '-15px';
         }
+
         // Reset chamber elements
-        barrierDome.classList.remove('dissolved');
-        barrierDome.classList.add('active');
-        tesseractCube.style.transition = 'none';
-        tesseractCube.style.transform = 'none';
-        tesseractCube.style.opacity = '1';
-        tesseractCube.classList.remove('scripted-motion', 'surging', 'in-flight');
-        greenMagicBridge.classList.remove('active');
-        greenMagicBridge.style.transform = 'none';
-        greenMagicBridge.style.width = '';
+        const tChamber = document.getElementById('tesseract-chamber');
+        if (tChamber) {
+          tChamber.style.transition = 'none';
+          tChamber.style.left = '1091px';
+          tChamber.style.top = '428px';
+        }
+        if (barrierDome) {
+          barrierDome.classList.remove('dissolved');
+          barrierDome.classList.add('active');
+        }
+        if (tesseractCube) {
+          tesseractCube.style.transition = 'none';
+          tesseractCube.style.transform = 'none';
+          tesseractCube.style.opacity = '1';
+          tesseractCube.classList.remove('scripted-motion', 'surging', 'in-flight');
+        }
+        if (greenMagicBridge) {
+          greenMagicBridge.classList.remove('active');
+          greenMagicBridge.style.transform = 'none';
+          greenMagicBridge.style.width = '';
+        }
         const dockPulse = document.getElementById('tesseract-dock-pulse');
         if (dockPulse) dockPulse.classList.remove('pulsing');
+
         dismissInfiltrationAlarms();
-        const victoryCard = document.getElementById('victory-card');
-        victoryCard.classList.add('hidden');
-        vaultScene.style.transform = 'translateZ(0px)';
         setPhase(STATES.INTRO);
       };
     }
 
     document.addEventListener('keydown', event => {
-      if (currentState !== STATES.MIRROR_PUZZLE || event.key.toLowerCase() !== 'r') return;
-      event.preventDefault();
-      btnResetMirrors?.click();
+      if (currentState === STATES.MIRROR_PUZZLE && event.key.toLowerCase() === 'r') {
+        event.preventDefault();
+        btnResetMirrors?.click();
+      } else if (currentState === STATES.COMPLETED && event.key.toLowerCase() === 'r') {
+        event.preventDefault();
+        btnPlayAgain?.click();
+      }
     });
   }
 
@@ -1011,5 +1831,14 @@
     window.addEventListener('resize', fitPuzzleBoard);
     setPhase(STATES.INTRO);
   });
+
+  // Global exports for test automation and cinematic inspection
+  window.LokiGame = {
+    setPhase,
+    executeVaultRebootSequence,
+    STATES
+  };
+  window.__setPhase = setPhase;
+  window.__executeVaultRebootSequence = executeVaultRebootSequence;
 
 })();
