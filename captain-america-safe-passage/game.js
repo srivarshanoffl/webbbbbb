@@ -789,6 +789,7 @@
     event.preventDefault();
     state.draggingShield = true;
     shield.classList.add('dragging');
+    captain.classList.add('dragging');
     captain.classList.add('bracing');
     missionCue.textContent = 'Captain follows the shield. Drag to guide the interception.';
     const center = getShieldCenter();
@@ -800,6 +801,7 @@
   ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => game.addEventListener(type, () => {
     state.draggingShield = false;
     shield.classList.remove('dragging');
+    captain.classList.remove('dragging');
     captain.classList.remove('bracing');
   }));
   document.querySelectorAll('[data-move]').forEach(button => {
