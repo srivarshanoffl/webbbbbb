@@ -50,8 +50,26 @@
             }
         }
 
+        @keyframes bulbShatter {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+                filter: drop-shadow(0 0 15px rgba(255, 220, 90, 0.9));
+            }
+            40% {
+                transform: scale(1.35) rotate(15deg);
+                opacity: 1;
+                filter: brightness(2.8) drop-shadow(0 0 50px rgba(255, 160, 40, 1));
+            }
+            100% {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+                filter: brightness(5);
+            }
+        }
+
         .magical-bulb.destroying {
-            animation: bulbShatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            animation: bulb-shatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
         }
     </style>
 
@@ -1668,7 +1686,7 @@
         }
 
         .lantern-wrapper.glow .lantern-svg {
-            filter: drop-shadow(0 0 25px rgba(255, 230, 80, 1)) drop-shadow(0 0 55px rgba(255, 160, 30, 0.85)) brightness(1.45);
+            filter: drop-shadow(0 0 35px #ffe600) drop-shadow(0 0 60px #ff4800) brightness(2.2) contrast(1.15);
         }
 
         .lantern-wrapper.blasted {
@@ -3237,22 +3255,18 @@
             flash('MAGICAL LIGHT BULB OVERCHARGING!');
 
             // Connect bulb to Left, Middle, and Right lanterns via chi lightning
-            const bulbRect = bulbWrap ? bulbWrap.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight * 0.22 };
-            const bX = bulbRect.left + (bulbRect.width || 0) * 0.5;
-            const bY = bulbRect.top + (bulbRect.height || 0) * 0.5;
-
-            const lLeftRect = $('#lantern-left')?.getBoundingClientRect();
-            const lMidRect = $('#lantern-middle')?.getBoundingClientRect();
-            const lRightRect = $('#lantern-right')?.getBoundingClientRect();
-
-            const targets = [
-                { x: lLeftRect ? lLeftRect.left + lLeftRect.width * 0.5 : innerWidth * 0.16, y: lLeftRect ? lLeftRect.top + lLeftRect.height * 0.5 : innerHeight * 0.2 },
-                { x: lMidRect ? lMidRect.left + lMidRect.width * 0.5 : innerWidth * 0.5, y: lMidRect ? lMidRect.top + lMidRect.height * 0.5 : innerHeight * 0.12 },
-                { x: lRightRect ? lRightRect.left + lRightRect.width * 0.5 : innerWidth * 0.84, y: lRightRect ? lRightRect.top + lRightRect.height * 0.5 : innerHeight * 0.2 }
-            ];
-
             let lightningInterval = setInterval(() => {
-                drawChiLightning(bX, bY, targets);
+                const curBulb = bulbWrap ? bulbWrap.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight * 0.22, width: 0, height: 0 };
+                const curBX = curBulb.left + (curBulb.width || 0) * 0.5;
+                const curBY = curBulb.top + (curBulb.height || 0) * 0.5;
+
+                const curTargets = [
+                    $('#lantern-left')?.getBoundingClientRect(),
+                    $('#lantern-middle')?.getBoundingClientRect(),
+                    $('#lantern-right')?.getBoundingClientRect()
+                ].filter(Boolean).map(r => ({ x: r.left + r.width * 0.5, y: r.top + r.height * 0.5 }));
+
+                drawChiLightning(curBX, curBY, curTargets);
             }, 80);
 
             // Beat 2 (t = 0.85s): Blinding Nova Shatter & Glass Debris Burst
@@ -3636,13 +3650,14 @@
             const dist = Math.max(20, Math.hypot(dx, dy));
             const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
 
+            const stage = document.getElementById('stage') || document.body;
             const beam = document.createElement('div');
             beam.className = 'chi-blast-beam';
             beam.style.left = `${originX}px`;
             beam.style.top = `${originY}px`;
             beam.style.width = `${dist}px`;
             beam.style.transform = `rotate(${angleDeg}deg)`;
-            document.body.appendChild(beam);
+            stage.appendChild(beam);
             setTimeout(() => beam.remove(), 450);
 
             // Impact spark at target location
@@ -3650,7 +3665,7 @@
             spark.className = 'chi-impact-spark';
             spark.style.left = `${clientX}px`;
             spark.style.top = `${clientY}px`;
-            document.body.appendChild(spark);
+            stage.appendChild(spark);
             setTimeout(() => spark.remove(), 500);
         }
 
