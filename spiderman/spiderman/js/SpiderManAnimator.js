@@ -180,6 +180,13 @@ class SpiderManAnimator {
 
     // Grounded vs Airborne
     if (this.hero.isGrounded) {
+      if (this.previousState === 'DIVE' || this.previousState === 'SWING_RELEASE' || this.previousState === 'FALL') {
+        this.setState('LAND');
+        return;
+      }
+      if (this.state === 'LAND' && this.stateTime < 0.16) {
+        return; // Hold compression pose for 160ms
+      }
       if (Math.abs(this.hero.vx) > 30) {
         this.setState('RUN');
       } else {

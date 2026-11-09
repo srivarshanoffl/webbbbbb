@@ -85,9 +85,14 @@ class CameraController {
     const targetCamX = targetFocalX - (canvasW / 2) / curZoom;
     const targetCamY = targetFocalY - (canvasH / 2) / curZoom;
 
+    const heroVy = (hero && typeof hero.vy === 'number') ? hero.vy : 0;
+    const dynamicLerpY = heroVy < -400
+      ? Phaser.Math.Linear(lerpY, 0.18, Math.min(1.0, (-heroVy - 400) / 400))
+      : lerpY;
+
     // Smooth Lerp
     this.cam.scrollX = Phaser.Math.Linear(this.cam.scrollX, targetCamX, lerpX);
-    this.cam.scrollY = Phaser.Math.Linear(this.cam.scrollY, targetCamY, lerpY);
+    this.cam.scrollY = Phaser.Math.Linear(this.cam.scrollY, targetCamY, dynamicLerpY);
 
     // Prevent camera from dipping too far below city street floor
     if (this.cam.scrollY > 380) {

@@ -47,12 +47,18 @@ html, body {
 }
 
 #game-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
+  max-width: 177.78vh;
   height: 100%;
+  max-height: 56.25vw;
+  aspect-ratio: 16 / 9;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 #game-container canvas {
@@ -69,10 +75,14 @@ html, body {
 
 #game-hud {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
+  max-width: 177.78vh;
   height: 100%;
+  max-height: 56.25vw;
+  aspect-ratio: 16 / 9;
   pointer-events: none;
   z-index: 50;
   transition: opacity 0.3s ease;
@@ -369,10 +379,14 @@ html, body {
 
 #debug-interface-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
+  max-width: 177.78vh;
   height: 100%;
+  max-height: 56.25vw;
+  aspect-ratio: 16 / 9;
   z-index: 100;
   pointer-events: none !important; /* Critical: Center screen 3D canvas stays interactive */
   transition: opacity 0.35s ease, visibility 0.35s ease;
@@ -550,7 +564,7 @@ html, body {
 .rail-title {
   font-size: 11px;
   letter-spacing: 1.5px;
-  color: #9bb6db;
+  color: #b8d4f8;
   font-weight: 800;
 }
 
@@ -596,7 +610,7 @@ html, body {
 }
 
 .telem-name {
-  color: #c0d8f8;
+  color: #d8e8fc;
   font-weight: 600;
   font-size: 11px;
 }
@@ -1132,14 +1146,28 @@ html, body {
    TESTER TOOLBAR & QUICK DEBUG WEBSHOOTER CONTROLS
    ========================================================================== */
 .tester-toolbar {
-  position: fixed;
-  top: 14px;
-  right: 18px;
-  z-index: 99999;
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  top: auto;
+  right: auto;
+  z-index: 45;
   display: flex;
   align-items: center;
   gap: 10px;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: auto !important;
+}
+
+.tester-toolbar:hover {
+  opacity: 1.0;
+  transform: translateY(-2px);
+}
+
+body.in-diagnostic .tester-toolbar,
+body.in-title .tester-toolbar {
+  display: none !important;
 }
 
 .btn-tester-action {
