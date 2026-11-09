@@ -484,10 +484,16 @@
 
     function resize() {
       if (!canvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      if (ctx) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
     }
 
     function spawn(x, y, vx, vy, size, color, decay, gravity = 0, type = 'spark') {

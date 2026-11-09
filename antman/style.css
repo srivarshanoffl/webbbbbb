@@ -899,6 +899,8 @@ body {
   justify-content: center;
   position: relative;
   pointer-events: none;
+  padding: 12px;
+  overflow-y: auto;
 }
 
 .phase-container {
@@ -1008,6 +1010,10 @@ body {
   border: 1px solid var(--color-hud-border);
   border-radius: 12px;
   padding: 28px 32px;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-trace-active) var(--color-lab-bg);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1619,7 +1625,19 @@ body {
 /* Quantum Node Status Bar & Sleek Horizontal Badges */
 .terminal-column.quantum-node-status-bar,
 .quantum-node-status-bar {
-  display: none !important;
+  display: flex !important;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto 8px auto;
+  padding: 4px 10px;
+  background: rgba(7, 11, 18, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 6px;
+  z-index: 6;
 }
 
 .node-badge {
@@ -1874,10 +1892,6 @@ body {
 }
 
 .maze-node-marker {
-  width: 80%;
-  height: 80%;
-  max-width: 28px;
-  max-height: 28px;
   width: 82%;
   height: 82%;
   max-width: 36px;
@@ -1886,7 +1900,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
   font-size: 0.95rem;
   font-weight: 700;
   border: 2px solid currentColor;
@@ -1928,9 +1941,6 @@ body {
 .maze-regulator-core {
   width: 90%;
   height: 90%;
-  max-width: 32px;
-  max-height: 32px;
-  border-radius: 6px;
   max-width: 38px;
   max-height: 38px;
   border-radius: 8px;
@@ -1941,13 +1951,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
   font-size: 0.72rem;
   font-family: var(--font-mono);
   font-weight: 700;
   color: #ffffff;
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.95);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
   box-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
   animation: regulator-idle 2s infinite ease-in-out;
   transition: all 0.4s ease;
@@ -1963,9 +1971,7 @@ body {
 }
 
 .maze-cell.cell-regulator.stabilized .maze-regulator-core {
-  background: 
-    #10b981
-    url("assets/images/quantum_regulator_core.svg") center/contain no-repeat;
+  background: url("assets/images/quantum_regulator_core.svg") center/contain no-repeat #10b981;
   border-color: #ffffff;
   box-shadow: 0 0 30px #10b981, 0 0 50px rgba(16, 185, 129, 0.8);
   transform: scale(1.2);
@@ -1988,7 +1994,9 @@ body {
   height: 34px;
   z-index: 10;
   pointer-events: none;
-  transition: top 0.12s cubic-bezier(0.2, 0.8, 0.4, 1), left 0.12s cubic-bezier(0.2, 0.8, 0.4, 1), transform 0.12s ease;
+  scale: 1 1;
+  translate: 0 0;
+  transition: top 0.12s cubic-bezier(0.2, 0.8, 0.4, 1), left 0.12s cubic-bezier(0.2, 0.8, 0.4, 1);
   transform-origin: center center;
   display: flex;
   align-items: center;
@@ -1996,16 +2004,16 @@ body {
 }
 
 .maze-player-avatar.facing-left {
-  transform: scaleX(-1);
+  scale: -1 1;
 }
 
 .maze-player-avatar.walking {
-  animation: player-bob 0.22s infinite ease-in-out;
+  animation: player-bob-independent 0.22s infinite ease-in-out;
 }
 
-@keyframes player-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+@keyframes player-bob-independent {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -3px; }
 }
 
 .maze-player-svg {
@@ -2031,20 +2039,21 @@ body {
 }
 
 .dpad-btn {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 10px;
   background: rgba(15, 23, 42, 0.85);
   border: 2px solid #38bdf8;
   color: #f8fafc;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  touch-action: manipulation;
   transition: transform 0.1s, background 0.15s, border-color 0.15s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   user-select: none;
