@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stark Skies: Escape Run</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="viewport-wrap">
+    <canvas id="game-canvas" width="1280" height="720"></canvas>
+    <div id="red-edge-pulse"></div>
+
+    <!-- On-screen flight & quality controls -->
+    <div id="touch-controls" aria-label="Flight Controls">
+      <button type="button" id="btn-fly-up" class="touch-btn" title="Fly Up (Up Arrow / W)">▲</button>
+      <button type="button" id="btn-fly-down" class="touch-btn" title="Fly Down (Down Arrow / S)">▼</button>
+      <button type="button" id="btn-reduced-fx" class="touch-btn" title="Toggle Reduced Particles (Q)" style="font-size:11px;">FX</button>
+    </div>
+
+    <!-- JARVIS Glass Terminal Window -->
+    <div id="terminal-overlay" role="dialog" aria-labelledby="term-title">
+      <div class="terminal-window" id="terminal-window">
+        <div class="term-titlebar">
+          <div class="term-dots">
+            <span class="term-dot r"></span>
+            <span class="term-dot y"></span>
+            <span class="term-dot g"></span>
+          </div>
+          <div class="term-title-text" id="term-title">JARVIS // exit-sequence.js — HATCH LOOP FAULT</div>
+          <div style="font-size:11px; color:#779bb5;">STARK OS v8.4</div>
+        </div>
+
+        <div class="term-body">
+          <!-- Left: Code View + Console Mirror -->
+          <div class="code-pane">
+            <div class="code-lines"><span class="code-comment">// exit-sequence.js</span>
+<span class="code-kw">for</span> (<span class="code-kw">let</span> <span class="code-var">i</span> = <span class="code-var">ringsPassed</span>; <span class="code-var">i</span> &lt; <span class="code-num">10</span>; <span id="fault-code-expr" class="fault-underline">i += gate.step</span>) {
+  <span class="code-fn">scoreRing</span>(<span class="code-var">i</span>);
+}</div>
+
+            <div>
+              <div class="code-tools-note">
+                Console tools: <code>gate</code>, <code>suit.status()</code>, <code>jarvis.hint()</code>, <code>game.restart()</code>
+              </div>
+              <form id="terminal-cmd-form" class="console-shell" autocomplete="off">
+                <span class="console-prompt-char">&gt;</span>
+                <input type="text" id="terminal-cmd-input" placeholder="gate.step = 1  (or use browser F12 console)" aria-label="Console command input" />
+                <button type="submit" id="btn-exec-cmd" class="btn-exec">RUN</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Live State Panel -->
+          <div class="state-pane">
+            <div>
+              <div class="state-header">
+                <span>LIVE GATE TELEMETRY</span>
+                <span id="status-chip" class="status-chip">STUCK</span>
+              </div>
+              <div class="state-rows">
+                <div class="state-row">
+                  <span class="state-key">ringsPassed</span>
+                  <span id="val-rings-passed" class="state-val">8</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-key">gate.step</span>
+                  <span id="val-gate-step" class="state-val bad">0</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-key">i (loop index)</span>
+                  <span id="val-loop-i" class="state-val">8</span>
+                </div>
+              </div>
+              <div id="term-feedback" class="feedback-box">Loop stuck: i stays 8</div>
+              <div id="term-hint-box" class="hint-box"></div>
+              <div id="autosolve-explain" class="autosolve-explain-card">
+                step was 0, so i never advanced and the loop never reached 10.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="term-footer">
+          <div class="timer-track">
+            <div id="term-timer-bar"></div>
+          </div>
+          <div class="footer-controls">
+            <div class="footer-left">
+              <button type="button" id="btn-hint" class="btn-terminal">jarvis.hint()</button>
+              <span id="hint-counter-text" class="hint-counter">Hints used: 0/3</span>
+            </div>
+            <div class="console-instruction">Open the console (F12) and fix the loop</div>
+            <button type="button" id="btn-autosolve" class="btn-terminal" disabled>
+              <span id="autosolve-ring" class="countdown-ring"></span>
+              <span id="autosolve-label">Auto-solve with JARVIS (30s)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirmation Modal inside Terminal -->
+        <div id="confirm-modal">
+          <div class="confirm-box">
+            <p>JARVIS will fix the loop for you. Continue?</p>
+            <div class="confirm-actions">
+              <button type="button" id="btn-confirm-yes" class="btn-terminal" style="border-color:var(--green); color:var(--green);">Continue</button>
+              <button type="button" id="btn-confirm-no" class="btn-terminal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End State Card -->
+    <div id="end-overlay" class="overlay-card">
+      <div id="end-card-panel" class="card-panel">
+        <div id="end-card-tag" class="card-tag">STARK FLIGHT TUNNEL // ESCAPE RUN</div>
+        <div id="end-card-title" class="card-title">MISSION COMPLETE</div>
+        <div id="end-facts-list" class="facts-list">
+          <div class="fact-row"><span>Time to fix</span><strong id="fact-fix-time">0.0s</strong></div>
+          <div class="fact-row"><span>Hints used</span><strong id="fact-hints">0 / 3</strong></div>
+          <div class="fact-row"><span>Auto-solve used</span><strong id="fact-autosolve">No</strong></div>
+        </div>
+        <button type="button" id="btn-restart-end" class="restart-prompt">Press Enter to restart</button>
+      </div>
+    </div>
+  </div>
+
+    <script src="game.js" defer></script>
+</body>
+</html>

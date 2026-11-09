@@ -1,0 +1,26 @@
+STARK SKIES: TUNNEL RUN OVERDRIVE — ASSET CREDITS
+
+Tunnel background
+- Active asset: stark-flight-tunnel.jpg
+- Photographer: Guillaume Meurice
+- Source page: https://www.pexels.com/photo/dark-urban-tunnel-with-red-and-blue-neon-lights-3757231/
+- Source image: Pexels dark tunnel photo, 3901x4876. Center-cropped to 16:9 and resized to 1920x1080 for the game. Canvas grading, movement, hatch lighting, and tunnel ribs are layered at runtime.
+- Terms stated by Pexels: free to use and modify; attribution is not required. The source page and license are linked below.
+- License: https://www.pexels.com/license/
+
+Archived tunnel background
+- Asset: stark-tunnel-night.jpg
+- Photographer: Mathias Reding
+- Source page: https://www.pexels.com/photo/empty-tunnel-at-night-11285726/
+- Not loaded by the active game.
+
+Iron Man rear flight art
+- Active game asset: characters/iron-man-rear-flight.png
+- Source page: https://www.hiclipart.com/free-transparent-background-png-clipart-sezyw
+- The source page describes an 800x1000 rear-view Iron Man image and states that HiClipart PNGs are for non-commercial use, with no attribution required. The page also says uploads can be reported by their authors, so the platform terms do not independently establish the uploader's rights.
+- Local preparation: background and display stand removed; the rear-facing figure kept and short boot exhaust added for the flight scene.
+- Character and franchise rights remain with their respective owners. The source-site terms do not grant Marvel character rights.
+
+Archived character experiments
+- archive/user-image-front-cutout-experiment.png: cutout of the image supplied in chat.
+- archive/painted-back-revision-experiment.png: painted-back experiment, kept out of the game.
