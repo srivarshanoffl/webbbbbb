@@ -13,7 +13,7 @@
        ======================================================================== */
     const CONFIG = {
         STAGE1: {
-            TARGET_CELLS: 10,
+            TARGET_CELLS: 15,
             SPAWN_INTERVAL_ENERGY: 1300,
             SPAWN_INTERVAL_HAZARD: 2000,
             MAX_ENERGY_CELLS: 6,
@@ -819,8 +819,8 @@
     function renderStage1() {
         const ctx = DOM.ctx1;
         if (!ctx) return;
-        const w = DOM.canvas1.width;
-        const h = DOM.canvas1.height;
+        const w = DOM.canvas1.clientWidth || window.innerWidth;
+        const h = DOM.canvas1.clientHeight || window.innerHeight;
         const s1 = GameState.stage1;
         const d = s1.drone;
         const time = performance.now() * 0.001;
@@ -960,18 +960,23 @@
             lightCtx.fill();
 
             s1.cells.forEach(c => {
-                const cGrad = lightCtx.createRadialGradient(c.x, c.y, 5, c.x, c.y, 90);
-                cGrad.addColorStop(0, 'rgba(0,0,0, 0.75)');
+                const cellBob = Math.sin(time * 4.5 + c.phaseOffset) * 7;
+                const cellY = c.y + cellBob;
+                const cGrad = lightCtx.createRadialGradient(c.x, cellY, 4, c.x, cellY, 85);
+                cGrad.addColorStop(0, 'rgba(0,0,0, 0.85)');
                 cGrad.addColorStop(1, 'rgba(0,0,0, 0)');
                 lightCtx.fillStyle = cGrad;
                 lightCtx.beginPath();
-                lightCtx.arc(c.x, c.y, 90, 0, Math.PI * 2);
+                lightCtx.arc(c.x, cellY, 85, 0, Math.PI * 2);
                 lightCtx.fill();
             });
 
             lightCtx.restore();
 
+            ctx.save();
+            ctx.resetTransform();
             ctx.drawImage(lightCanvas, 0, 0);
+            ctx.restore();
         }
     }
 

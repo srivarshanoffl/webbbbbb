@@ -19,8 +19,8 @@
         name: 'RELIC 1: THE ANCIENT VASE',
         elementName: 'TIME CRYSTAL',
         color: '#00ff88',
-        windowMin: 0.45,
-        windowMax: 0.55, // Exactly 1.0s window (0.10 * 10s)
+        windowMin: 0.485,
+        windowMax: 0.515, // Exactly 0.3s window (0.03 * 10s)
         bgImage: 'assets/backgrounds/vault_kamar_taj.jpg',
         relicElId: 'relic-vase',
         collectibleId: 'collectible-crystal',
@@ -34,8 +34,8 @@
         name: 'RELIC 2: THE MAGICAL CLOCK',
         elementName: 'ETERNITY GEAR',
         color: '#f5c452',
-        windowMin: 0.45,
-        windowMax: 0.55, // Exactly 1.0s window (0.10 * 10s)
+        windowMin: 0.485,
+        windowMax: 0.515, // Exactly 0.3s window (0.03 * 10s)
         bgImage: 'assets/backgrounds/clock_tower.jpg',
         relicElId: 'relic-clock',
         collectibleId: 'collectible-gear',
@@ -49,8 +49,8 @@
         name: 'RELIC 3: THE COSMIC ORB',
         elementName: 'COSMIC CORE',
         color: '#c540ff',
-        windowMin: 0.45,
-        windowMax: 0.55, // Exactly 1.0s window (0.10 * 10s)
+        windowMin: 0.485,
+        windowMax: 0.515, // Exactly 0.3s window (0.03 * 10s)
         bgImage: 'assets/backgrounds/cosmic_rift.jpg',
         relicElId: 'relic-orb',
         collectibleId: 'collectible-core',

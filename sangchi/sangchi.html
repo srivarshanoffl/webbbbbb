@@ -50,26 +50,8 @@
             }
         }
 
-        @keyframes bulbShatter {
-            0% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-                filter: drop-shadow(0 0 15px rgba(255, 220, 90, 0.9));
-            }
-            40% {
-                transform: scale(1.35) rotate(15deg);
-                opacity: 1;
-                filter: brightness(2.8) drop-shadow(0 0 50px rgba(255, 160, 40, 1));
-            }
-            100% {
-                transform: scale(0) rotate(90deg);
-                opacity: 0;
-                filter: brightness(5);
-            }
-        }
-
         .magical-bulb.destroying {
-            animation: bulb-shatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            animation: bulbShatter 1.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
         }
     </style>
 

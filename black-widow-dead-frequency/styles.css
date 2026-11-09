@@ -537,10 +537,10 @@ button, input {
 
 .vault-outer-casing {
   position: absolute;
-  inset: -6px;
+  inset: -8px;
   border-radius: 50%;
-  border: 4px solid rgba(180, 205, 220, 0.2);
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 0, 0, 0.9);
+  border: 8px solid #5a6e7c;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 229, 255, 0.25);
 }
 
 .vault-bolts {
@@ -551,11 +551,11 @@ button, input {
 
 .v-bolt {
   position: absolute;
-  width: 22px;
-  height: 44px;
-  background: linear-gradient(90deg, #5b6770, #a9b8c2 45%, #2a343c);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  width: 28px;
+  height: 52px;
+  background: linear-gradient(90deg, #3d4a54, #cbd6de 45%, #1b232a);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.4);
   transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -1495,9 +1495,9 @@ h1 em, h2 em {
   height: 100%;
   min-height: 0;
   padding: clamp(14px, 2.5vh, 28px) clamp(18px, 4vw, 56px);
-  background: linear-gradient(145deg, rgba(12, 20, 26, 0.8), rgba(7, 12, 16, 0.65));
-  border: 1px solid rgba(160, 200, 215, 0.35);
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(145deg, #131c24, #080d12);
+  border: 2px solid #4a6375;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.12);
   animation: instrumentCardIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
@@ -1510,7 +1510,7 @@ h1 em, h2 em {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(160, 195, 215, 0.18);
+  border-bottom: 2px solid #3c5264;
   padding-bottom: 8px;
 }
 
@@ -1577,9 +1577,9 @@ h1 em, h2 em {
   width: clamp(200px, 32vh, 330px);
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 3px solid #4a5963;
+  border: 5px solid #5a6e7c;
   background: radial-gradient(circle at 45% 40%, #303c44 0%, #151d22 52%, #080d10 70%, #202b32 72%, #0a0f12 74%);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), inset 0 0 35px #020405;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95), inset 0 0 45px #000, 0 0 20px rgba(0, 229, 255, 0.15);
 }
 
 .dial-tick-ring {
@@ -1799,10 +1799,10 @@ h1 em, h2 em {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 2px solid rgba(255, 209, 102, 0.4);
-  border-radius: 5px;
-  background: radial-gradient(ellipse at 50% 40%, rgba(55, 42, 22, 0.7), rgba(12, 16, 18, 0.98) 75%);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(0, 0, 0, 0.8);
+  border: 3px solid #d4af37;
+  border-radius: 6px;
+  background: radial-gradient(ellipse at 50% 40%, rgba(55, 42, 22, 0.85), #06090c 85%);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 175, 55, 0.25);
 }
 
 .tumbler-chassis-top {
