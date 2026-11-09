@@ -86,11 +86,8 @@
     collectedCount: 0,
     lastTime: performance.now(),
     relicTransitioning: false,
-    screenShakeTimer: 0,
-    hitStopUntil: 0,
-    motionTime: 0
+    screenShakeTimer: 0
   };
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Expose on window for inspection & testing
   window.__gameState = state;
@@ -119,8 +116,6 @@
     keyPause: document.getElementById('key-pause'),
     storyModal: document.getElementById('story-modal'),
     modalContinueBtn: document.getElementById('modal-continue-btn'),
-    finaleCheckpoint: document.getElementById('finale-checkpoint'),
-    finaleContinueBtn: document.getElementById('solve-bug-continue-btn'),
     bugWindowToggle: document.getElementById('bug-window-toggle'),
     bugWindow: document.getElementById('bug-window'),
     solveBugBtn: document.getElementById('solve-bug-btn'),
@@ -156,12 +151,8 @@
 
     resize() {
       const rect = DOM.viewport.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-      this.width = rect.width;
-      this.height = rect.height;
-      DOM.fxCanvas.width = Math.round(rect.width * dpr);
-      DOM.fxCanvas.height = Math.round(rect.height * dpr);
-      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.width = DOM.fxCanvas.width = rect.width;
+      this.height = DOM.fxCanvas.height = rect.height;
     },
 
     // Massive stream of temporal particles mapped to Strange's hands and Eye of Agamotto
@@ -192,9 +183,8 @@
         { x: leftHandX, y: leftHandY }
       ];
 
-      // Controlled streams keep the action legible and the canvas lightweight.
-      const count = reducedMotion ? 1 : 3;
-      if (this.particles.length > 260) this.particles.splice(0, this.particles.length - 220);
+      // Spawn 5-8 particles per tick from hands and eye
+      const count = 5 + Math.floor(Math.random() * 4);
       for (let k = 0; k < count; k++) {
         const randOrig = origins[Math.floor(Math.random() * origins.length)];
         const fromX = direction < 0 ? targetX + (Math.random() - 0.5) * 120 : randOrig.x;
@@ -210,70 +200,63 @@
           targetX: toX,
           targetY: toY,
           progress: 0,
-          speed: 0.022 + Math.random() * 0.014,
-          size: 2.8 + Math.random() * 3.4,
+          speed: 0.025 + Math.random() * 0.035,
+          size: 3 + Math.random() * 5,
           color: color || '#00ff88',
-          curve: (Math.random() - 0.5) * 180,
-          phase: Math.random() * Math.PI * 2,
+          curve: (Math.random() - 0.5) * 120,
           tail: []
         });
       }
 
-      // Keep crackling arcs close to the relic impact so the main magic reads as a beam.
-      if (!reducedMotion && Math.random() < 0.09 && this.lightningArcs.length < 5) {
+      // Crackling temporal lightning arcs between casting hands and relic fragments
+      if (Math.random() < 0.35) {
         this.lightningArcs.push({
-          x1: targetX + (Math.random() - 0.5) * 100,
-          y1: targetY + (Math.random() - 0.5) * 100,
-          x2: targetX + (Math.random() - 0.5) * 190,
-          y2: targetY + (Math.random() - 0.5) * 190,
+          x1: rightHandX + (Math.random() - 0.5) * 25,
+          y1: rightHandY + (Math.random() - 0.5) * 25,
+          x2: targetX + (Math.random() - 0.5) * 140,
+          y2: targetY + (Math.random() - 0.5) * 140,
           color: color || '#00ff88',
-          life: 18,
-          seed: Math.random() * Math.PI * 2
+          life: 6
         });
       }
     },
 
     // Massive Nova Shockwave Burst on Element Collection
     spawnNovaShockwave(x, y, color) {
-      const ringCount = reducedMotion ? 1 : 4;
-      for (let ring = 0; ring < ringCount; ring++) {
-        this.shockwaves.push({ x, y, radius: 8 + ring * 14, maxRadius: 300 + ring * 65, color, alpha: 0.96 - ring * 0.15, lineWidth: ring ? 3.4 : 10, speed: 7.2 - ring * 0.65, delay: ring * 6 });
-      }
+      // 1. Expanding shockwave ring
+      this.shockwaves.push({
+        x: x,
+        y: y,
+        radius: 10,
+        maxRadius: 280,
+        color: color,
+        alpha: 1.0,
+        lineWidth: 8
+      });
 
       // 2. Exploding sparks
-      for (let i = 0; i < (reducedMotion ? 10 : 64); i++) {
+      for (let i = 0; i < 70; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const spd = 3.2 + Math.random() * 8.8;
+        const spd = 4 + Math.random() * 12;
         this.particles.push({
           x: x,
           y: y,
           vx: Math.cos(ang) * spd,
           vy: Math.sin(ang) * spd,
           isRadial: true,
-          size: 2 + Math.random() * 4.6,
+          size: 3 + Math.random() * 5,
           color: color,
           alpha: 1.0,
-          decay: 0.012 + Math.random() * 0.012,
-          drag: 0.976
+          decay: 0.02 + Math.random() * 0.025
         });
       }
 
-      const tracker = DOM.progressText.getBoundingClientRect();
-      const viewport = DOM.viewport.getBoundingClientRect();
-      const targetX = tracker.left + tracker.width * 0.5 - viewport.left;
-      const targetY = tracker.top + tracker.height * 0.5 - viewport.top;
-      for (let i = 0; i < (reducedMotion ? 2 : 18); i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const radius = 35 + Math.random() * 90;
-        this.particles.push({ x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * radius, startX: x + Math.cos(angle) * radius, startY: y + Math.sin(angle) * radius, targetX, targetY, progress: 0, speed: 0.022 + Math.random() * 0.014, curve: (Math.random() - 0.5) * 80, size: 2 + Math.random() * 2.5, color, isPull: true, phase: Math.random() * Math.PI * 2 });
-      }
-
-      state.screenShakeTimer = reducedMotion ? 0 : 8;
-      state.hitStopUntil = performance.now() + (reducedMotion ? 0 : 90);
+      // Screen shake
+      state.screenShakeTimer = 18;
     },
 
     updateAndRender() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.clearRect(0, 0, this.width, this.height);
 
       const strangeRect = DOM.strangeRig.getBoundingClientRect();
       const viewRect = DOM.viewport.getBoundingClientRect();
@@ -292,82 +275,53 @@
       const targetX = (relicRect.left + relicRect.width * 0.5) - viewRect.left;
       const targetY = (relicRect.top + relicRect.height * 0.45) - viewRect.top;
 
-      // Draw a broad, curved mana beam between Strange's palm and the active relic.
-      if (state.isReversing || state.isForwarding) {
+      // Draw Agamotto and Hand Magic Beams connecting Strange to Relic when reversing/forwarding
+      if (state.isReversing || state.isForwarding || (!state.isPaused && state.phase.startsWith('RELIC_'))) {
         const beamColor = state.isReversing ? '#00ff88' : '#f5c452';
-        const pulse = reducedMotion ? 1 : 0.78 + 0.22 * Math.sin(state.motionTime * 7);
-        const x0 = rightHandX;
-        const y0 = rightHandY;
-        const c1x = rightHandX + 135;
-        const c1y = rightHandY - 145;
-        const c2x = targetX - 185;
-        const c2y = targetY + 115;
-        const x1 = targetX;
-        const y1 = targetY;
         this.ctx.save();
-        this.ctx.globalCompositeOperation = 'lighter';
-        const drawBeamBody = (startWidth, endWidth, alpha, stops, blur) => {
-          const left = [];
-          const right = [];
-          const steps = 28;
-          for (let i = 0; i <= steps; i++) {
-            const t = i / steps;
-            const inv = 1 - t;
-            const x = inv ** 3 * x0 + 3 * inv ** 2 * t * c1x + 3 * inv * t ** 2 * c2x + t ** 3 * x1;
-            const y = inv ** 3 * y0 + 3 * inv ** 2 * t * c1y + 3 * inv * t ** 2 * c2y + t ** 3 * y1;
-            const dx = 3 * inv ** 2 * (c1x - x0) + 6 * inv * t * (c2x - c1x) + 3 * t ** 2 * (x1 - c2x);
-            const dy = 3 * inv ** 2 * (c1y - y0) + 6 * inv * t * (c2y - c1y) + 3 * t ** 2 * (y1 - c2y);
-            const length = Math.max(1, Math.hypot(dx, dy));
-            const width = startWidth + endWidth * Math.pow(Math.max(0, Math.sin(t * Math.PI)), 0.72);
-            const nx = -dy / length * width * 0.5;
-            const ny = dx / length * width * 0.5;
-            left.push([x + nx, y + ny]);
-            right.push([x - nx, y - ny]);
-          }
-          this.ctx.beginPath();
-          this.ctx.moveTo(left[0][0], left[0][1]);
-          for (let i = 1; i < left.length; i++) this.ctx.lineTo(left[i][0], left[i][1]);
-          for (let i = right.length - 1; i >= 0; i--) this.ctx.lineTo(right[i][0], right[i][1]);
-          this.ctx.closePath();
-          const gradient = this.ctx.createLinearGradient(x0, y0, x1, y1);
-          for (const [position, color] of stops) gradient.addColorStop(position, color);
-          this.ctx.fillStyle = gradient;
-          this.ctx.shadowColor = beamColor;
-          this.ctx.shadowBlur = blur;
-          this.ctx.globalAlpha = alpha * pulse;
-          this.ctx.fill();
-        };
-        drawBeamBody(5.76, 53.28, 0.25, [[0, 'rgba(255,255,255,.05)'], [.12, beamColor], [.68, beamColor], [1, 'rgba(255,255,255,.18)']], 31);
-        drawBeamBody(3.24, 34.56, 0.5, [[0, 'rgba(255,255,255,.16)'], [.22, beamColor], [.8, beamColor], [1, '#eaffff']], 19);
-        drawBeamBody(1.44, 12.24, 0.78, [[0, 'rgba(255,255,255,.65)'], [.2, '#eaffff'], [.78, '#eaffff'], [1, 'rgba(255,255,255,.95)']], 11);
 
-        // A broad moving surge travels inside the beam body and lights its destination.
-        const t = (state.motionTime * 0.34) % 1;
-        const inv = 1 - t;
-        const mx = inv ** 3 * x0 + 3 * inv ** 2 * t * c1x + 3 * inv * t ** 2 * c2x + t ** 3 * x1;
-        const my = inv ** 3 * y0 + 3 * inv ** 2 * t * c1y + 3 * inv * t ** 2 * c2y + t ** 3 * y1;
-        const surge = this.ctx.createRadialGradient(mx, my, 2, mx, my, 32);
-        surge.addColorStop(0, 'rgba(255,255,255,.95)');
-        surge.addColorStop(0.18, beamColor);
-        surge.addColorStop(1, 'rgba(255,255,255,0)');
-        this.ctx.fillStyle = surge;
-        this.ctx.globalAlpha = 0.43;
-        this.ctx.fillRect(mx - 32, my - 32, 64, 64);
+        // 1. Concentrated laser beam from Eye of Agamotto
+        this.ctx.beginPath();
+        this.ctx.moveTo(eyeX, eyeY);
+        this.ctx.lineTo(targetX, targetY);
+        this.ctx.strokeStyle = beamColor;
+        this.ctx.shadowColor = beamColor;
+        this.ctx.shadowBlur = 35;
+        this.ctx.lineWidth = 6 + Math.sin(performance.now() * 0.015) * 3;
+        this.ctx.globalAlpha = 0.6 + Math.random() * 0.3;
+        this.ctx.stroke();
 
-        const impact = this.ctx.createRadialGradient(targetX, targetY, 2, targetX, targetY, 54);
-        impact.addColorStop(0, 'rgba(255,255,255,.92)');
-        impact.addColorStop(0.2, beamColor);
-        impact.addColorStop(1, 'rgba(255,255,255,0)');
-        this.ctx.fillStyle = impact;
-        this.ctx.globalAlpha = 0.26 + pulse * 0.09;
-        this.ctx.fillRect(targetX - 54, targetY - 54, 108, 108);
+        // 2. Arcane stream from right forward casting hand
+        this.ctx.beginPath();
+        this.ctx.moveTo(rightHandX, rightHandY);
+        this.ctx.quadraticCurveTo(
+          (rightHandX + targetX) * 0.5,
+          (rightHandY + targetY) * 0.5 - 55,
+          targetX,
+          targetY
+        );
+        this.ctx.strokeStyle = '#3df0d5';
+        this.ctx.shadowColor = '#00ff88';
+        this.ctx.shadowBlur = 25;
+        this.ctx.lineWidth = 3.5 + Math.sin(performance.now() * 0.02) * 2;
+        this.ctx.globalAlpha = 0.55 + Math.random() * 0.25;
+        this.ctx.stroke();
+
+        // Inner laser core
+        this.ctx.beginPath();
+        this.ctx.moveTo(eyeX, eyeY);
+        this.ctx.lineTo(targetX, targetY);
+        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.lineWidth = 2;
+        this.ctx.globalAlpha = 0.85;
+        this.ctx.stroke();
         this.ctx.restore();
       }
 
       // Update & Render Lightning Arcs
       for (let i = this.lightningArcs.length - 1; i >= 0; i--) {
         const arc = this.lightningArcs[i];
-        arc.life -= 0.8;
+        arc.life--;
         if (arc.life <= 0) {
           this.lightningArcs.splice(i, 1);
           continue;
@@ -375,19 +329,15 @@
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.moveTo(arc.x1, arc.y1);
-        const dx = arc.x2 - arc.x1;
-        const dy = arc.y2 - arc.y1;
-        const length = Math.max(1, Math.hypot(dx, dy));
-        const bend = Math.sin(state.motionTime * 22 + arc.seed) * 24;
-        const midX = (arc.x1 + arc.x2) * 0.5 - dy / length * bend;
-        const midY = (arc.y1 + arc.y2) * 0.5 + dx / length * bend;
-        this.ctx.quadraticCurveTo(midX, midY, arc.x2, arc.y2);
+        const midX = (arc.x1 + arc.x2) * 0.5 + (Math.random() - 0.5) * 30;
+        const midY = (arc.y1 + arc.y2) * 0.5 + (Math.random() - 0.5) * 30;
+        this.ctx.lineTo(midX, midY);
         this.ctx.lineTo(arc.x2, arc.y2);
         this.ctx.strokeStyle = '#ffffff';
         this.ctx.shadowColor = arc.color;
-        this.ctx.shadowBlur = 34;
-        this.ctx.lineWidth = 4.2;
-        this.ctx.globalAlpha = Math.min(1, arc.life / 8);
+        this.ctx.shadowBlur = 20;
+        this.ctx.lineWidth = 2.5;
+        this.ctx.globalAlpha = (arc.life / 6);
         this.ctx.stroke();
         this.ctx.restore();
       }
@@ -395,9 +345,8 @@
       // Update & Render Shockwaves
       for (let i = this.shockwaves.length - 1; i >= 0; i--) {
         const sw = this.shockwaves[i];
-        if (sw.delay > 0) { sw.delay--; continue; }
-        sw.radius += sw.speed || 8;
-        sw.alpha -= 0.012;
+        sw.radius += 12;
+        sw.alpha -= 0.045;
         if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
           this.shockwaves.splice(i, 1);
           continue;
@@ -406,9 +355,9 @@
         this.ctx.beginPath();
         this.ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
         this.ctx.strokeStyle = sw.color;
-        this.ctx.shadowColor = sw.color;
-        this.ctx.shadowBlur = 38;
-        this.ctx.lineWidth = sw.lineWidth;
+        this.ctx.shadowColor = '#ffffff';
+        this.ctx.shadowBlur = 30;
+        this.ctx.lineWidth = sw.lineWidth * sw.alpha;
         this.ctx.globalAlpha = sw.alpha;
         this.ctx.stroke();
         this.ctx.restore();
@@ -421,30 +370,19 @@
         if (p.isRadial) {
           p.x += p.vx;
           p.y += p.vy;
-          p.vx *= p.drag || 0.95;
-          p.vy *= p.drag || 0.95;
+          p.vx *= 0.95;
+          p.vy *= 0.95;
           p.alpha -= p.decay;
           if (p.alpha <= 0) {
             this.particles.splice(i, 1);
             continue;
           }
           this.ctx.save();
-          this.ctx.globalCompositeOperation = 'lighter';
-          this.ctx.lineCap = 'round';
-          this.ctx.beginPath();
-          this.ctx.moveTo(p.x - p.vx * 1.8, p.y - p.vy * 1.8);
-          this.ctx.lineTo(p.x, p.y);
-          this.ctx.strokeStyle = p.color;
-          this.ctx.shadowColor = p.color;
-          this.ctx.shadowBlur = 26;
-          this.ctx.lineWidth = Math.max(1.4, p.size * 0.9);
-          this.ctx.globalAlpha = p.alpha * 0.75;
-          this.ctx.stroke();
           this.ctx.beginPath();
           this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           this.ctx.fillStyle = p.color;
           this.ctx.shadowColor = p.color;
-          this.ctx.shadowBlur = 30;
+          this.ctx.shadowBlur = 18;
           this.ctx.globalAlpha = p.alpha;
           this.ctx.fill();
           this.ctx.restore();
@@ -463,52 +401,13 @@
         const curX = (1 - t) * (1 - t) * p.startX + 2 * (1 - t) * t * midX + t * t * p.targetX;
         const curY = (1 - t) * (1 - t) * p.startY + 2 * (1 - t) * t * midY + t * t * p.targetY;
 
-        if (p.isPull) {
-          this.ctx.save();
-          const tailX = curX - (p.targetX - p.startX) * 0.04;
-          const tailY = curY - (p.targetY - p.startY) * 0.04;
-          this.ctx.globalCompositeOperation = 'lighter';
-          this.ctx.beginPath();
-          this.ctx.moveTo(tailX, tailY);
-          this.ctx.lineTo(curX, curY);
-          this.ctx.strokeStyle = p.color;
-          this.ctx.lineCap = 'round';
-          this.ctx.lineWidth = Math.max(2, p.size * 1.15);
-          this.ctx.shadowColor = p.color;
-          this.ctx.shadowBlur = 42;
-          this.ctx.globalAlpha = Math.sin(t * Math.PI) * 0.8;
-          this.ctx.stroke();
-          this.ctx.beginPath();
-          this.ctx.arc(curX, curY, p.size * (1.65 - t * 0.55), 0, Math.PI * 2);
-          this.ctx.fillStyle = p.color;
-          this.ctx.shadowColor = p.color;
-          this.ctx.shadowBlur = 64;
-          this.ctx.globalAlpha = Math.sin(t * Math.PI);
-          this.ctx.fill();
-          this.ctx.restore();
-          continue;
-        }
-
         this.ctx.save();
-        const trailX = curX - (p.targetX - p.startX) * 0.018;
-        const trailY = curY - (p.targetY - p.startY) * 0.018;
-        this.ctx.lineCap = 'round';
-        this.ctx.globalCompositeOperation = 'lighter';
         this.ctx.beginPath();
-        this.ctx.moveTo(trailX, trailY);
-        this.ctx.lineTo(curX, curY);
+        this.ctx.arc(curX, curY, p.size, 0, Math.PI * 2);
         this.ctx.fillStyle = p.color;
-        this.ctx.strokeStyle = p.color;
         this.ctx.shadowColor = p.color;
-        this.ctx.shadowBlur = 34;
-        this.ctx.lineWidth = p.size * 1.8;
+        this.ctx.shadowBlur = 16;
         this.ctx.globalAlpha = Math.sin(p.progress * Math.PI);
-        this.ctx.stroke();
-        this.ctx.beginPath();
-        this.ctx.arc(curX, curY, p.size * 0.72, 0, Math.PI * 2);
-        this.ctx.fillStyle = '#effff9';
-        this.ctx.shadowBlur = 18;
-        this.ctx.globalAlpha = Math.sin(p.progress * Math.PI) * 0.92;
         this.ctx.fill();
         this.ctx.restore();
       }
@@ -517,45 +416,23 @@
       if (this.beams.length > 0) {
         for (const beam of this.beams) {
           this.ctx.save();
-          const pulse = 0.72 + 0.28 * Math.sin(this.motionTime * 5 + beam.phase * 6);
-          const dx = beam.x2 - beam.x1;
-          const dy = beam.y2 - beam.y1;
-          const length = Math.max(1, Math.hypot(dx, dy));
-          const nx = -dy / length;
-          const ny = dx / length;
-          const drawBeam = (width, alpha, blur, color) => {
-            this.ctx.beginPath();
-            this.ctx.moveTo(beam.x1 + nx * width * 0.5, beam.y1 + ny * width * 0.5);
-            this.ctx.lineTo(beam.x2 + nx * width * 0.5, beam.y2 + ny * width * 0.5);
-            this.ctx.lineTo(beam.x2 - nx * width * 0.5, beam.y2 - ny * width * 0.5);
-            this.ctx.lineTo(beam.x1 - nx * width * 0.5, beam.y1 - ny * width * 0.5);
-            this.ctx.closePath();
-            const gradient = this.ctx.createLinearGradient(beam.x1, beam.y1, beam.x2, beam.y2);
-            gradient.addColorStop(0, 'rgba(255,255,255,.18)');
-            gradient.addColorStop(0.5, color);
-            gradient.addColorStop(1, 'rgba(255,255,255,.8)');
-            this.ctx.fillStyle = gradient;
-            this.ctx.shadowColor = beam.color;
-            this.ctx.shadowBlur = blur;
-            this.ctx.globalAlpha = alpha * pulse;
-            this.ctx.fill();
-          };
-          this.ctx.globalCompositeOperation = 'lighter';
-          drawBeam(24.48, 0.3, 26, beam.color);
-          drawBeam(15.12, 0.56, 15, beam.color);
-          drawBeam(6.12, 0.9, 10, '#effff9');
-
-          // Traveling light motes are embedded in each broad triangle side.
-          const moteT = (this.motionTime * 0.18 + beam.phase) % 1;
-          const mx = beam.x1 + (beam.x2 - beam.x1) * moteT;
-          const my = beam.y1 + (beam.y2 - beam.y1) * moteT;
           this.ctx.beginPath();
-          this.ctx.arc(mx, my, 8 + pulse * 3, 0, Math.PI * 2);
-          this.ctx.fillStyle = '#ffffff';
+          this.ctx.moveTo(beam.x1, beam.y1);
+          this.ctx.lineTo(beam.x2, beam.y2);
+          this.ctx.strokeStyle = beam.color;
           this.ctx.shadowColor = beam.color;
-          this.ctx.shadowBlur = 12;
-          this.ctx.globalAlpha = 0.92;
-          this.ctx.fill();
+          this.ctx.shadowBlur = 35;
+          this.ctx.lineWidth = 6 + Math.sin(performance.now() * 0.015) * 3;
+          this.ctx.globalAlpha = beam.alpha || 0.9;
+          this.ctx.stroke();
+
+          // Laser core
+          this.ctx.beginPath();
+          this.ctx.moveTo(beam.x1, beam.y1);
+          this.ctx.lineTo(beam.x2, beam.y2);
+          this.ctx.strokeStyle = '#ffffff';
+          this.ctx.lineWidth = 2.5;
+          this.ctx.stroke();
           this.ctx.restore();
         }
       }
@@ -684,7 +561,6 @@
 
     const wMin = relic.windowMin;
     const wMax = relic.windowMax;
-    const easeInOut = value => value * value * (3 - 2 * value);
 
     // RELIC 1: GRAND ANCIENT VASE
     if (relic.id === 'crystal') {
@@ -703,16 +579,15 @@
         } else if (t <= wMax) {
           // Window: Neck hovers open high, revealing the glowing Time Crystal!
           const wFactor = (t - wMin) / (wMax - wMin);
-          const reveal = easeInOut(wFactor);
-          curX = cfg.expX * 0.35 * reveal;
-          curY = cfg.windowY * (0.6 + reveal * 0.4);
-          curRot = cfg.expRot * 0.35 * reveal;
-          curZ = cfg.expZ * 0.35 * reveal;
+          curX = cfg.expX * 0.35 * wFactor;
+          curY = cfg.windowY * (0.6 + wFactor * 0.4);
+          curRot = cfg.expRot * 0.35 * wFactor;
+          curZ = cfg.expZ * 0.35 * wFactor;
         } else {
           // Destroyed Present: Shards tumbled across the altar table
-          const dFactor = easeInOut((t - wMax) / (1.0 - wMax));
+          const dFactor = (t - wMax) / (1.0 - wMax);
           curX = cfg.expX * 0.35 + (cfg.expX - cfg.expX * 0.35) * dFactor;
-          curY = cfg.windowY + (cfg.expY - cfg.windowY) * dFactor;
+          curY = cfg.windowY * 1.0 + (cfg.expY - cfg.windowY) * dFactor;
           curRot = cfg.expRot * 0.35 + (cfg.expRot - cfg.expRot * 0.35) * dFactor;
           curZ = cfg.expZ * dFactor;
         }
@@ -736,7 +611,7 @@
       clockCogsConfig.forEach((cfg, idx) => {
         const el = document.getElementById(`c-cog-${idx}`);
         if (!el) return;
-        const factor = easeInOut(Math.min(Math.max((t - 0.25) / 0.75, 0), 1));
+        const factor = Math.min(Math.max((t - 0.25) / 0.75, 0), 1);
         const curX = cfg.expX * factor;
         const curY = cfg.expY * factor;
         const curRot = (t * 360 * cfg.ratio);
@@ -758,14 +633,14 @@
 
         let curDist, curRot;
         if (t <= wMin) {
-          curDist = 10 * easeInOut(t / wMin);
+          curDist = 10 * (t / wMin);
           curRot = cfg.angle;
         } else if (t <= wMax) {
-          const wFactor = easeInOut((t - wMin) / (wMax - wMin));
+          const wFactor = (t - wMin) / (wMax - wMin);
           curDist = 20 + 40 * wFactor; // open lotus
           curRot = cfg.angle + cfg.rotExp * 0.3 * wFactor;
         } else {
-          const dFactor = easeInOut((t - wMax) / (1.0 - wMax));
+          const dFactor = (t - wMax) / (1.0 - wMax);
           curDist = 60 + (cfg.distExp - 60) * dFactor;
           curRot = cfg.angle + cfg.rotExp * 0.3 + (cfg.rotExp - cfg.rotExp * 0.3) * dFactor;
         }
@@ -804,7 +679,10 @@
       const relic = CONFIG.relics[state.currentRelicIndex];
       fx.spawnTimeParticles(rate, relic ? relic.color : '#00ff88');
 
-      if (!reducedMotion) state.screenShakeTimer = Math.max(state.screenShakeTimer, 1);
+      // Subtle temporal vibration
+      if (Math.random() < 0.2) {
+        state.screenShakeTimer = 2;
+      }
     } else {
       state.isPaused = true;
     }
@@ -818,8 +696,6 @@
       DOM.eyeIris.style.transform = 'scale(1.35)';
       DOM.eyeIris.style.filter = 'drop-shadow(0 0 20px #00ff88)';
       DOM.strangeRig.classList.add('casting');
-      DOM.strangeRig.classList.toggle('casting-reverse', true);
-      DOM.strangeRig.classList.toggle('casting-forward', false);
       DOM.keyQ.classList.add('active');
       DOM.keyE.classList.remove('active');
       DOM.keyPause.classList.remove('active');
@@ -829,8 +705,6 @@
       DOM.eyeIris.style.transform = 'scale(1.15)';
       DOM.eyeIris.style.filter = 'drop-shadow(0 0 20px #f5c452)';
       DOM.strangeRig.classList.add('casting');
-      DOM.strangeRig.classList.toggle('casting-forward', true);
-      DOM.strangeRig.classList.toggle('casting-reverse', false);
       DOM.keyE.classList.add('active');
       DOM.keyQ.classList.remove('active');
       DOM.keyPause.classList.remove('active');
@@ -840,7 +714,6 @@
       DOM.eyeIris.style.transform = 'scale(1.0)';
       DOM.eyeIris.style.filter = 'none';
       DOM.strangeRig.classList.remove('casting');
-      DOM.strangeRig.classList.remove('casting-forward', 'casting-reverse');
       DOM.keyPause.classList.add('active');
       DOM.keyQ.classList.remove('active');
       DOM.keyE.classList.remove('active');
@@ -875,9 +748,6 @@
       const vRect = DOM.viewport.getBoundingClientRect();
       const clickX = (rect.left + rect.width * 0.5) - vRect.left;
       const clickY = (rect.top + rect.height * 0.5) - vRect.top;
-      const trackerRect = DOM.progressText.getBoundingClientRect();
-      el.style.setProperty('--collect-dx', `${trackerRect.left + trackerRect.width * 0.5 - (rect.left + rect.width * 0.5)}px`);
-      el.style.setProperty('--collect-dy', `${trackerRect.top + trackerRect.height * 0.5 - (rect.top + rect.height * 0.5)}px`);
       fx.spawnNovaShockwave(clickX, clickY, relic.color);
 
       el.classList.remove('in-window');
@@ -958,11 +828,9 @@
       state.phase = 'RELIC_3';
       switchRelicAssembly(2);
     } else if (state.currentRelicIndex === 2) {
-      // Let the player acknowledge the checkpoint before the triangle forms.
-      state.phase = 'BUG_PAUSE';
-      DOM.finaleCheckpoint.classList.add('open');
-      DOM.finaleCheckpoint.setAttribute('aria-hidden', 'false');
-      DOM.finaleContinueBtn.focus();
+      // All 3 collected -> Finale!
+      state.phase = 'FINALE';
+      startFinaleSequence();
     }
   }
 
@@ -986,36 +854,35 @@
 
     // Strange takes epic casting pose
     DOM.strangeRig.classList.add('casting');
-        state.screenShakeTimer = 30;
+    state.screenShakeTimer = 30;
 
     // 3. Fast, spectacular sequential slotting
     setTimeout(() => {
       // Slot 1: Time Crystal
       document.getElementById('socket-1').classList.add('filled');
       showToast('TIME CRYSTAL ENGAGED', 'The emerald pillar stabilizes the northern meridian.', '#00ff88');
-      fx.spawnNovaShockwave(fx.width * 0.72, fx.height * 0.35, '#00ff88');
+      fx.spawnNovaShockwave(DOM.fxCanvas.width * 0.72, DOM.fxCanvas.height * 0.35, '#00ff88');
     }, 600);
 
     setTimeout(() => {
       // Slot 2: Eternity Gear
       document.getElementById('socket-2').classList.add('filled');
       showToast('ETERNITY GEAR ENGAGED', 'The golden axle locks into the cosmic matrix.', '#f5c452');
-      fx.spawnNovaShockwave(fx.width * 0.65, fx.height * 0.58, '#f5c452');
+      fx.spawnNovaShockwave(DOM.fxCanvas.width * 0.65, DOM.fxCanvas.height * 0.58, '#f5c452');
     }, 1400);
 
     setTimeout(() => {
       // Slot 3: Cosmic Core
       document.getElementById('socket-3').classList.add('filled');
       showToast('COSMIC CORE ENGAGED', 'The purple nexus harmonizes dimensional boundaries.', '#c540ff');
-      fx.spawnNovaShockwave(fx.width * 0.79, fx.height * 0.58, '#c540ff');
+      fx.spawnNovaShockwave(DOM.fxCanvas.width * 0.79, DOM.fxCanvas.height * 0.58, '#c540ff');
     }, 2200);
 
     // 4. Tri-color energy convergence beams
     setTimeout(() => {
       setupEnergyBeams();
-      DOM.relicFinaleAltar.classList.add('forming');
       showToast('CONVERGENCE ACTIVE', 'The tri-chromatic shield of Agamotto ignites!', '#3df0d5');
-      state.screenShakeTimer = reducedMotion ? 0 : 12;
+      state.screenShakeTimer = 40;
     }, 2900);
 
     // 5. Giant shield expansion & reality restoration
@@ -1048,9 +915,9 @@
     const p3 = { x: s3.left + s3.width * 0.5 - vRect.left, y: s3.top + s3.height * 0.5 - vRect.top };
 
     fx.beams = [
-      { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, color: '#00ff88', phase: 0 },
-      { x1: p2.x, y1: p2.y, x2: p3.x, y2: p3.y, color: '#f5c452', phase: 0.34 },
-      { x1: p3.x, y1: p3.y, x2: p1.x, y2: p1.y, color: '#c540ff', phase: 0.67 }
+      { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, color: '#00ff88' },
+      { x1: p2.x, y1: p2.y, x2: p3.x, y2: p3.y, color: '#f5c452' },
+      { x1: p3.x, y1: p3.y, x2: p1.x, y2: p1.y, color: '#c540ff' }
     ];
   }
 
@@ -1173,12 +1040,6 @@
     // Modal action buttons
     DOM.modalContinueBtn.addEventListener('click', startGameFromIntro);
     DOM.btnReplay.addEventListener('click', restartGame);
-    DOM.finaleContinueBtn.addEventListener('click', () => {
-      DOM.finaleCheckpoint.classList.remove('open');
-      DOM.finaleCheckpoint.setAttribute('aria-hidden', 'true');
-      state.phase = 'FINALE';
-      startFinaleSequence();
-    });
     DOM.bugWindowToggle.addEventListener('click', openBugWindow);
     DOM.solveBugBtn.addEventListener('click', closeBugWindow);
   }
@@ -1243,7 +1104,6 @@
 
     DOM.timelineTrack.style.opacity = '1';
     DOM.victoryModal.classList.add('hidden');
-    DOM.relicFinaleAltar.classList.remove('forming');
 
     switchRelicAssembly(0);
   }
@@ -1263,8 +1123,7 @@
       DOM.viewport.classList.remove('screen-shake');
     }
 
-    state.motionTime = now / 1000;
-    if (now >= state.hitStopUntil) updateTimeline(deltaTime);
+    updateTimeline(deltaTime);
     fx.updateAndRender();
 
     requestAnimationFrame(gameLoop);
