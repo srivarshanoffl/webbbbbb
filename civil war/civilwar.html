@@ -781,13 +781,19 @@
             mask-image: linear-gradient(to top, rgba(0, 0, 0, .8), transparent 55%)
         }
 
-        #cap-refl .pose-inner,
+        #cap-refl .pose-inner {
+            transform: scaleY(-1) !important;
+            transform-origin: center bottom;
+        }
+
         #im-refl .pose-inner {
-            transform: none !important
+            transform: scaleY(-1) !important;
+            transform-origin: center bottom;
         }
 
         #im-refl .im-upper {
-            transform: none !important
+            transform: scaleY(-1) !important;
+            transform-origin: center 40%;
         }
 
         #im-refl.im-down {
@@ -2373,7 +2379,7 @@
    Keyframes: "shield-impact"       (defined in #keyframes-css)
    ─────────────────────────────────────────────────────────── */
         .shield-impact {
-            animation: shieldImpact 800ms ease-out forwards;
+            animation: shield-impact 800ms cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
         }
     </style>
 </head>
@@ -2783,7 +2789,7 @@
                 applyCam(opts.cut ? 0 : (opts.dur !== undefined ? opts.dur : d[3]));
             }
             function fitStage() {
-                stageScale = Math.max(innerWidth / 1600, innerHeight / 900);
+                stageScale = Math.min(innerWidth / 1600, innerHeight / 900);
                 applyCam(0);
             }
             addEventListener('resize', fitStage);

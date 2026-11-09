@@ -427,13 +427,31 @@
     }
 
     function resizeCanvases() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
         if (DOM.canvas1) {
-            DOM.canvas1.width = window.innerWidth;
-            DOM.canvas1.height = window.innerHeight;
+            DOM.canvas1.width = Math.round(w * dpr);
+            DOM.canvas1.height = Math.round(h * dpr);
+            DOM.canvas1.style.width = w + 'px';
+            DOM.canvas1.style.height = h + 'px';
+            const ctx = DOM.canvas1.getContext('2d');
+            if (ctx) {
+                ctx.resetTransform();
+                ctx.scale(dpr, dpr);
+            }
         }
         if (lightCanvas) {
-            lightCanvas.width = window.innerWidth;
-            lightCanvas.height = window.innerHeight;
+            lightCanvas.width = Math.round(w * dpr);
+            lightCanvas.height = Math.round(h * dpr);
+            lightCanvas.style.width = w + 'px';
+            lightCanvas.style.height = h + 'px';
+            const lctx = lightCanvas.getContext('2d');
+            if (lctx) {
+                lctx.resetTransform();
+                lctx.scale(dpr, dpr);
+            }
         }
     }
 
