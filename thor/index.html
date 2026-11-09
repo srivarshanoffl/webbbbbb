@@ -159,9 +159,13 @@
     /* MINIMAL CINEMATIC HUD — ONLY ESSENTIAL CONTROLS */
     .fs-controls-container {
       position: absolute;
-      bottom: clamp(20px, 3.5vw, 36px);
-      right: clamp(20px, 3.5vw, 36px);
+      bottom: clamp(16px, 2.5vh, 28px);
+      left: 50%;
+      transform: translateX(-50%);
+      right: auto;
       z-index: 20;
+      display: flex;
+      gap: 12px;
       pointer-events: auto;
     }
 

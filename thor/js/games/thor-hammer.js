@@ -92,13 +92,16 @@ class ThorHammerGame extends GameEngine {
       this.lightCanvas.height = this.vHeight;
     }
     this.groundY = this.vHeight * 0.82;
+    this.entityScale = Math.min(1.0, Math.max(0.48, this.vWidth / 1280));
 
     // Reposition Thor if initialized
     if (this.thor) {
-      this.thor.x = this.vWidth * 0.16;
+      this.thor.width = 300 * this.entityScale;
+      this.thor.height = 345 * this.entityScale;
+      this.thor.x = Math.max(this.thor.width * 0.55, this.vWidth * 0.16);
       this.thor.y = this.groundY;
-      this.thor.handX = this.thor.x + 70;
-      this.thor.handY = this.groundY - 155;
+      this.thor.handX = this.thor.x + 65 * this.entityScale;
+      this.thor.handY = this.groundY - 150 * this.entityScale;
     }
 
     if (this.hammer && this.hammer.state === 'IDLE' && this.thor) {
@@ -108,21 +111,28 @@ class ThorHammerGame extends GameEngine {
       this.hammer.prevY = this.thor.handY;
     }
 
-    // Reposition Traitors and Civilians proportionally
+    // Reposition Traitors and Civilians proportionally with spacing
     if (this.traitors) {
-      const tPositions = [0.50, 0.69, 0.86];
+      const basePositions = [0.48, 0.68, 0.86];
       this.traitors.forEach((t, i) => {
-        t.x = this.vWidth * tPositions[i];
+        t.w = (i === 2 ? 220 : 195) * this.entityScale;
+        t.h = (i === 2 ? 265 : 245) * this.entityScale;
+        t.r = (i === 2 ? 58 : 52) * this.entityScale;
+
+        const targetX = this.vWidth * basePositions[i];
+        const maxX = this.vWidth - t.w * 0.55;
+        const minX = (this.thor ? this.thor.x + this.thor.width * 0.6 : 100) + i * (t.w * 0.85);
+        t.x = Math.max(minX, Math.min(maxX, targetX));
         t.y = this.groundY;
       });
     }
 
-    if (this.civilians) {
-      const tPositions = [0.50, 0.69, 0.86];
+    if (this.civilians && this.traitors) {
       this.civilians.forEach((civ, i) => {
-        civ.x = this.vWidth * tPositions[i];
+        civ.r = 36 * this.entityScale;
+        civ.x = this.traitors[i].x;
         if (!civ.rescued && !civ.evacuating) {
-          civ.y = this.groundY - 20;
+          civ.y = this.groundY - 15 * this.entityScale;
         }
       });
     }
@@ -1216,12 +1226,29 @@ class ThorHammerGame extends GameEngine {
       ctx.ellipse(0, -50 + bob, civ.r + 20, 22, 0, 0, Math.PI * 2);
       ctx.stroke();
 
-      // REALISTIC ASGARDIAN CIVILIAN CHARACTER SPRITE (Enlarged Scale: 185px)
+      // REALISTIC ASGARDIAN CIVILIAN CHARACTER SPRITE
+      const scale = this.entityScale || 1.0;
       const cImg = this.civilianImages[i % this.civilianImages.length];
       if (cImg && cImg.complete && cImg.naturalWidth > 0) {
-        const drawH = 185;
+        const drawH = 185 * scale;
         const aspect = cImg.naturalWidth / cImg.naturalHeight;
         const drawW = drawH * aspect;
+
+        // Protective ground barrier to naturally anchor waist-up civilian sprites
+        ctx.save();
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 2 * scale;
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(-drawW * 0.55, -20 * scale + bob, drawW * 1.1, 24 * scale, 6 * scale);
+        } else {
+          ctx.rect(-drawW * 0.55, -20 * scale + bob, drawW * 1.1, 24 * scale);
+        }
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
         ctx.drawImage(cImg, -drawW / 2, -drawH + 16 + bob, drawW, drawH);
       } else {
         // High-quality fallback rendering
@@ -1352,14 +1379,20 @@ class ThorHammerGame extends GameEngine {
     const lineWidth = this.isCharging ? (3 + this.power * 4) : 2;
 
     // Laser Trajectory Guide
-    ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
-    ctx.shadowColor = '#00f0ff';
-    ctx.shadowBlur = this.isCharging ? 16 : 6;
-    ctx.lineWidth = lineWidth;
+    // 1. Dark high-contrast casing underlay
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.lineWidth = (lineWidth + 3);
     ctx.setLineDash([12, 8]);
     ctx.beginPath();
     ctx.moveTo(this.hammer.x, this.hammer.y);
     ctx.lineTo(endX, endY);
+    ctx.stroke();
+
+    // 2. High-intensity neon cyan laser core
+    ctx.strokeStyle = this.isCharging ? '#ffd200' : '#00f0ff';
+    ctx.shadowColor = this.isCharging ? '#ffd200' : '#00f0ff';
+    ctx.shadowBlur = this.isCharging ? 16 : 6;
+    ctx.lineWidth = lineWidth;
     ctx.stroke();
     ctx.setLineDash([]);
 
@@ -1441,8 +1474,9 @@ class ThorHammerGame extends GameEngine {
 
     // High-Resolution Metallic Uru Mjölnir Sprite
     if (this.mjolnirImg && this.mjolnirImg.complete && this.mjolnirImg.naturalWidth > 0) {
-      const drawW = 75;
-      const drawH = 100;
+      const scale = this.entityScale || 1.0;
+      const drawW = 75 * scale;
+      const drawH = 100 * scale;
       // Position hammer head centered on coordinates
       ctx.drawImage(this.mjolnirImg, -drawW / 2, -drawH * 0.28, drawW, drawH);
     } else {
