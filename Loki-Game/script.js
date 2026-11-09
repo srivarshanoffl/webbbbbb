@@ -37,7 +37,7 @@
   const LOKI_POSES = {
     idle: 'assets/characters/loki-catch.png',
     casting: 'assets/characters/loki-catch.png',
-    glitch: 'assets/characters/loki-catch.png',
+    glitch: 'assets/characters/loki-surprise-cutout.png',
     victory: 'assets/characters/loki-catch.png'
   };
 
@@ -310,7 +310,17 @@
     fitPuzzleBoard();
   }
 
+  function fitGameStage() {
+    const container = document.getElementById('game-container');
+    if (!container) return;
+    const scaleX = window.innerWidth / 1280;
+    const scaleY = window.innerHeight / 720;
+    const scale = Math.min(1, scaleX, scaleY);
+    container.style.transform = `scale(${scale})`;
+  }
+
   function fitPuzzleBoard() {
+    fitGameStage();
     const board = document.getElementById('puzzle-board');
     if (!board) return;
     const scale = Math.min(1, (board.clientWidth - 24) / 960, (board.clientHeight - 24) / 520);
@@ -1827,6 +1837,7 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
+    fitGameStage();
     setupEventListeners();
     window.addEventListener('resize', fitPuzzleBoard);
     setPhase(STATES.INTRO);
