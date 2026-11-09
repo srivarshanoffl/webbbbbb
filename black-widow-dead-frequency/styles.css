@@ -73,7 +73,18 @@ button, input {
   pointer-events: none;
   z-index: 1000;
   transform: translate(-50%, -50%);
+  opacity: 0;
   transition: width 0.18s, height 0.18s, opacity 0.2s;
+}
+
+.tactical-cursor.active {
+  opacity: 1;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tactical-cursor {
+    display: none !important;
+  }
 }
 
 .cursor-dot {
@@ -124,8 +135,8 @@ button, input {
   position: relative;
   width: 100vw;
   height: 100vh;
-  min-width: 860px;
-  min-height: 600px;
+  min-width: 320px;
+  min-height: 480px;
   overflow: hidden;
   isolation: isolate;
   background: var(--bg-deep);
@@ -817,13 +828,15 @@ button, input {
 
 .widow-standing {
   opacity: 1;
-  filter: brightness(0.92) contrast(1.12) saturate(0.95);
+  filter: brightness(0.92) contrast(1.12) saturate(0.95) drop-shadow(0 0 1px rgba(6, 9, 13, 0.95));
+  clip-path: inset(0.5px round 2px);
   animation: heroBreathing 5s ease-in-out infinite alternate;
 }
 
 .widow-stride {
   opacity: 0;
-  filter: brightness(0.92) contrast(1.12) saturate(0.95);
+  filter: brightness(0.92) contrast(1.12) saturate(0.95) drop-shadow(0 0 1px rgba(6, 9, 13, 0.95));
+  clip-path: inset(0.5px round 2px);
 }
 
 @keyframes heroBreathing {
@@ -2168,9 +2181,9 @@ h1 em, h2 em {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 8px;
-  letter-spacing: 0.16em;
-  color: var(--steel-400);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--steel-300);
 }
 
 #status-line {
@@ -2181,6 +2194,51 @@ h1 em, h2 em {
 /* --------------------------------------------------------------------------
    Media Queries & Accessibility
    -------------------------------------------------------------------------- */
+@media (max-width: 960px) {
+  .topbar {
+    padding: 0 16px;
+    height: 46px;
+  }
+  .topbar-brand .brand-sub {
+    display: none;
+  }
+  .chapter-rail {
+    display: none;
+  }
+  .lock-bank {
+    max-width: 100%;
+    margin-top: 6px;
+  }
+  .lock-unit.active-lock {
+    padding: 12px 16px;
+  }
+  .dial-shell {
+    width: clamp(160px, 45vw, 220px);
+  }
+  .scope-screen {
+    height: 28vh;
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar-title {
+    font-size: 13px;
+  }
+  .hud-cinema-bar.bar-top {
+    height: 18px;
+  }
+  .hud-cinema-bar.bar-bottom {
+    height: 18px;
+  }
+  .bottomline {
+    bottom: 22px;
+  }
+  .vault-blueprint-overlay {
+    display: none;
+  }
+}
+
 @media (max-height: 720px) {
   .topbar { top: 26px; height: 44px; }
   .chapter-rail { top: 82px; }

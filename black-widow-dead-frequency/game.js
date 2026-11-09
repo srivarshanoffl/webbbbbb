@@ -123,6 +123,26 @@
     fxCanvas.style.width = `${canvasW}px`;
     fxCanvas.style.height = `${canvasH}px`;
     if (fxCtx) fxCtx.scale(dpr, dpr);
+
+    if (radarCanvas && radarCtx) {
+      const rw = 100;
+      const rh = 16;
+      radarCanvas.width = Math.round(rw * dpr);
+      radarCanvas.height = Math.round(rh * dpr);
+      radarCanvas.style.width = `${rw}px`;
+      radarCanvas.style.height = `${rh}px`;
+      radarCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    if (tableWaveCanvas && tableWaveCtx) {
+      const tw = 160;
+      const th = 28;
+      tableWaveCanvas.width = Math.round(tw * dpr);
+      tableWaveCanvas.height = Math.round(th * dpr);
+      tableWaveCanvas.style.width = `${tw}px`;
+      tableWaveCanvas.style.height = `${th}px`;
+      tableWaveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
   }
 
   function spawnSparks(x, y, count = 20, color = '#ff3b50') {
@@ -350,7 +370,8 @@
 
   function updateParallax(event) {
     // Custom Reticle Cursor positioning & hover detection
-    if (tacticalCursor) {
+    if (tacticalCursor && event.pointerType === 'mouse') {
+      tacticalCursor.classList.add('active');
       tacticalCursor.style.left = `${event.clientX}px`;
       tacticalCursor.style.top = `${event.clientY}px`;
       const isInteractive = event.target.closest('button, input, .scope-screen, a');
