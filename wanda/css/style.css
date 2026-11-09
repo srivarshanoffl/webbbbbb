@@ -247,10 +247,6 @@ html, body {
 /* Volumetric God Rays from Temple Vault */
 .ambient-godrays {
   position: absolute;
-  width: 120vw;
-  height: 120vh;
-  top: -20vh;
-  left: -10vw;
   width: 140vw;
   height: 140vh;
   top: -30vh;
@@ -261,28 +257,21 @@ html, body {
     rgba(255, 30, 80, 0.04) 0px,
     rgba(255, 30, 80, 0.04) 40px,
     transparent 60px,
-    transparent 140px
-    118deg,
-    rgba(255, 30, 80, 0.05) 0px,
-    rgba(255, 30, 80, 0.05) 45px,
-    transparent 70px,
-    transparent 150px
+    transparent 140px,
+    rgba(255, 30, 80, 0.05) 140px,
+    rgba(255, 30, 80, 0.05) 185px,
+    transparent 210px,
+    transparent 290px
   );
-  filter: blur(16px);
-  opacity: 0.8;
-  animation: godRaysDrift 18s ease-in-out infinite alternate;
-  transform: translateZ(-200px);
-  filter: blur(20px);
-  opacity: 0.85;
-  animation: godRaysDrift 20s ease-in-out infinite alternate;
-  transform: translateZ(-220px);
+  filter: blur(18px);
+  opacity: 0.82;
+  transform: translateZ(-210px);
+  animation: godRaysDrift 19s ease-in-out infinite alternate;
 }
 
 @keyframes godRaysDrift {
-  0% { transform: translateZ(-200px) rotate(-1deg) scale(0.98); opacity: 0.6; }
-  100% { transform: translateZ(-200px) rotate(2deg) scale(1.04); opacity: 0.9; }
-  0% { transform: translateZ(-220px) rotate(-2deg) scale(0.96); opacity: 0.65; }
-  100% { transform: translateZ(-220px) rotate(3deg) scale(1.06); opacity: 0.95; }
+  0% { transform: translateZ(-210px) rotate(-1.5deg) scale(0.97); opacity: 0.65; }
+  100% { transform: translateZ(-210px) rotate(2.5deg) scale(1.05); opacity: 0.92; }
 }
 
 /* ==========================================================================
@@ -297,6 +286,8 @@ html, body {
   border-radius: 50%;
   pointer-events: none;
   transform: rotateX(74deg) translateZ(-160px);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
+  mask-image: radial-gradient(circle at 50% 50%, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
   background: 
     radial-gradient(circle, rgba(255, 16, 63, 0.35) 0%, rgba(160, 0, 32, 0.16) 40%, rgba(10, 2, 7, 0.9) 72%);
   border: 2px solid rgba(255, 16, 63, 0.55);
@@ -546,9 +537,11 @@ html, body {
   object-fit: contain;
   position: relative;
   z-index: 5;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 65%, transparent 95%);
+  mask-image: radial-gradient(ellipse at 50% 50%, black 65%, transparent 95%);
   filter: 
-    drop-shadow(0 0 24px rgba(255, 16, 63, 0.6)) 
-    drop-shadow(0 0 55px rgba(229, 9, 56, 0.35));
+    drop-shadow(0 0 20px rgba(255, 16, 63, 0.7)) 
+    drop-shadow(0 0 45px rgba(229, 9, 56, 0.4));
   transition: all 1.8s ease;
   user-select: none;
   -webkit-user-drag: none;
@@ -635,10 +628,10 @@ html, body {
 
 /* Object 1: Crystal (Left-Top) */
 #object-crystal {
-  width: 140px;
-  height: 180px;
-  left: calc(50% - 390px);
-  top: calc(50% - 150px);
+  width: clamp(100px, 12vw, 140px);
+  height: clamp(130px, 15vw, 180px);
+  left: clamp(16px, calc(50% - min(390px, 38vw)), calc(50% - 140px));
+  top: clamp(80px, calc(50% - 150px), calc(50% - 100px));
   animation: floatCrystal 6s ease-in-out infinite alternate;
 }
 @keyframes floatCrystal {
@@ -649,10 +642,10 @@ html, body {
 
 /* Object 2: Mystic Energy Ring (Right-Top) */
 #object-ring {
-  width: 170px;
-  height: 170px;
-  left: calc(50% + 220px);
-  top: calc(50% - 140px);
+  width: clamp(120px, 14vw, 170px);
+  height: clamp(120px, 14vw, 170px);
+  left: clamp(calc(50% + 80px), calc(50% + min(220px, 24vw)), calc(100% - 150px));
+  top: clamp(80px, calc(50% - 140px), calc(50% - 90px));
   animation: floatRing 5.4s ease-in-out infinite alternate;
 }
 @keyframes floatRing {
@@ -663,16 +656,33 @@ html, body {
 
 /* Object 3: Mysterious Artifact (Bottom-Center/Right) */
 #object-artifact {
-  width: 160px;
-  height: 160px;
-  left: calc(50% + 180px);
-  top: calc(50% + 120px);
+  width: clamp(110px, 13vw, 160px);
+  height: clamp(110px, 13vw, 160px);
+  left: clamp(calc(50% + 60px), calc(50% + min(180px, 20vw)), calc(100% - 140px));
+  top: clamp(calc(50% + 60px), calc(50% + 120px), calc(100% - 180px));
   animation: floatArtifact 7s ease-in-out infinite alternate;
 }
 @keyframes floatArtifact {
   0% { transform: translateY(0px) rotateY(0deg) rotateX(5deg); }
   50% { transform: translateY(-18px) rotateY(-30deg) rotateX(-15deg); }
   100% { transform: translateY(8px) rotateY(20deg) rotateX(10deg); }
+}
+
+@media (max-width: 768px) {
+  #object-crystal {
+    left: 12px;
+    top: 22%;
+  }
+  #object-ring {
+    left: auto;
+    right: 12px;
+    top: 22%;
+  }
+  #object-artifact {
+    left: auto;
+    right: 18px;
+    top: 52%;
+  }
 }
 
 /* Object Portal Designated Positions (Equilateral Triangle around Wanda/Portal) */
